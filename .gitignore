@@ -1,0 +1,9 @@
+./grading
+./member
+./review
+./subscribe
+./workbook
+
+./ai/.env
+./ai/fastapi
+./ai/__pycache__
