@@ -1,0 +1,85 @@
+.share-complete-page {
+    height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5rem; /* TopNav 높이 고려 */
+    padding-bottom: 1.5rem;
+}
+
+.share-complete-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.share-complete-page::-webkit-scrollbar-thumb {
+    background-color: #22c55e;
+    border-radius: 4px;
+}
+
+.share-complete-page::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+.share-complete-container {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 640px;
+    border: 1px solid #22c55e;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.share-complete-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+}
+
+.share-complete-url-box {
+    display: flex;
+    align-items: center;
+    background-color: #f1f5f9;
+    border: 1px solid #22c55e;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.share-complete-url-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-right: 0.5rem;
+}
+
+.share-complete-url {
+    font-size: 0.875rem;
+    color: #6b7280;
+    word-break: break-all;
+}
+
+.share-complete-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.share-complete-button {
+    padding: 0.5rem 1rem;
+    background-color: #22c55e;
+    color: #ffffff;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.share-complete-button:hover {
+    background-color: #16a34a;
+}
