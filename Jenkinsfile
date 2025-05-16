@@ -70,6 +70,30 @@ pipeline {
             }
         }
 
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
+                    for (service in services) {
+                        def image = "${service}:${DOCKER_TAG}"
+                        def dockerfilePath = "backend/${service}/Dockerfile"
+
+                        // Check if Dockerfile exists
+                        def dockerfileExists = fileExists(dockerfilePath)
+
+                        if (dockerfileExists) {
+                            echo "Dockerfile for ${service} exists, proceeding with build."
+                                sh """
+                                docker build -t ${image} -f ${dockerfilePath} backend/${service}
+                                """
+                        } else {
+                            echo "Dockerfile for ${service} does not exist, skipping."
+                        }
+                    }
+                }
+            }
+        }
+
         // 필요 없는 도커 이미지 삭제
         // stage('Docker Cleanup') {   
         //     steps {
