@@ -15,12 +15,21 @@ pipeline {
             }
         }
 
-        // Clone 파일 확인
+        // 적용 브랜치 확인
         stage('Show Git Branch') {
             steps {
                 script {
                     def branch = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
                     echo "Current Git Branch: ${branch}"
+                }
+            }
+        }
+
+        // Clone Repository 구조 확인
+        stage('Show Directory Structure') {
+            steps {
+                script {
+                    sh 'find .'
                 }
             }
         }
