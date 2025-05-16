@@ -1,0 +1,51 @@
+spring:
+  # H2 Console 설정
+  h2:
+    console:
+      enabled: true # h2-console 사용 여부
+      path: /h2-console # h2 DB 접근 주소
+
+  # SQL Script를 이용한 초기화를 위한 설정 (https://velog.io/@wlsh44/Spring-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%B4%88%EA%B8%B0%ED%99%94)
+  ## 기본적으로 Script 초기화는 In-Memory DB에 대해서만 동작함
+  ## 만약 MySql 등의 서버 상태의 DB를 사용하면서 SQL을 초기화하고 싶다면, init.mode 옵션을 always로 설정해야함
+  ### always : 모든 DB에 대해서 sql script 동작
+  ### embedded : 내장 DB에 대해서만 sql script 동작
+  ### never : 모든 DB에 대해서 sql script를 동작시키지 않음
+  sql:
+    init:
+      mode: always
+
+  # H2 Database 설정
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+
+  # JPA 설정
+  jpa:
+
+    # Hibernate 초기화와 data.sql을 사용하는 경우
+    ## 스프링 2.5 이후부터는 sql script가 hibernate 스키마 생성 이전에 수행된다.
+    ## 따라서, schema.sql 등으로 미리 table을 생성해주지 않은 경우, 없는 DB에 대해 data.sql이 수행되어 오류가 발생함
+    ### hibernate 스키마 생성 이후 sql script를 동작시키기 위한 옵션(defer-datasource-initialization: true)
+    defer-datasource-initialization: true
+
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+        # 로컬 환경에서 SQL 동작 확인을 위한 설정
+        format_sql: true
+        show_sql: true
+
+
+api:
+  server:
+    url: http://localhost:8000
+
+file:
+  path: /Users/songminseo/uploads
