@@ -25,23 +25,23 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images'){
-            steps{
+        // stage('Build Docker Images') {
+        //     steps {
 
-            }
-        }
+        //     }
+        // }
 
-        stage('Deploy'){
-            steps{
+        // stage('Deploy') {
+        //     steps {
 
-            }
-        }
+        //     }
+        // }
 
-        stage('Docker Cleanup'){
-            steps {
+        // stage('Docker Cleanup') {
+        //     steps {
 
-            }
-        }
+        //     }
+        // }
     }
 
     post {
