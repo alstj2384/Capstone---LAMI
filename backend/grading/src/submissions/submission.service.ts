@@ -2,13 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Submission } from './entities/submission.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { gradeProblems } from 'src/common/utils/grading.util';
-import { QuizDTO } from 'src/grading/dto/quiz.dto';
-import { GradingResult } from 'src/common/interfaces/gradingResult.interface';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { extractAnswers } from 'src/common/utils/extractAnswers.util';
-import { GradingService } from 'src/grading/grading.service';
 
 @Injectable()
 export class SubmissionService {
@@ -18,6 +11,14 @@ export class SubmissionService {
     ) {}
 
     async saveSubmission(submissions: Submission[]) {
-        this.submissionRepository.save(submissions);
+        await this.submissionRepository.save(submissions);
+    }
+
+    async insertSubmissions(submissions: Submission[]) {
+        return this.submissionRepository.insert(submissions);
+    }
+
+    getRepository(): Repository<Submission> {
+        return this.submissionRepository;
     }
 }
