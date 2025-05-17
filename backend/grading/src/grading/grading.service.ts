@@ -122,11 +122,6 @@ export class GradingService {
         return await this.createGrading(userId, quizSetId);
     }
 
-    private async getProblemMap(quizSetId: number): Promise<Map<number, any>> {
-        const problems = await this.getProblems(quizSetId);
-        return new Map<number, any>(problems.map((p) => [p.problemId, p]));
-    }
-
     private async createSubmissionsFromResults(
         grading: Grading,
         gradingResults: GradingResult[],
@@ -173,7 +168,14 @@ export class GradingService {
     }
 
     private async persistSubmissionsAndScore(grading: Grading, submissions: Submission[], gradingResults: GradingResult[]) {
-        await this.submissionService.saveSubmission(submissions);
+        const gradingRef = { id: grading.id } as Grading;
+
+        for (const s of submissions) {
+            s.grading = gradingRef;
+        }
+
+        await this.submissionService.insertSubmissions(submissions);
+
         const correctCount = gradingResults.filter((r) => r.correct).length;
         await this.updateScore(grading.id, correctCount);
     }
@@ -181,9 +183,8 @@ export class GradingService {
     async saveData(gradingResults: GradingResult[], userSubmissions: QuizDTO[], userId: number, quizSetId: number): Promise<Submission[]> {
         const grading = await this.createGradingEntity(userId, quizSetId);
 
-        const problemMap = await this.getProblemMap(quizSetId);
-
-        console.warn(problemMap);
+        const problems = await this.getProblems(quizSetId);
+        const problemMap = new Map<number, any>(problems.map((p) => [p.problemId, p]));
 
         if (gradingResults.length !== userSubmissions.length) {
             throw new BadRequestException('제출 수와 채점 결과 수가 일치하지 않습니다.');
