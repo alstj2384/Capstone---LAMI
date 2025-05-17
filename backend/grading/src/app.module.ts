@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GradingModule } from './grading/grading.module';
-import { AuthModule } from './auth/auth.module';
 import { ResponseModule } from './common/response/response.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/exceptions.filter';
@@ -18,7 +17,7 @@ import { Submission } from './submissions/entities/submission.entity';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: '.env.dev',
+            envFilePath: '.env.production',
             load: [databaseConfig],
         }),
         TypeOrmModule.forRootAsync({
@@ -37,7 +36,6 @@ import { Submission } from './submissions/entities/submission.entity';
             }),
         }),
         GradingModule,
-        AuthModule,
         ResponseModule,
         SubmissionModule,
     ],
