@@ -11,6 +11,7 @@ import { Submission } from 'src/submissions/entities/submission.entity';
 import { GradingResult } from 'src/common/interfaces/gradingResult.interface';
 import { FormattedGradingResultDTO } from './dto/formatted-grading-result.dto';
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { MemorizationMethod } from 'src/common/enums/memorizationMethod.enums';
 
 @Injectable()
 export class GradingService {
@@ -26,7 +27,7 @@ export class GradingService {
             userId,
             quizSetId,
             submissionDate: new Date(),
-            score: 0, // 최초에는 일단 gradingId 반환 때문에 0 삽입 저장
+            score: 0, // 최초 생성 시 gradingId 반환 때문에 0 삽입 저장
         });
 
         return await this.gradingRepository.save(grading);
@@ -40,15 +41,44 @@ export class GradingService {
         try {
             const response = await firstValueFrom(this.httpService.get(`${process.env.SERVER_URL}/problem/list/${quizSetId}`));
 
-            if (!response.data.data) {
-                throw new BadRequestException('문제 정보를 가져올 수 없습니다.');
+            if (!response.data?.data?.memorization) {
+                throw new BadRequestException('유저 암기법이 존재하지 않습니다.');
             }
 
             return response.data.data;
         } catch (error) {
-            console.error('getProblems error:', error?.message || error);
             throw new InternalServerErrorException('문제 목록을 불러오는 중 오류가 발생했습니다.');
         }
+    }
+
+    // TODO 암기법 가져오는 API 연결 (enum값 들어오면 한글로 번역해서 돌려주기) // 데이터 형식 확인
+    async getMemorizationMethod(userId: number): Promise<string> {
+        try {
+            const response = await firstValueFrom(this.httpService.get(`${process.env.MEMBER_SERVER_URL}/member/${userId}`));
+            const memorizationMethod = response.data.data.memorization;
+
+            if (!['AssociationMethod', 'StorytellingMethod', 'VocabConnectMethod'].includes(memorizationMethod)) {
+                throw new BadRequestException('유효하지 않은 암기법입니다.');
+            }
+
+            return memorizationMethod;
+        } catch (error) {
+            throw new InternalServerErrorException('유저 암기법을 가져오는데 오류가 발생하였습니다.');
+        }
+    }
+
+    private getKoreanMemorizationMethod(method: string): string {
+        const map: Record<string, string> = {
+            AssociationMethod: MemorizationMethod.AssociationMethod,
+            StorytellingMethod: MemorizationMethod.StorytellingMethod,
+            VocabConnectMethod: MemorizationMethod.VocabConnectMethod,
+        };
+
+        if (!(method in map)) {
+            throw new BadRequestException(`알 수 없는 암기법입니다. <${method}>`);
+        }
+
+        return map[method];
     }
 
     // TODO 피드백 API 경로로 수정 후 데이터 형태에 맞게 안에 데이터 수정
@@ -128,6 +158,14 @@ export class GradingService {
         userSubmissions: QuizDTO[],
         problemMap: Map<number, any>,
     ): Promise<Submission[]> {
+        let method: string = '스토리텔링';
+        try {
+            const methodEnum = await this.getMemorizationMethod(grading.userId);
+            method = this.getKoreanMemorizationMethod(methodEnum);
+        } catch (e) {
+            console.warn(`유저 암기법 조회에 실패하였습니다. <${e.message}>`);
+        }
+
         return await Promise.all(
             gradingResults.map(async (result, idx) => {
                 const submission = new Submission();
@@ -147,8 +185,6 @@ export class GradingService {
                     const question = problem.question;
                     const choices = problem.choices ?? '';
                     const answer = submission.submittedAnswer;
-                    // TODO 암기법 API 연결
-                    const method = '연상법';
 
                     try {
                         const [feedback, memorization] = await Promise.all([
