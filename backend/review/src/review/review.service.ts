@@ -28,7 +28,7 @@ export class ReviewService {
 
     async getProblems(quizSetId: number) {
         try {
-            const response = await firstValueFrom(this.httpService.get(`${process.env.SERVER_URL}/problem/list/${quizSetId}`));
+            const response = await firstValueFrom(this.httpService.get(`${process.env.WORKBOOK_SERVER_URL}/problem/list/${quizSetId}`));
             return response.data.data;
         } catch (err) {
             throw new NotFoundException('문제 정보를 불러올 수 없습니다.');
