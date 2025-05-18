@@ -17,7 +17,7 @@ import { Submission } from './submissions/entities/submission.entity';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: '.env.production',
+            envFilePath: '.env',
             load: [databaseConfig],
         }),
         TypeOrmModule.forRootAsync({
@@ -31,7 +31,7 @@ import { Submission } from './submissions/entities/submission.entity';
                 password: configService.get('database.password'),
                 database: configService.get('database.database'),
                 entities: [Grading, Submission],
-                synchronize: true,
+                synchronize: false,
                 timezone: '+09:00',
             }),
         }),
