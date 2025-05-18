@@ -11,7 +11,7 @@ import { AllExceptionsFilter } from './common/filters/exceptions.filter';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: '.env.dev',
+            envFilePath: '.env',
             load: [databaseConfig],
         }),
         TypeOrmModule.forRootAsync({
@@ -25,7 +25,7 @@ import { AllExceptionsFilter } from './common/filters/exceptions.filter';
                 password: configService.get('database.password'),
                 database: configService.get('database.database'),
                 entities: [Review],
-                synchronize: true,
+                synchronize: false,
                 timezone: '+09:00',
             }),
         }),
