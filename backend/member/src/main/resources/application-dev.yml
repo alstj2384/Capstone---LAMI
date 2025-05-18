@@ -4,7 +4,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SRPING_DATASOURCE_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -20,7 +20,7 @@ spring:
       port: ${SPRING_REDIS_PORT}
 
   jwt:
-    secret : ${SRPING_JWT_SECRET}
+    secret : ${SPRING_JWT_SECRET}
     access-token-expiry: ${SPRING_JWT_ACCESS-TOKEN-EXPIRY}
     refresh-token-expiry: ${SPRING_JWT_REFRESH-TOKEN-EXPIRY}
 

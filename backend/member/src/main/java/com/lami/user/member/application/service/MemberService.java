@@ -28,6 +28,9 @@ public interface MemberService {
     public MemberInfoResponseDto getUserInfo(String memberId);
 
 
+    // 유저 암기법 조회
+    MemberMemorizationDto getUserMemorizationInfo(String memberId);
+
     // 유저 이름 조회
     public String findUsername(Long memberId);
 

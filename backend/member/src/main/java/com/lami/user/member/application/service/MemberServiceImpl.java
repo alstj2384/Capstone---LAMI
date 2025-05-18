@@ -101,6 +101,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberMemorizationDto getUserMemorizationInfo(String memberId) {
+        Member member = memberRepository.findById(Long.parseLong(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
+
+        return new MemberMemorizationDto(
+                member.getMemorizationMethod().toString()
+        );
+    }
+
+
+
+    @Override
     public String findUsername(Long memberId) {
         Optional<Member> memberOpt = memberRepository.findById(memberId);
 

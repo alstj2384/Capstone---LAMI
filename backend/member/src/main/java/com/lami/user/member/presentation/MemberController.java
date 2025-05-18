@@ -125,6 +125,12 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보를 조회했습니다.", memberService.getUserInfo(memberId)));
     }
 
+    // 회원 암기법 조회
+    @GetMapping("/members/memorization/{memberId}")
+    public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@PathVariable String memberId) {
+        return ResponseEntity.ok(ApiResponseDto.success("회원 암기법을 조회했습니다.", memberService.getUserMemorizationInfo(memberId)));
+    }
+
     // 회원 정보 수정
     @PatchMapping("/members/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> updateMemberInfo(
