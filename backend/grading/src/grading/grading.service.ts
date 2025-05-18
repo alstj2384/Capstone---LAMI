@@ -39,7 +39,7 @@ export class GradingService {
 
     async getProblems(quizSetId: number) {
         try {
-            const response = await firstValueFrom(this.httpService.get(`${process.env.SERVER_URL}/problem/list/${quizSetId}`));
+            const response = await firstValueFrom(this.httpService.get(`${process.env.WORKBOOK_SERVER_URL}/problem/list/${quizSetId}`));
 
             if (!response.data?.data?.memorization) {
                 throw new BadRequestException('유저 암기법이 존재하지 않습니다.');
@@ -51,11 +51,10 @@ export class GradingService {
         }
     }
 
-    // TODO 암기법 가져오는 API 연결 (enum값 들어오면 한글로 번역해서 돌려주기) // 데이터 형식 확인
     async getMemorizationMethod(userId: number): Promise<string> {
         try {
-            const response = await firstValueFrom(this.httpService.get(`${process.env.MEMBER_SERVER_URL}/member/${userId}`));
-            const memorizationMethod = response.data.data.memorization;
+            const response = await firstValueFrom(this.httpService.get(`${process.env.MEMBER_SERVER_URL}/members/memorization/${userId}`));
+            const memorizationMethod = response.data.data.memorizationMethod;
 
             if (!['AssociationMethod', 'StorytellingMethod', 'VocabConnectMethod'].includes(memorizationMethod)) {
                 throw new BadRequestException('유효하지 않은 암기법입니다.');
@@ -81,7 +80,6 @@ export class GradingService {
         return map[method];
     }
 
-    // TODO 피드백 API 경로로 수정 후 데이터 형태에 맞게 안에 데이터 수정
     async getFeedback(question: string, choices: string, answer: string): Promise<string> {
         try {
             const response = await firstValueFrom(
@@ -103,7 +101,6 @@ export class GradingService {
         }
     }
 
-    // TODO 암기법 API 경로로 수정 후 데이터 형태에 맞게 안에 데이터 수정
     async getMemorization(question: string, choices: string, answer: string, method: string): Promise<string> {
         try {
             const response = await firstValueFrom(

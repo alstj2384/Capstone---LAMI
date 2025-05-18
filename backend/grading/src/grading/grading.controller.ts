@@ -3,7 +3,7 @@ import { ResponseService } from 'src/common/response/response.service';
 import { ResponseCode } from '../common/enums/responseCode.enum';
 import { GradingService } from './grading.service';
 import { QuizSetDto } from './dto/quizSet.dto';
-import { ApiBody, ApiHeader, ApiHideProperty, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { GradingListResponseDTO } from './dto/grading-list-response.dto';
 
 @Controller('api/grading')
