@@ -118,6 +118,12 @@ pipeline {
                         exit 1
                     fi
 
+                    if [ ! -d "${DEPLOY_DIR}/exec/sql" ]; then
+                        mkdir -p "${DEPLOY_DIR}/exec/sql"
+                    fi
+
+                    cp ${WORKSPACE}/exec/sql/init.sql ${DEPLOY_DIR}/exec/sql/init.sql
+
                     docker compose down
                     docker compose up --build -d
                     """
