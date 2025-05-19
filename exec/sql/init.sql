@@ -47,37 +47,39 @@ CREATE TABLE Problem (
 
 CREATE TABLE Grading (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
     quiz_set_id BIGINT NOT NULL,
-    submit_date DATETIME(6),
-    score INT,
+    user_id BIGINT NOT NULL,
+    score INT NOT NULL,
+    submission_date DATETIME(6) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES Member(id),
     FOREIGN KEY (quiz_set_id) REFERENCES Workbook(id)
 );
 
-CREATE TABLE Review (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    to_review TIMESTAMP NOT NULL,
-    field_name VARCHAR(255),
-    grading_id BIGINT NOT NULL,
-    quiz_id BIGINT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES Member(id),
-    FOREIGN KEY (grading_id) REFERENCES Grading(id),
-    FOREIGN KEY (quiz_id) REFERENCES Problem(id)
-);
-
 CREATE TABLE QuizGrading (
     id BIGINT NOT NULL AUTO_INCREMENT,
     quiz_id BIGINT NOT NULL,
-    grading_id BIGINT NOT NULL,
-    field_name VARCHAR(255),
-    is_correct BOOLEAN,
-    feedback VARCHAR(255),
-    memorization VARCHAR(255),
+    submitted_answer TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL,
+    feedback TEXT DEFAULT NULL,
+    memorization TEXT DEFAULT NULL,
+    grading_id BIGINT DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (quiz_id) REFERENCES Problem(id),
-    FOREIGN KEY (grading_id) REFERENCES Grading(id)
+    FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL
 );
+
+CREATE TABLE Review (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    grading_id BIGINT DEFAULT NULL,
+    quiz_set_id BIGINT NOT NULL,
+    quiz_id BIGINT NOT NULL,
+    to_review DATETIME(6) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES Member(id),
+    FOREIGN KEY (quiz_id) REFERENCES Problem(id),
+    FOREIGN KEY (quiz_set_id) REFERENCES Workbook(id)
+);
+
