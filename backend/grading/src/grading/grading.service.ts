@@ -41,8 +41,8 @@ export class GradingService {
         try {
             const response = await firstValueFrom(this.httpService.get(`${process.env.WORKBOOK_SERVER_URL}/problem/list/${quizSetId}`));
 
-            if (!response.data?.data?.memorization) {
-                throw new BadRequestException('유저 암기법이 존재하지 않습니다.');
+            if (!response.data?.data) {
+                throw new BadRequestException('존재하지 않는 문제입니다.');
             }
 
             return response.data.data;
