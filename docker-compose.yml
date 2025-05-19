@@ -4,6 +4,11 @@ services:
     environment:
       - API_SERVER_URL=http://ai:8000 # API 서버 도커 컴포즈 연동 시 수정 필요
       - FILE_PATH=/app/uploads
+      - DATABASE_HOST=${MYSQL_HOST}
+      - DATABASE_PORT=${MYSQL_PORT}
+      - DATABASE_DATABASE=${MYSQL_DATABASE}
+      - SPRING_DATABASE_USERNAME=${MYSQL_USERNAME}
+      - SPRING_DATABASE_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./uploads:/app/uploads
     networks:
