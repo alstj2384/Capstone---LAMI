@@ -1,18 +1,18 @@
 import { Grading } from 'src/grading/entities/grading.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('QuizGrading')
 export class Submission {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ name: 'quiz_id' })
     quizId: number;
 
-    @Column()
+    @Column({ name: 'submitted_answer' })
     submittedAnswer: string;
 
-    @Column()
+    @Column({ name: 'is_correct' })
     isCorrect: boolean;
 
     @Column({ nullable: true, default: null })
@@ -22,6 +22,6 @@ export class Submission {
     memorization: string;
 
     @ManyToOne(() => Grading, (grading) => grading.submissions, { onDelete: 'SET NULL' })
-    @JoinColumn({ name: 'gradingId' })
+    @JoinColumn({ name: 'grading_id' })
     grading: Grading;
 }
