@@ -7,7 +7,6 @@ import com.lami.user.member.infrastructure.security.JwtAuthenticationFilter;
 import com.lami.user.member.infrastructure.security.JwtCookieUtil;
 import com.lami.user.member.infrastructure.security.JwtTokenProvider;
 import com.lami.user.member.infrastructure.security.LoginFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
