@@ -25,7 +25,7 @@ public class ProblemController {
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ApiResponse<ProblemResponseDto>> get(@PathVariable Long problemId){
-        log.info("문제 조회, problemId = {}", problemId);
+        log.info("문제 조회 요청, problemId = {}", problemId);
         Problem problem = problemService.get(problemId);
 
         // 응답 DTO로 변환
