@@ -1,7 +1,6 @@
 services:
   workbook:
-    build:
-      context: ./backend/workbook
+    image: workbook
     environment:
       - API_SERVER_URL=http://ai:8000 # API 서버 도커 컴포즈 연동 시 수정 필요
       - FILE_PATH=/app/uploads
@@ -18,8 +17,7 @@ services:
       - db
 
   ai:
-    build:
-      context: ./backend/ai
+    image: ai
     environment:
       - GPT_API_KEY=${GPT_API_KEY}
       - DIR_PATH=/tmp/
@@ -29,8 +27,7 @@ services:
       - lami-backend
 
   member:
-    build:
-      context: ./backend/member
+    image: member
     environment:
       - SPRING_DATABASE_HOST=${MYSQL_HOST}
       - SPRING_DATABASE_PORT=${MYSQL_PORT}
@@ -58,8 +55,7 @@ services:
       - db
 
   review:
-    build:
-      context: ./backend/review
+    image: review
     environment:
       - DATABASE_HOST=${MYSQL_HOST}
       - DATABASE_PORT=${MYSQL_PORT}
@@ -76,8 +72,7 @@ services:
       - db
 
   grading:
-    build:
-      context: ./backend/grading
+    image: grading
     environment:
       - DATABASE_HOST=${MYSQL_HOST}
       - DATABASE_PORT=${MYSQL_PORT}
