@@ -139,7 +139,8 @@ pipeline {
                     sh """
                     echo "Cleaning up old Docker images..."
                     
-                    docker images prune -a
+                    docker image prune -a
+                    """
                 }
             }
         }
