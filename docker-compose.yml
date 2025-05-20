@@ -1,4 +1,11 @@
 services:
+  frontend:
+    image: frontend
+    environment:
+    networks:
+      - lami-backend
+
+
   workbook:
     image: workbook
     environment:
