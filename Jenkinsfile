@@ -35,25 +35,30 @@ pipeline {
             }
         }
 
-        stage('Show Dockerfiles') {
+        stage('Show Frontend Dockerfile') {
             steps {
                 script {
-                    
                     def dockerfilePath = "frontend/Dockerfile"
                     def dockerfileExists = fileExists(dockerfilePath)
-
+        
                     if (dockerfileExists) {
                         echo "Dockerfile for frontend exists, displaying content."
                         sh "cat ${dockerfilePath}"
                     } else {
                         echo "Dockerfile for frontend does not exist, skipping."
                     }
-
+                }
+            }
+        }
+        
+        stage('Show Backend Dockerfiles') {
+            steps {
+                script {
                     def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def dockerfilePath = "backend/${service}/Dockerfile"
                         def dockerfileExists = fileExists(dockerfilePath)
-
+        
                         if (dockerfileExists) {
                             echo "Dockerfile for ${service} exists, displaying content."
                             sh "cat ${dockerfilePath}"
@@ -64,6 +69,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Show Docker Compose File') {
             steps {
@@ -81,38 +87,37 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Build Frontend Docker Image') {
             steps {
                 script {
-
                     def image = "frontend:${DOCKER_TAG}"
                     def dockerfilePath = "frontend/Dockerfile"
-
-                    // Check if Dockerfile exists
-                    def dockerfileExists = fileExists(dockerfilePath)
-
-                    if (dockerfileExists) {
+        
+                    if (fileExists(dockerfilePath)) {
                         echo "Dockerfile for frontend exists, proceeding with build."
-                            sh """
+                        sh """
                             docker build -t ${image} -f ${dockerfilePath} frontend
-                            """
+                        """
                     } else {
                         echo "Dockerfile for frontend does not exist, skipping."
                     }
-
+                }
+            }
+        }
+        
+        stage('Build Backend Docker Images') {
+            steps {
+                script {
                     def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def image = "${service}:${DOCKER_TAG}"
                         def dockerfilePath = "backend/${service}/Dockerfile"
-
-                        // Check if Dockerfile exists
-                        def dockerfileExists = fileExists(dockerfilePath)
-
-                        if (dockerfileExists) {
+        
+                        if (fileExists(dockerfilePath)) {
                             echo "Dockerfile for ${service} exists, proceeding with build."
-                                sh """
+                            sh """
                                 docker build -t ${image} -f ${dockerfilePath} backend/${service}
-                                """
+                            """
                         } else {
                             echo "Dockerfile for ${service} does not exist, skipping."
                         }
@@ -120,6 +125,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Deploy') {
             steps {
