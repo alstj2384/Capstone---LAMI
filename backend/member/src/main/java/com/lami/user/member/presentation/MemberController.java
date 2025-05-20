@@ -68,7 +68,7 @@ public class MemberController {
 
     // [PUBLIC] 비밀번호 변경
     @PostMapping("/members/reset-password")
-    public ResponseEntity<ApiResponseDto<?>> changePassword(@RequestBody PasswordResetRequestDto dto, @RequestHeader("X-User-ID") String userid) {
+    public ResponseEntity<ApiResponseDto<?>> changePassword(@RequestBody PasswordResetRequestDto dto, @RequestHeader("X-User-Id") String userid) {
         resetService.resetPassword(dto.getUserId(), dto.getNewPassword());
         return ResponseEntity.ok(ApiResponseDto.success("비밀번호가 변경되었습니다.", null));
     }
@@ -121,20 +121,20 @@ public class MemberController {
 
     // 회원 정보 조회
     @GetMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getMemberInfo(@RequestHeader("X-User-ID") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getMemberInfo(@RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보를 조회했습니다.", memberService.getUserInfo(userId)));
     }
 
     // 회원 암기법 조회
     @GetMapping("/members/memorization/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@RequestHeader("X-User-ID") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(ApiResponseDto.success("회원 암기법을 조회했습니다.", memberService.getUserMemorizationInfo(userId)));
     }
 
     // 회원 정보 수정
     @PatchMapping("/members/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> updateMemberInfo(
-            @RequestHeader("X-User-ID") String userId,
+            @RequestHeader("X-User-Id") String userId,
             @RequestBody MemberInfoUpdateRequestDto dto) {
         MemberInfoUpdateResponseDto updated = memberService.updateUserInfo(userId, dto);
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보가 수정되었습니다.", updated));
@@ -142,7 +142,7 @@ public class MemberController {
 
     // 회원 탈퇴
     @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> deleteMember(@RequestHeader("X-User-ID") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> deleteMember(@RequestHeader("X-User-Id") String userId) {
         if (memberService.quitMember(userId)) {
             redisService.deleteValue(userId);
             return ResponseEntity.ok(ApiResponseDto.success("회원 탈퇴가 완료되었습니다.", null));
@@ -159,7 +159,7 @@ public class MemberController {
 
     // 유저 이름 조회
     @GetMapping("/members/name/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getUserName(@RequestHeader("X-User-ID") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getUserName(@RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(ApiResponseDto.success("사용자 이름 조회 성공", memberService.findUsername(Long.valueOf(userId))));
     }
 }

@@ -16,20 +16,18 @@ spring:
 
   data:
     redis:
-      host: lami-user
-      port: ${SPRING_REDIS_PORT}
-
+      url: redis://@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}
   jwt:
-    secret : ${SPRING_JWT_SECRET}
-    access-token-expiry: ${SPRING_JWT_ACCESS-TOKEN-EXPIRY}
-    refresh-token-expiry: ${SPRING_JWT_REFRESH-TOKEN-EXPIRY}
+    secret : ${JWT_SECRET}
+    access-token-expiry: ${JWT_ACCESS-TOKEN-EXPIRY}
+    refresh-token-expiry: ${JWT_REFRESH-TOKEN-EXPIRY}
 
   mail:
-    from: ${SPRING_MAIL_FROM}
+    from: ${MAIL_FROM}
     host: smtp.naver.com
-    port: ${SPRING_MAIL_PORT}
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
