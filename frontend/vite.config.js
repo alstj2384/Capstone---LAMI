@@ -7,8 +7,7 @@ export default defineConfig({
     server: {
     host: '0.0.0.0',
     allowedHosts: ['10.116.64.23'],
-    port: 3000,    
-    open: true,    
-    host: true      
+    port: 5173,   
+    open: true,         
     }
 })
