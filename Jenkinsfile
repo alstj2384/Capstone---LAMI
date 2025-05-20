@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_DIR = "/home/controller/deploy"
+        DEPLOY_DIR = "/home/capstone/deploy"
         GIT_BRANCH = "main"
-        DOCKER_TAG = "latest"
     }
 
     stages {
@@ -35,128 +34,24 @@ pipeline {
             }
         }
 
-        stage('Show Dockerfiles') {
-            steps {
-                script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
-                    for (service in services) {
-                        def dockerfilePath = "backend/${service}/Dockerfile"
-                        def dockerfileExists = fileExists(dockerfilePath)
+        // stage('Build Docker Images') {
+        //     steps {
 
-                        if (dockerfileExists) {
-                            echo "Dockerfile for ${service} exists, displaying content."
-                            sh "cat ${dockerfilePath}"
-                        } else {
-                            echo "Dockerfile for ${service} does not exist, skipping."
-                        }
-                    }
-                }
-            }
-        }
+        //     }
+        // }
 
-        stage('Show Docker Compose File') {
-            steps {
-                script {
-                    def dockerComposeFilePath = "${WORKSPACE}/docker-compose.yml"
-                    def dockerComposeFileExists = fileExists(dockerComposeFilePath)
+        // stage('Deploy') {
+        //     steps {
 
-                    if (dockerComposeFileExists) {
-                        echo "docker-compose.yml exists, displaying content."
-                        sh "cat ${dockerComposeFilePath}"
-                    } else {
-                        echo "docker-compose.yml does not exist."
-                    }
-                }
-            }
-        }
+        //     }
+        // }
 
-        stage('Build Docker Images') {
-            steps {
-                script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
-                    for (service in services) {
-                        def image = "${service}:${DOCKER_TAG}"
-                        def dockerfilePath = "backend/${service}/Dockerfile"
+        // stage('Docker Cleanup') {
+        //     steps {
 
-                        // Check if Dockerfile exists
-                        def dockerfileExists = fileExists(dockerfilePath)
-
-                        if (dockerfileExists) {
-                            echo "Dockerfile for ${service} exists, proceeding with build."
-                                sh """
-                                docker build -t ${image} -f ${dockerfilePath} backend/${service}
-                                """
-                        } else {
-                            echo "Dockerfile for ${service} does not exist, skipping."
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    sh """
-                    echo "Current User: \$(whoami)"
-                    if [ ! -d "${DEPLOY_DIR}" ]; then
-                        mkdir -p ${DEPLOY_DIR}
-                    fi
-
-                    cd ${DEPLOY_DIR}
-
-                    cp ${WORKSPACE}/docker-compose.yml ${DEPLOY_DIR}/
-
-                    echo "Directory Contents:"
-                    ls -al
-
-                    if [ -f "docker-compose.yml" ]; then
-                        echo "docker-compose.yml exists."
-                        cat docker-compose.yml
-                    else
-                        echo "docker-compose.yml does not exist."
-                        exit 1
-                    fi
-
-                    if [ ! -d "${DEPLOY_DIR}/exec/sql" ]; then
-                        mkdir -p "${DEPLOY_DIR}/exec/sql"
-                    fi
-
-                    cp ${WORKSPACE}/exec/sql/init.sql ${DEPLOY_DIR}/exec/sql/init.sql
-
-                    docker compose down
-                    docker compose up --build -d
-                    """
-                }
-            }
-        }
-
-
-        // 필요 없는 도커 이미지 삭제
-        stage('Docker Cleanup') {
-            steps {
-                script {
-                    sh """
-                    echo "Cleaning up old Docker images..."
-
-                    docker images
-                        --filter "dangling=false"
-                        --format "{{.ID}}:{{.Tag}}"
-                        | grep -v ":${DOCKER_TAG}"
-                        | awk -F ':' '{print \$1}'
-                        | xargs -r docker rmi
-                    """
-                    /**
-                     dangling : 태그가 없는 이미지는 제외
-                     --format "{{.ID}}:{{.Tag}}" : id:tag 형태로 보이도록 지정
-                     | grep -v : 현재 사용중인 태그가 아닌 이미지만 선택
-                     | awk -F ':' '{print \$1}' : :로 나눈 것 중 앞부분을 가져옴(삭제할 이미지 ID)
-                     | xargs -r docker rmi: 이미지 ID들을 하나씩 docker rmi 명령으로 삭제
-                    **/
-                }
-            }
-        }
-        }
+        //     }
+        // }
+    }
 
     post {
         always {
