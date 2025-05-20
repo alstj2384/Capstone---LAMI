@@ -1,93 +1,188 @@
-# team-08
+#  Learn & Memorize Intelligence (LAMI)
+
+<h3 align=center>AI 학습 도우미 플랫폼</h3>
+<div style="text-align: center"><img src="./images/LAMI.png" alt="LAMI"></div>
+
+<br>
+
+### 📜 목차 
+
+---
+
+1. [**프로젝트 일정**](#1)
+2. [**프로젝트 개요**](#2)
+3. [**서비스 소개**](#3)
+4. [**주요 기능**](#4)
+5. [**기술 스택**](#5)
+6. [**산출물**](#6)
+7. [**팀원 소개**](#7)
+   <br><br><br>
+
+<div id="1"></div>
+
+### 🗓️ 프로젝트 일정
+
+---
+
+- 일정: 2025년 4월 3일 ~ 6월 12일 (10주)
+  <br><br><br>
+
+<div id="1"></div>
+
+### 🔎 프로젝트 개요
+
+---
+많은 사람들이 공부할 때 이해도를 높이거나 확인하기 위해 문제를 풀어보는 방식을 사용합니다. 그러나 실제 대학 교재에는 문제는 있어도 정답이 없거나, 아예 문제가 없는 경우가 많아 효율적인 복습과 학습이 어렵습니다.
+
+이로 인해 관련 문제를 풀기 위해 인터넷에서 자료를 찾아야 하는 번거로운 과정을 거치게 되며, 이는 학습 효율을 저해하는 요인이 됩니다.
+
+저희 팀은 이러한 문제를 해결하고자, 자동 문제 생성과 오답 피드백, 주기적인 복습 리마인드를 통해 반복 학습과 장기 기억을 돕는 AI 학습 플랫폼인 LAMI(Learn & Memorize Intelligence) 프로젝트를 기획하게 되었습니다
+
+또한, 학생뿐 아니라 교사와 강사 등 교육 종사자도 플랫폼을 통해 강의 자료에서 자동으로 문제를 생성하고, 학생들과 공유하며, 학생에게 개인화된 피드백과 암기법을 제공하여 수업 준비와 운영을 더욱 효율적으로 만들 수 있을 것으로 예상됩니다.
+
+<br><br>
+
+<div id="2"></div>
+
+### 🔎 서비스 소개
+
+---
 
 
+- PDF/스크립트 기반 문제 생성
+- 생성한 문제를 공유하고 풀이 가능
+- 자동 채점 및 오답 피드백과 암기법 제공
+- 복습 카테고리 추가로 주기적 리마인드 제공
 
-## Getting started
+<br><br>
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+<div id="3"></div>
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### 🔎 주요 기능
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+- **문제집 생성**
+  - 사용자가 제공한 PDF/스크립트를 바탕으로 여러 유형의 문제를 생성합니다. 
+  - 상, 중, 하 난이도를 지정하여 유연한 문제 생성을 지원합니다.
+- **문제집 공유**
+  - 사용자가 생성한 문제집을 공유할 수 있습니다. 
+  - 문제집 URL 또는 문제집 탐색 탭에서 공유된 문제집을 확인할 수 있습니다.
+  - 공유된 문제집은 다른 사용자가 풀어볼 수 있습니다. 
+- **문제 풀이 및 채점**
+  - 문제를 풀고 채점할 수 있습니다. 
+  - 문제 유형에 따라 분류되어 있어 원하는 번호의 문제로 이동을 지원합니다.
+  - 제출 시 자동으로 채점됩니다. 
+- **피드백 및 암기법 제공**
+  - 채점 후 오답에 대해 사용자 성향에 맞는 피드백과 암기법을 제공합니다.
+- **복습할 문제를 주기적으로 리마인드**
+  - "복습 문제로 추가"로 추가된 문제는 주기적으로 다시 풀어볼 수 있습니다.
+  - 사용자는 문제의 이해도에 따라 리마인드 기간을 선택하여 장기적인 암기에 도움을 줍니다.
 
-```
-cd existing_repo
-git remote add origin https://git.chosun.ac.kr/iap1-2025/class-06/team-08.git
-git branch -M main
-git push -uf origin main
-```
+<br><br>
 
-## Integrate with your tools
+<div id="4"></div>
 
-- [ ] [Set up project integrations](https://git.chosun.ac.kr/iap1-2025/class-06/team-08/-/settings/integrations)
+### ⚒️ 기술 스택
 
-## Collaborate with your team
+---
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
 
-## Test and Deploy
+- **Frontend**
 
-Use the built-in continuous integration in GitLab.
+  ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+  ![JavaScript](https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+  ![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+  ![Zustand](https://img.shields.io/badge/zustand-7C3AED?style=for-the-badge&logo=zustand&logoColor=white)
+  ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
+  ![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
+  ![Styled Components](https://img.shields.io/badge/styled_components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
+  ![Howler.js](https://img.shields.io/badge/howler.js-4FC08D?style=for-the-badge&logo=howler.js&logoColor=white)
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- **Backend**
 
-***
+  ![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white)
+  ![Spring](https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+  ![Spring Security](https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=spring_security&logoColor=white)
+  ![Nest.js](https://img.shields.io/badge/-NestJs-ea2845?style=for-the-badge&logo=nestjs&logoColor=white)
+  ![Nest.js](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+- **Infra**
 
-# Editing this README
+  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+  ![Nginx](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+  ![Jenkins](https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Database**
 
-## Suggestions for a good README
+  ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+  ![Redis](https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white)
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **Tool**
 
-## Name
-Choose a self-explaining name for your project.
+  ![GitLab](https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white)
+  ![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)
+  <br><br>
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+<div id="5"></div>
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 📜 산출물
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+**아키텍쳐 구조도**
+![아키텍쳐](images/Architecture.png)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+**ERD**
+![ERD](images/erd.png)
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+<br><br>
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+<div id="6"></div>
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### 🖥️ 주요 기능 화면
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+---
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
 
-## License
-For open source projects, say how it is licensed.
+[프론트 엔드 화면들이 작동하는 것을 GIF로 나열하면 좋을 거 같음!]
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+<br><br>
+
+<div id="7"></div>
+
+### 팀원 소개
+
+---
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="" width="100px" height="100px" style="border-radius:50%;" alt="김민주"/><br />
+      <b>김민주</b><br />
+      <i>Backend</i>
+    </td>
+    <td align="center">
+      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채철영"/><br />
+      <b>채철영</b><br />
+      <i>Backend</i>
+    </td>
+    <td align="center">
+      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="송민서"/><br />
+      <b>송민서</b><br />
+      <i>Backend, Infra</i>
+    </td>
+    <td align="center">
+      <img src="./g" width="100px" height="100px" style="border-radius:50%;" alt="박준걸"/><br />
+      <b>박준걸</b><br />
+      <i>Backend, Infra</i>
+    </td>
+    <td align="center">
+      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채승"/><br />
+      <b>채승오</b><br />
+      <i>Backend</i>
+    </td>
+  </tr>
+</table>
