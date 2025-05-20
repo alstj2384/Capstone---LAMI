@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_DIR = "/home/controller/deploy"
+        DEPLOY_DIR = "/opt/capstone/deploy"
         GIT_BRANCH = "main"
         DOCKER_TAG = "latest"
     }
