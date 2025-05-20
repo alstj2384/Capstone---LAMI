@@ -1,5 +1,5 @@
 // url.js
-export const server = "http://220.67.216.23:8080";
+export const server = "http://10.116.64.23:80";
 
 export const endpoints = {
   signup: `${server}/api/public/members/join`,
