@@ -1,0 +1,105 @@
+.top-nav {
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: row; /* 가로 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  gap: 150px;
+  background-color: white;
+  padding: 10px 20px; /* 이전 수정에서 높이를 조정한 패딩 유지 */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  flex-wrap: nowrap; /* 줄바꿈 방지 */
+}
+
+.nav-icon {
+  width: 120px;
+  height: 40px; /* 높이를 이전 수정값(40px)으로 설정 */
+  margin-left: 20px;
+}
+
+.topnav-text {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  color: #494949;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  text-decoration: none;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.nav-button {
+  text-decoration: none; /* Remove underline */
+  color: #000; /* Black text */
+  border-radius: 5px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.nav-button:active {
+  background-color: #e0e0e0;
+}
+
+.topnav-text.flex {
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 32px; /* w-8 */
+  height: 32px; /* h-8 */
+  border-radius: 50%; /* rounded-full */
+  object-fit: cover; /* 이미지가 원형 안에 잘 맞도록 */
+}
+
+/* 반응형: 화면 너비 1200px 이하 */
+@media (max-width: 1200px) {
+  .top-nav {
+    gap: 100px; /* 간격 축소 */
+  }
+  .topnav-text {
+    font-size: 16px; /* 글씨 크기 축소 */
+    gap: 12px;
+  }
+}
+
+/* 반응형: 화면 너비 992px 이하 */
+@media (max-width: 992px) {
+  .top-nav {
+    gap: 50px; /* 간격 더 축소 */
+  }
+  .topnav-text {
+    font-size: 14px; /* 글씨 크기 더 축소 */
+    gap: 10px;
+  }
+  .nav-icon {
+    width: 100px; /* 로고 크기 축소 */
+    height: 35px;
+  }
+}
+
+/* 반응형: 화면 너비 768px 이하 */
+@media (max-width: 768px) {
+  .top-nav {
+    gap: 20px; /* 간격 최소화 */
+    padding: 8px 15px;
+  }
+  .topnav-text {
+    font-size: 12px; /* 글씨 크기 최소화 */
+    gap: 8px;
+  }
+  .nav-icon {
+    width: 80px; /* 로고 더 축소 */
+    height: 30px;
+    margin-left: 10px;
+  }
+  .profile-pic {
+    width: 28px; /* 프로필 사진 축소 */
+    height: 28px;
+  }
+}

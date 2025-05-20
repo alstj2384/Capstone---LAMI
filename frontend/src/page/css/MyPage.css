@@ -1,0 +1,273 @@
+.mypage-page {
+    min-height: 100vh;
+    background-color: #f9fafb; /* bg-gray-50 */
+    display: flex;
+    flex-direction: column;
+    padding-top: 5rem; /* pt-20 */
+    padding-bottom: 2rem; /* pb-8 */
+    overflow-y: auto; /* 스크롤 활성화 */
+}
+
+/* 스크롤바 스타일링 */
+.mypage-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mypage-page::-webkit-scrollbar-thumb {
+    background-color: #22c55e; /* green-500 */
+    border-radius: 4px;
+}
+
+.mypage-page::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* gray-100 */
+}
+
+.mypage-container {
+    width: 100%;
+    max-width: 1280px; /* max-w-6xl */
+    margin: 0 auto;
+    padding: 1rem; /* p-4 */
+    flex-grow: 1; /* 컨테이너가 콘텐츠에 맞게 확장 */
+}
+
+/* 상단: 프로필 및 암기법 */
+.mypage-header {
+    display: flex;
+    gap: 1rem; /* space-x-4 */
+    margin-bottom: 2rem; /* mb-8 */
+}
+
+/* 프로필 섹션 */
+.mypage-profile-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* space-x-6 */
+    padding: 1.5rem; /* p-6 */
+    background-color: #ffffff; /* bg-white */
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid #22c55e; /* border-green-500 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mypage-profile-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+}
+
+.mypage-profile-pic {
+    width: 96px; /* w-24 */
+    height: 96px; /* h-24 */
+    border-radius: 50%; /* rounded-full */
+    object-fit: cover;
+    border: 2px solid #22c55e; /* border-2 border-green-500 */
+}
+
+.mypage-user-info {
+    flex: 1;
+}
+
+.mypage-user-name {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* text-gray-900 */
+    margin-bottom: 0.25rem; /* mb-1 */
+}
+
+.mypage-user-email {
+    font-size: 1rem; /* text-base */
+    color: #6b7280; /* text-gray-500 */
+    margin-bottom: 0.25rem; /* mb-1 */
+}
+
+.mypage-user-stats {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151; /* text-gray-700 */
+}
+
+/* 암기법 섹션 */
+.mypage-memo-section {
+    flex: 1;
+    background-color: #ffffff; /* bg-white */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    border: 1px solid #22c55e; /* border-green-500 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mypage-memo-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+}
+
+/* 중단: 오늘의 복습 및 내가 생성한 문제집 */
+.mypage-main {
+    display: flex;
+    gap: 1rem; /* space-x-4 */
+    margin-bottom: 2rem; /* mb-8 */
+}
+
+/* 오늘의 복습 */
+.mypage-today-review {
+    flex: 1; /* flex-1 */
+    background-color: #ffffff; /* bg-white */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    border: 1px solid #22c55e; /* border-green-500 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mypage-today-review:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+}
+
+.mypage-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* space-y-2 */
+}
+
+.mypage-review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem; /* p-3 */
+    border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
+    transition: background-color 0.3s ease;
+}
+
+.mypage-review-item:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+.mypage-review-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage-review-title {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #374151; /* text-gray-700 */
+}
+
+.mypage-review-date {
+    font-size: 0.75rem; /* text-xs */
+    color: #6b7280; /* text-gray-500 */
+}
+
+.mypage-review-button {
+    padding: 0.25rem 0.75rem; /* px-3 py-1 */
+    background-color: #22c55e; /* bg-green-500 */
+    color: #ffffff; /* text-white */
+    border-radius: 0.375rem; /* rounded-md */
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.mypage-review-button:hover {
+    background-color: #16a34a; /* hover:bg-green-600 */
+    transform: scale(1.05); /* hover:scale-105 */
+}
+
+/* 내가 생성한 문제집 */
+.mypage-problem-section {
+    flex: 2; /* flex-2 */
+    background-color: #ffffff; /* bg-white */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    border: 1px solid #22c55e; /* border-green-500 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mypage-problem-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+}
+
+.mypage-problem-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* space-y-2 */
+    max-height: 300px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 스크롤 활성화 */
+}
+
+.mypage-problem-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mypage-problem-list::-webkit-scrollbar-thumb {
+    background-color: #22c55e; /* green-500 */
+    border-radius: 3px;
+}
+
+.mypage-problem-list::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* gray-100 */
+}
+
+.mypage-problem-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem; /* p-3 */
+    border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
+    transition: background-color 0.3s ease;
+}
+
+.mypage-problem-item:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+.mypage-problem-title {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #374151; /* text-gray-700 */
+}
+
+.mypage-problem-date {
+    font-size: 0.75rem; /* text-xs */
+    color: #6b7280; /* text-gray-500 */
+}
+
+/* 하단: 접속시간 및 챌린지 */
+.mypage-footer {
+    display: flex;
+    gap: 1rem; /* space-x-4 */
+}
+
+.mypage-footer .mypage-section {
+    flex: 1;
+    text-align: center;
+    background-color: #ffffff; /* bg-white */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    border: 1px solid #22c55e; /* border-green-500 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mypage-footer .mypage-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* hover:shadow-lg */
+}
+
+.mypage-section-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: #374151; /* text-gray-700 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.mypage-section-content {
+    font-size: 1rem; /* text-base */
+    color: #1f2937; /* text-gray-800 */
+}

@@ -1,0 +1,72 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+.home-container {
+  height: 100vh; /* 화면 전체 높이 */
+  width: 100%; /* 화면 너비 */
+  background-image: url('../assets/LAMI_background.svg');
+  background-size: cover;
+  background-position: bottom;
+  display: flex;
+  justify-content: center; /* 좌우 중앙 정렬 */
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden; /* 스크롤 방지 */
+
+  padding-top: 190px; /* 여백 추가 */
+}
+
+
+.home-content {
+  width: 100%; /* 화면 너비에 맞게 크기 설정 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  padding: 20px; /* 여백 설정 */
+  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 좌우 중앙 정렬 */
+  /* 상하 위치는 margin-top으로 조절 가능 */
+  /* 예: margin-top: 20vh; (화면 높이의 20% 아래로 이동) */
+  /* 예: margin-top: -10vh; (화면 높이의 10% 위로 이동) */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 줄바꿈 없이 가로로 스크롤 되지 않도록 */
+  margin-top: -10vh; /* 기본값: 약간 위쪽으로 이동 */
+}
+
+/* 텍스트 스타일 */
+.home-content h1 {
+  font-size: 3vw; /* 화면 너비에 비례한 텍스트 크기 */
+  font-weight: 700;
+  color: #000;
+}
+
+.home-content p {
+  font-size: 2vw; /* 화면 너비에 비례한 텍스트 크기 */
+  font-weight: 400;
+  color: #666;
+}
+
+/* 반응형 디자인 (모바일) */
+@media (max-width: 768px) {
+  .home-container {
+    height: calc(100vh - 100px); /* 화면 크기에 맞는 높이 조정 */
+    background-size: contain; /* 배경 이미지를 화면에 맞게 축소 */
+    background-repeat: no-repeat;
+    margin-top: 50px; /* 여백 조정 */
+  }
+
+  .home-content {
+    padding: 10px; /* 모바일에 맞는 여백 조정 */
+    margin-top: -15vw; /* 모바일에서도 약간 위쪽으로 이동 */
+    /* 상하 위치 조절 예: margin-top: 10vw; */
+  }
+
+  .home-content h1 {
+    font-size: 6vw; /* 모바일 화면에서 텍스트 크기 비율 조정 */
+  }
+
+  .home-content p {
+    font-size: 4vw; /* 모바일 화면에서 텍스트 크기 비율 조정 */
+  }
+}
