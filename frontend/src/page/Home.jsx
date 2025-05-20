@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 임포트
 import "../page/Home.css";
 
 const Home = () => {
+  const navigate = useNavigate(); // 네비게이션 훅 사용
+
   return (
     <div className="home-container">
       <div className="home-content">

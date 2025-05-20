@@ -8,9 +8,12 @@
     overflow-y: auto; /* 스크롤 활성화 */
 }
 
-/* 스크롤바 스타일링 */
-.signup-page::-webkit-scrollbar {
-    width: 8px;
+.signup-page {
+  height: 100vh; /* 뷰포트 높이를 기준으로 설정 */
+  overflow-y: auto; /* 수직 스크롤 활성화 */
+  background-color: #ffffff; /* 예시 배경색 */
+  padding: 120px; /* 위아래 여유 공간 추가 */
+  box-sizing: border-box;
 }
 
 .signup-page::-webkit-scrollbar-thumb {

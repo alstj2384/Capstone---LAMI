@@ -1,39 +1,30 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { server, endpoints } from "../url"; // server 변수 사용
 import axios from "axios";
 import "./css/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .post("https://10.116.74.23:3192/api/public/members/join")
-      .then((res) => {
-        console.log(res.data); // 서버에서 받은 데이터
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
-  // 상태 관리
   const [formData, setFormData] = useState({
-    username: "",
+    userId: "",
     password: "",
     confirmPassword: "",
-    emailLocal: "", // 이메일 로컬 부분 (예: user)
-    emailDomain: "hanmail.com", // 이메일 도메인 (예: hanmail.com)
-    customDomain: "", // 직접 입력한 도메인
+    name: "",
+    emailLocal: "",
+    emailDomain: "hanmail.com",
+    customDomain: "",
+    nickname: "",
+    memorizationMethod: "AssociationMethod",
   });
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(null);
-  const [usernameMessage, setUsernameMessage] = useState("");
+
+  const [isUserIdAvailable, setIsUserIdAvailable] = useState(null);
+  const [userIdMessage, setUserIdMessage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
 
-  // 이메일 도메인 옵션
   const emailDomains = [
     "hanmail.com",
     "google.com",
@@ -41,72 +32,39 @@ const Signup = () => {
     "직접 입력하기",
   ];
 
-  // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "username") {
-      setIsUsernameAvailable(null); // 아이디 변경 시 중복 확인 상태 초기화
-      setUsernameMessage("");
+    if (name === "userId") {
+      setIsUserIdAvailable(null);
+      setUserIdMessage("");
     }
+    
 
-    // 비밀번호 확인 메시지 업데이트
     if (name === "password" || name === "confirmPassword") {
+      const newPassword = name === "password" ? value : formData.password;
+      const newConfirmPassword =
+        name === "confirmPassword" ? value : formData.confirmPassword;
+
       setPasswordMatchError(
-        formData.password !== value &&
-          name === "confirmPassword" &&
-          value !== ""
+        newPassword !== newConfirmPassword && newConfirmPassword !== ""
       );
-      if (name === "password") {
-        setPasswordMatchError(
-          value !== formData.confirmPassword && formData.confirmPassword !== ""
-        );
-      }
     }
   };
 
-  // 아이디 중복확인 핸들러
-  const handleCheckUsername = async () => {
-    const { username } = formData;
-    if (!username) {
-      setUsernameMessage("아이디를 입력해주세요.");
-      setIsUsernameAvailable(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "https://your-api-endpoint/check-username",
-        { username }
-      );
-      if (response.data.status === 200) {
-        setUsernameMessage("사용 가능한 아이디입니다.");
-        setIsUsernameAvailable(true);
-      } else {
-        setUsernameMessage(
-          response.data.message || "이미 사용 중인 아이디입니다."
-        );
-        setIsUsernameAvailable(false);
-      }
-    } catch (err) {
-      setUsernameMessage(
-        err.response?.data?.message || "중복 확인 중 오류가 발생했습니다."
-      );
-      setIsUsernameAvailable(false);
-    }
-  };
-
-  // 회원가입 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {
-      username,
+      userId,
       password,
       confirmPassword,
+      name,
       emailLocal,
       emailDomain,
       customDomain,
+      nickname,
+      memorizationMethod,
     } = formData;
 
     // 이메일 조합
@@ -117,26 +75,25 @@ const Signup = () => {
 
     // 입력 검증
     if (
-      !username ||
+      !userId ||
       !password ||
       !confirmPassword ||
+      !name ||
       !emailLocal ||
-      (emailDomain === "직접 입력하기" && !customDomain)
+      !nickname ||
+      !memorizationMethod
     ) {
       setError("모든 필드를 입력해주세요.");
       setSuccess("");
       return;
     }
-    if (isUsernameAvailable === null) {
-      setError("아이디 중복확인을 해주세요.");
+
+    if (emailDomain === "직접 입력하기" && !customDomain) {
+      setError("이메일 도메인을 입력해주세요.");
       setSuccess("");
       return;
     }
-    if (!isUsernameAvailable) {
-      setError("사용 가능한 아이디로 변경해주세요.");
-      setSuccess("");
-      return;
-    }
+
     if (password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.");
       setSuccess("");
@@ -144,7 +101,6 @@ const Signup = () => {
       return;
     }
 
-    // 이메일 형식 검증
     const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
     if (!emailRegex.test(email)) {
       setError("유효한 이메일 형식을 입력해주세요.");
@@ -153,22 +109,19 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post("https://your-api-endpoint/signup", {
-        username,
+      const response = await axios.post(`${server}/api/public/members/join`, {
+        userId,
         password,
+        name,
         email,
+        nickname,
+        memorizationMethod,
       });
-      if (response.data.status === 200) {
-        setSuccess(response.data.message); // "잘됐습니다~~~~"
+
+      if (response.status === 200 && response.data?.status === 200) {
+        setSuccess(response.data.message);
         setError("");
-        // userid 저장 (예: localStorage)
-        localStorage.setItem("userid", response.data.data.userid);
-        console.log("회원가입 데이터:", {
-          username,
-          email,
-          userid: response.data.data.userid,
-        });
-        // 성공 메시지 표시 후 로그인 페이지로 이동
+        localStorage.setItem("userId", response.data.data.userId);
         setTimeout(() => {
           navigate("/login");
         }, 1000);
@@ -182,40 +135,62 @@ const Signup = () => {
     }
   };
 
+  //중복확인 함수
+  const handleCheckUserId = async () => {
+    const { userId } = formData;
+
+    if (!userId.trim()) {
+      setUserIdMessage("아이디를 입력해주세요.");
+      setIsUserIdAvailable(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(endpoints.validateUserId(userId));
+      if (response.status === 200 && response.data.status === 200) {
+        setUserIdMessage("사용 가능한 아이디입니다.");
+        setIsUserIdAvailable(true);
+      } else {
+        setUserIdMessage(response.data.message || "아이디 확인 실패");
+        setIsUserIdAvailable(false);
+      }
+    } catch (err) {
+      if (err.response?.status === 409) {
+        setUserIdMessage("이미 사용중인 아이디입니다.");
+      } else {
+        setUserIdMessage("아이디 확인 중 오류가 발생했습니다.");
+      }
+      setIsUserIdAvailable(false);
+    }
+  };
+
   return (
     <div className="signup-page">
       <div className="signup-container">
         <h1 className="signup-title">회원가입</h1>
         <form onSubmit={handleSubmit}>
-          {/* 아이디 입력 및 중복확인 */}
+          {/* 아이디 입력 */}
           <div className="signup-field">
             <label className="signup-label">아이디</label>
             <div className="signup-username-group">
               <input
                 type="text"
-                name="username"
-                value={formData.username}
+                name="userId"
+                value={formData.userId}
                 onChange={handleChange}
                 placeholder="아이디를 입력하세요."
                 className="signup-input"
               />
-              <button
-                type="button"
-                onClick={handleCheckUsername}
-                className="px-3 py-2 bg-blue-500 text-white rounded-md border-none cursor-pointer text-xs font-semibold transition-colors whitespace-nowrap hover:bg-blue-600 opacity-100"
-              >
-                중복확인
-              </button>
             </div>
-            {usernameMessage && (
+            {userIdMessage && (
               <p
                 className={`signup-message ${
-                  isUsernameAvailable
+                  isUserIdAvailable
                     ? "signup-message-success"
                     : "signup-message-error"
                 }`}
               >
-                {usernameMessage}
+                {userIdMessage}
               </p>
             )}
           </div>
@@ -249,6 +224,19 @@ const Signup = () => {
                 비밀번호가 같지 않습니다.
               </p>
             )}
+          </div>
+
+          {/* 이름 입력 */}
+          <div className="signup-field">
+            <label className="signup-label">이름</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="이름을 입력하세요."
+              className="signup-input"
+            />
           </div>
 
           {/* 이메일 입력 */}
@@ -288,6 +276,33 @@ const Signup = () => {
                 </select>
               )}
             </div>
+          </div>
+
+          {/* 닉네임 입력 */}
+          <div className="signup-field">
+            <label className="signup-label">닉네임</label>
+            <input
+              type="text"
+              name="nickname"
+              value={formData.nickname}
+              onChange={handleChange}
+              placeholder="닉네임을 입력하세요."
+              className="signup-input"
+            />
+          </div>
+
+          {/* 암기 방법 선택 */}
+          <div className="signup-field">
+            <label className="signup-label">암기 방법</label>
+            <select
+              name="memorizationMethod"
+              value={formData.memorizationMethod}
+              onChange={handleChange}
+              className="signup-input"
+            >
+              <option value="AssociationMethod">연상법</option>
+              <option value="OtherMethod">기타</option>
+            </select>
           </div>
 
           {/* 성공/에러 메시지 */}

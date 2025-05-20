@@ -1,147 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SquirrelIcon from "../assets/DALAMI_2.svg"; // 아이콘 임포트 (실제 경로로 대체 필요)
-import "./css/Explore.css"; // CSS 파일 임포트
+import axios from "axios";
+import SquirrelIcon from "../assets/DALAMI_2.svg";
+import { endpoints } from "../url";
+import "./css/Explore.css";
 
 const Explore = () => {
-  // 페이지 이동을 위한 useNavigate
   const navigate = useNavigate();
 
-  // 더미 데이터 (난이도와 userId 속성 포함)
-  const dummyData = [
-    {
-      id: 1,
-      title: "정보처리기사 2회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 2,
-      title: "정보처리기사 3회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-    {
-      id: 3,
-      title: "정보처리기사 4회",
-      date: "25.04.01. 생성",
-      difficulty: "낮음",
-      userId: "user789",
-    },
-    {
-      id: 4,
-      title: "정보처리기사 5회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 5,
-      title: "정보처리기사 6회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-    {
-      id: 6,
-      title: "정보처리기사 7회",
-      date: "25.04.01. 생성",
-      difficulty: "낮음",
-      userId: "user789",
-    },
-    {
-      id: 7,
-      title: "정보처리기사 8회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 8,
-      title: "정보처리기사 9회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-    {
-      id: 9,
-      title: "정보처리기사 10회",
-      date: "25.04.01. 생성",
-      difficulty: "낮음",
-      userId: "user789",
-    },
-    {
-      id: 10,
-      title: "정보처리기사 11회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 11,
-      title: "정보처리기사 12회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-    {
-      id: 12,
-      title: "정보처리기사 13회",
-      date: "25.04.01. 생성",
-      difficulty: "낮음",
-      userId: "user789",
-    },
-    {
-      id: 13,
-      title: "정보처리기사 14회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 14,
-      title: "정보처리기사 15회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-    {
-      id: 15,
-      title: "정보처리기사 16회",
-      date: "25.04.01. 생성",
-      difficulty: "낮음",
-      userId: "user789",
-    },
-    {
-      id: 16,
-      title: "정보처리기사 17회",
-      date: "25.04.01. 생성",
-      difficulty: "높음",
-      userId: "user123",
-    },
-    {
-      id: 17,
-      title: "정보처리기사 18회",
-      date: "25.04.01. 생성",
-      difficulty: "중간",
-      userId: "user456",
-    },
-  ];
-
-  // 현재 사용자 ID (고정값으로 설정, 실제로는 로그인 정보에서 가져올 수 있음)
-  const currentUserId = "user123";
-
-  // 검색 및 필터링 상태
+  const [quizList, setQuizList] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // 검색 및 난이도 필터링 적용
-  const filteredItems = dummyData.filter((item) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      if (!token || !userId) return;
+
+      try {
+        const userRes = await axios.get(endpoints.getUserInfo, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-User-ID": userId,
+          },
+        });
+        setCurrentUserId(userRes.data.data.userId);
+
+        const quizRes = await axios.get(endpoints.getPublicQuizzes, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-User-ID": userId,
+          },
+        });
+        setQuizList(quizRes.data.data);
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -152,7 +57,6 @@ const Explore = () => {
     return matchesSearch && matchesDifficulty && matchesUser;
   });
 
-  // 페이지네이션
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredItems.slice(
@@ -160,7 +64,6 @@ const Explore = () => {
     startIndex + itemsPerPage
   );
 
-  // 페이지네이션 버튼 생성
   const pageNumbers = [];
   const maxPagesToShow = 5;
   const startPage = Math.max(1, currentPage - 2);
@@ -191,17 +94,14 @@ const Explore = () => {
     setCurrentPage(1);
   };
 
-  // "풀어보기" 버튼 클릭 시 Solve 페이지로 이동
-  const handleSolve = () => {
-    navigate("/solve");
+  const handleSolve = (quizId) => {
+    navigate(`/solve/${quizId}`);
   };
 
   return (
     <div className="explore-container">
-      {/* 페이지 제목 */}
       <h1 className="explore-title">문제집 둘러보기</h1>
 
-      {/* 검색 및 필터 영역 */}
       <div className="explore-filter-container">
         <div className="explore-input-group">
           <div className="explore-search-wrapper">
@@ -228,36 +128,19 @@ const Explore = () => {
         <div className="explore-right-group">
           <div className="explore-button-group">
             <span className="explore-filter-label">난이도</span>
-            <button
-              onClick={() => handleDifficultyChange("높음")}
-              className={`explore-filter-button ${
-                selectedDifficulty === "높음"
-                  ? "explore-filter-button-active"
-                  : ""
-              }`}
-            >
-              높음
-            </button>
-            <button
-              onClick={() => handleDifficultyChange("중간")}
-              className={`explore-filter-button ${
-                selectedDifficulty === "중간"
-                  ? "explore-filter-button-active"
-                  : ""
-              }`}
-            >
-              중간
-            </button>
-            <button
-              onClick={() => handleDifficultyChange("낮음")}
-              className={`explore-filter-button ${
-                selectedDifficulty === "낮음"
-                  ? "explore-filter-button-active"
-                  : ""
-              }`}
-            >
-              낮음
-            </button>
+            {["높음", "중간", "낮음"].map((level) => (
+              <button
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={`explore-filter-button ${
+                  selectedDifficulty === level
+                    ? "explore-filter-button-active"
+                    : ""
+                }`}
+              >
+                {level}
+              </button>
+            ))}
           </div>
           <div className="explore-checkbox-group">
             <input
@@ -274,7 +157,6 @@ const Explore = () => {
         </div>
       </div>
 
-      {/* 카드 목록 */}
       <div className="explore-grid">
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
@@ -286,7 +168,10 @@ const Explore = () => {
               />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">{item.date}</p>
-              <button onClick={handleSolve} className="explore-card-button">
+              <button
+                onClick={() => handleSolve(item.id)}
+                className="explore-card-button"
+              >
                 풀어보기
               </button>
             </div>
@@ -298,7 +183,6 @@ const Explore = () => {
         )}
       </div>
 
-      {/* 페이지네이션 */}
       {currentItems.length > 0 && (
         <div className="explore-pagination">
           <button

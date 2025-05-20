@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import "./css/Create.css"; // CSS 파일 임포트
+import axios from "axios";
+import { endpoints } from "../url"; // 엔드포인트 정의 필요
+import "./css/Create.css";
 
 const Create = () => {
-  // 상태 관리
   const [title, setTitle] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [file, setFile] = useState(null);
@@ -11,15 +12,11 @@ const Create = () => {
   const [trueFalseCount, setTrueFalseCount] = useState(0);
   const [shortAnswerCount, setShortAnswerCount] = useState(0);
   const [isAccuracyConfirmed, setIsAccuracyConfirmed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 페이지 이동을 위한 useNavigate
   const navigate = useNavigate();
-
-  // 파일 입력 참조
   const fileInputRef = useRef(null);
 
-  // 드래그 앤 드롭 이벤트 처리
   const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,7 +37,6 @@ const Create = () => {
     }
   };
 
-  // 파일 선택 이벤트 처리
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (
@@ -54,48 +50,53 @@ const Create = () => {
     }
   };
 
-  // 파일 입력창 열기
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
-  // 문제 수 검증
   const totalQuestions =
     multipleChoiceCount + trueFalseCount + shortAnswerCount;
   const isTotalQuestionsValid = totalQuestions === 10;
 
-  // 폼 제출 처리
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 입력 검증
-    if (!title) {
-      alert("문제집 이름을 입력해주세요.");
-      return;
-    }
-    if (!difficulty) {
-      alert("난이도를 선택해주세요.");
-      return;
-    }
-    if (!file) {
-      alert("PDF 파일을 업로드해주세요.");
-      return;
-    }
-    if (!isTotalQuestionsValid) {
-      alert("문제 수는 총 10개여야 합니다.");
-      return;
-    }
-    if (!isAccuracyConfirmed) {
-      alert("정답 정확성 확인 체크박스를 선택해주세요.");
-      return;
-    }
+    if (!title) return alert("문제집 이름을 입력해주세요.");
+    if (!difficulty) return alert("난이도를 선택해주세요.");
+    if (!file) return alert("PDF 파일을 업로드해주세요.");
+    if (!isTotalQuestionsValid) return alert("문제 수는 총 10개여야 합니다.");
+    if (!isAccuracyConfirmed)
+      return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
-    // 로딩 상태 표시
+    const formData = new FormData();
+    formData.append("pdf", file);
+    formData.append("title", title);
+    formData.append("isPublic", "True");
+    formData.append("script", `${title} 문제집 설명입니다.`);
+    formData.append("difficulty", difficulty);
+    formData.append("multipleChoiceAmount", multipleChoiceCount.toString());
+    formData.append("trueFalseAmount", trueFalseCount.toString());
+    formData.append("shortAnswerAmount", shortAnswerCount.toString());
+
     setIsLoading(true);
-    // 페이지 이동
-    setTimeout(() => {
-      navigate("/share-complete");
+
+    try {
+      const response = await axios.post(endpoints.createProblemSet, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 201 && response.data.status === 201) {
+        alert("문제집이 성공적으로 생성되었습니다!");
+        navigate("/share-complete");
+      } else {
+        alert(response.data.message || "문제집 생성 실패");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
+    } finally {
       setIsLoading(false);
-    }, 500); // 0.5초 로딩 후 이동 (사용자 경험 개선)
+    }
   };
 
   return (
@@ -124,20 +125,6 @@ const Create = () => {
               onClick={handleFileClick}
               className="create-file-upload"
             >
-              <svg
-                className="create-file-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                ></path>
-              </svg>
               <p className="create-file-text">
                 {file ? file.name : "Link or drag and drop PDF (max. 3MB)"}
               </p>
@@ -160,9 +147,9 @@ const Create = () => {
               className="create-select"
             >
               <option value="">선택하세요</option>
-              <option value="상">상</option>
-              <option value="중">중</option>
-              <option value="하">하</option>
+              <option value="1">상</option>
+              <option value="2">중</option>
+              <option value="3">하</option>
             </select>
           </div>
 

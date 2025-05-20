@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { endpoints } from "../url"; // url.js에서 엔드포인트 가져오기
-import LogoImg from "../assets/LAMI_icon.svg"; // SVG 아이콘 임포트
+import { server, endpoints } from "../url";
+import LogoImg from "../assets/LAMI_icon.svg";
 
 export default function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -16,20 +16,20 @@ export default function Login({ onLogin }) {
 
     try {
       const response = await axios.post(endpoints.login, {
-        username,
+        userId,
         password,
       });
 
-      // 성공 응답 처리
-      const { name, profilePic } = response.data;
-      onLogin({ name, profilePic });
-      navigate("/"); // 홈으로 이동
+      const { memberId } = response.data;
+
+      // 로그인 성공 시 처리
+      onLogin({ memberId });
+      localStorage.setItem("memberId", memberId);
+      navigate("/");
     } catch (err) {
-      // 에러 처리
-      setError(
-        err.response?.data?.message ||
-          "아이디 또는 비밀번호가 올바르지 않습니다."
-      );
+      const errorMessage =
+        err.response?.data?.message || "아이디 또는 비밀번호가 올바르지 않습니다.";
+      setError(errorMessage);
     }
   };
 
@@ -46,8 +46,8 @@ export default function Login({ onLogin }) {
           <input
             type="text"
             placeholder="아이디"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <input
@@ -57,7 +57,9 @@ export default function Login({ onLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
           <button
             type="submit"
             className="w-full bg-primaryGreen hover:bg-primaryGreen text-white py-2 rounded-md font-medium transition duration-200"
@@ -75,4 +77,3 @@ export default function Login({ onLogin }) {
     </div>
   );
 }
- 
