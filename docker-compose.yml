@@ -1,7 +1,7 @@
 services:
   frontend:
     image: frontend
-    environment:
+    # environment:
     networks:
       - lami-backend
 
