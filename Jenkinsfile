@@ -138,21 +138,8 @@ pipeline {
                 script {
                     sh """
                     echo "Cleaning up old Docker images..."
-
-                    docker images 
-                        --filter "dangling=false" 
-                        --format "{{.ID}}:{{.Tag}}" 
-                        | grep -v ":${DOCKER_TAG}" 
-                        | awk -F ':' '{print \$1}' 
-                        | xargs -r docker rmi
-                    """
-                    /**
-                     dangling : 태그가 없는 이미지는 제외
-                     --format "{{.ID}}:{{.Tag}}" : id:tag 형태로 보이도록 지정                    
-                     | grep -v : 현재 사용중인 태그가 아닌 이미지만 선택
-                     | awk -F ':' '{print \$1}' : :로 나눈 것 중 앞부분을 가져옴(삭제할 이미지 ID)
-                     | xargs -r docker rmi: 이미지 ID들을 하나씩 docker rmi 명령으로 삭제
-                    **/
+                    
+                    docker images prune -a
                 }
             }
         }
