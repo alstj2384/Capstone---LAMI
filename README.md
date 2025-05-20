@@ -162,7 +162,7 @@
     <td align="center">
       <img src="" width="100px" height="100px" style="border-radius:50%;" alt="김민주"/><br />
       <b>김민주</b><br />
-      <i>Backend</i>
+      <i>Frontend</i>
     </td>
     <td align="center">
       <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채철영"/><br />
