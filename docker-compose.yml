@@ -36,7 +36,7 @@ services:
       - DATABASE_PASSWORD=${MYSQL_PASSWORD}
 
       - REDIS_PORT=6379
-      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_HOST=http://redis
       - REDIS_DATABASE=0
 
       - JWT_SECRET=${JWT_SECRET}
