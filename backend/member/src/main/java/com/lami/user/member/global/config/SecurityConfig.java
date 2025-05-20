@@ -3,10 +3,8 @@ package com.lami.user.member.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lami.user.member.application.service.MemberDetailService;
 import com.lami.user.member.application.service.RedisService;
-import com.lami.user.member.infrastructure.security.JwtAuthenticationFilter;
-import com.lami.user.member.infrastructure.security.JwtCookieUtil;
-import com.lami.user.member.infrastructure.security.JwtTokenProvider;
-import com.lami.user.member.infrastructure.security.LoginFilter;
+import com.lami.user.member.infrastructure.security.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/public/member/login", "/api/public/**", "/swagger-ui/**", "/v3/**").permitAll()
                  .anyRequest().authenticated()
                 )
+               // .addFilterBefore(new XUserIdAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
