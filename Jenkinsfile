@@ -38,6 +38,17 @@ pipeline {
         stage('Show Dockerfiles') {
             steps {
                 script {
+                    
+                    def dockerfilePath = "frontend/Dockerfile"
+                    def dockerfileExists = fileExists(dockerfilePath)
+
+                    if (dockerfileExists) {
+                        echo "Dockerfile for frontend exists, displaying content."
+                        sh "cat ${dockerfilePath}"
+                    } else {
+                        echo "Dockerfile for frontend does not exist, skipping."
+                    }
+
                     def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def dockerfilePath = "backend/${service}/Dockerfile"
@@ -73,6 +84,22 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
+
+                    def image = "frontend:${DOCKER_TAG}"
+                    def dockerfilePath = "frontend/Dockerfile"
+
+                    // Check if Dockerfile exists
+                    def dockerfileExists = fileExists(dockerfilePath)
+
+                    if (dockerfileExists) {
+                        echo "Dockerfile for frontend exists, proceeding with build."
+                            sh """
+                            docker build -t ${image} -f ${dockerfilePath} frontend
+                            """
+                    } else {
+                        echo "Dockerfile for frontend does not exist, skipping."
+                    }
+
                     def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def image = "${service}:${DOCKER_TAG}"
