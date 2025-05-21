@@ -1,4 +1,7 @@
-CREATE TABLE members (
+CREATE DATABASE IF NOT EXISTS lami;
+USE lami;
+
+CREATE TABLE IF NOT EXISTS members (
     member_id BIGINT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -16,7 +19,7 @@ CREATE TABLE members (
     PRIMARY KEY (member_id)
 );
 
-CREATE TABLE work_book (
+CREATE TABLE IF NOT EXISTS work_book (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     title VARCHAR(255),
@@ -33,7 +36,7 @@ CREATE TABLE work_book (
     FOREIGN KEY (user_id) REFERENCES members(member_id)
 );
 
-CREATE TABLE problem (
+CREATE TABLE IF NOT EXISTS problem (
     id BIGINT NOT NULL AUTO_INCREMENT,
     workbook_id BIGINT NOT NULL,
     question VARCHAR(255),
@@ -45,7 +48,7 @@ CREATE TABLE problem (
     FOREIGN KEY (workbook_id) REFERENCES work_book(id)
 );
 
-CREATE TABLE Grading (
+CREATE TABLE IF NOT EXISTS Grading (
     id BIGINT NOT NULL AUTO_INCREMENT,
     quiz_set_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -56,7 +59,7 @@ CREATE TABLE Grading (
     FOREIGN KEY (quiz_set_id) REFERENCES work_book(id)
 );
 
-CREATE TABLE QuizGrading (
+CREATE TABLE IF NOT EXISTS QuizGrading (
     id BIGINT NOT NULL AUTO_INCREMENT,
     quiz_id BIGINT NOT NULL,
     submitted_answer TEXT NOT NULL,
@@ -69,7 +72,7 @@ CREATE TABLE QuizGrading (
     FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL
 );
 
-CREATE TABLE Review (
+CREATE TABLE IF NOT EXISTS Review (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     grading_id BIGINT DEFAULT NULL,
