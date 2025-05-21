@@ -43,7 +43,7 @@ services:
       - DATABASE_PASSWORD=${MYSQL_PASSWORD}
 
       - REDIS_PORT=6379
-      - REDIS_HOST=http://redis
+      - REDIS_HOST=redis
       - REDIS_DATABASE=0
 
       - JWT_SECRET=${JWT_SECRET}
@@ -69,9 +69,7 @@ services:
       - DATABASE_USERNAME=${MYSQL_USERNAME}
       - DATABASE_PASSWORD=${MYSQL_PASSWORD}
       - WORKBOOK_SERVER_URL=http://workbook:8080/api
-      - MEMBER_SERVER_URL=http://member:8080/api
-      - AI_SERVER_URL=http://ai:8000/api
-
+      - GRADING_SERVER_URL=http://grading:3000/api
     networks:
       - lami-backend
     depends_on:
@@ -86,7 +84,8 @@ services:
       - DATABASE_USERNAME=${MYSQL_USERNAME}
       - DATABASE_PASSWORD=${MYSQL_PASSWORD}
       - WORKBOOK_SERVER_URL=http://workbook:8080/api
-      - GRADING_SERVER_URL=http://grading:3000/api
+      - MEMBER_SERVER_URL=http://member:8080/api
+      - AI_SERVER_URL=http://ai:8000/api
     networks:
       - lami-backend
     depends_on:
