@@ -1,6 +1,4 @@
-USE lami;
-
-CREATE TABLE IF NOT EXISTS members (
+CREATE TABLE members (
     member_id BIGINT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -18,7 +16,7 @@ CREATE TABLE IF NOT EXISTS members (
     PRIMARY KEY (member_id)
 );
 
-CREATE TABLE IF NOT EXISTS workbook (
+CREATE TABLE work_book (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     title VARCHAR(255),
@@ -35,7 +33,7 @@ CREATE TABLE IF NOT EXISTS workbook (
     FOREIGN KEY (user_id) REFERENCES members(member_id)
 );
 
-CREATE TABLE IF NOT EXISTS problem (
+CREATE TABLE problem (
     id BIGINT NOT NULL AUTO_INCREMENT,
     workbook_id BIGINT NOT NULL,
     question VARCHAR(255),
@@ -44,10 +42,10 @@ CREATE TABLE IF NOT EXISTS problem (
     question_type ENUM('MULTIPLE_CHOICE', 'TRUE_FALSE', 'SHORT_ANSWER'),
     sequence_number INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (workbook_id) REFERENCES workbook(id)
+    FOREIGN KEY (workbook_id) REFERENCES work_book(id)
 );
 
-CREATE TABLE IF NOT EXISTS Grading (
+CREATE TABLE Grading (
     id BIGINT NOT NULL AUTO_INCREMENT,
     quiz_set_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -55,10 +53,10 @@ CREATE TABLE IF NOT EXISTS Grading (
     submission_date DATETIME(6) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES members(member_id),
-    FOREIGN KEY (quiz_set_id) REFERENCES workbook(id)
+    FOREIGN KEY (quiz_set_id) REFERENCES work_book(id)
 );
 
-CREATE TABLE IF NOT EXISTS QuizGrading (
+CREATE TABLE QuizGrading (
     id BIGINT NOT NULL AUTO_INCREMENT,
     quiz_id BIGINT NOT NULL,
     submitted_answer TEXT NOT NULL,
@@ -71,7 +69,7 @@ CREATE TABLE IF NOT EXISTS QuizGrading (
     FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS Review (
+CREATE TABLE Review (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     grading_id BIGINT DEFAULT NULL,
@@ -82,5 +80,5 @@ CREATE TABLE IF NOT EXISTS Review (
     FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES members(member_id),
     FOREIGN KEY (quiz_id) REFERENCES problem(id),
-    FOREIGN KEY (quiz_set_id) REFERENCES workbook(id)
+    FOREIGN KEY (quiz_set_id) REFERENCES work_book(id)
 );
