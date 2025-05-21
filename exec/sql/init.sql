@@ -1,6 +1,6 @@
 USE lami;
 
-CREATE TABLE IF NOT EXISTS Members (
+CREATE TABLE IF NOT EXISTS members (
     member_id BIGINT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Members (
     PRIMARY KEY (member_id)
 );
 
-CREATE TABLE IF NOT EXISTS Workbook (
+CREATE TABLE IF NOT EXISTS workbook (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     title VARCHAR(255),
@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS Workbook (
     updated_at DATETIME(6),
     uuid VARCHAR(255),
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES Members(member_id)
+    FOREIGN KEY (user_id) REFERENCES members(member_id)
 );
 
-CREATE TABLE IF NOT EXISTS Problem (
+CREATE TABLE IF NOT EXISTS problem (
     id BIGINT NOT NULL AUTO_INCREMENT,
     workbook_id BIGINT NOT NULL,
     question VARCHAR(255),
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Problem (
     question_type ENUM('MULTIPLE_CHOICE', 'TRUE_FALSE', 'SHORT_ANSWER'),
     sequence_number INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (workbook_id) REFERENCES Workbook(id)
+    FOREIGN KEY (workbook_id) REFERENCES workbook(id)
 );
 
 CREATE TABLE IF NOT EXISTS Grading (
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS Grading (
     score INT NOT NULL,
     submission_date DATETIME(6) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES Members(member_id),
-    FOREIGN KEY (quiz_set_id) REFERENCES Workbook(id)
+    FOREIGN KEY (user_id) REFERENCES members(member_id),
+    FOREIGN KEY (quiz_set_id) REFERENCES workbook(id)
 );
 
 CREATE TABLE IF NOT EXISTS QuizGrading (
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS QuizGrading (
     memorization TEXT DEFAULT NULL,
     grading_id BIGINT DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (quiz_id) REFERENCES Problem(id),
+    FOREIGN KEY (quiz_id) REFERENCES problem(id),
     FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL
 );
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS Review (
     to_review DATETIME(6) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (grading_id) REFERENCES Grading(id) ON DELETE SET NULL,
-    FOREIGN KEY (user_id) REFERENCES Members(member_id),
-    FOREIGN KEY (quiz_id) REFERENCES Problem(id),
-    FOREIGN KEY (quiz_set_id) REFERENCES Workbook(id)
+    FOREIGN KEY (user_id) REFERENCES members(member_id),
+    FOREIGN KEY (quiz_id) REFERENCES problem(id),
+    FOREIGN KEY (quiz_set_id) REFERENCES workbook(id)
 );
