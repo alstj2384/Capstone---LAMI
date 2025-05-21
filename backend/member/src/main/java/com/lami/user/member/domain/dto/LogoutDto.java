@@ -3,11 +3,7 @@ package com.lami.user.member.domain.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class LogoutDto {
-    private Long memberId;
+    private String memberId;
 }

@@ -43,6 +43,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             LoginDto loginRequest = objectMapper.readValue(request.getInputStream(),
                     LoginDto.class);
 
+            log.info("loginRequest={}",loginRequest);
+
             // JSON에서 userId와 password를 추출
             String userId = loginRequest.getUserId();
             String password = loginRequest.getPassword();

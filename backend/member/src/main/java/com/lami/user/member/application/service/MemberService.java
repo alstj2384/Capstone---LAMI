@@ -32,7 +32,7 @@ public interface MemberService {
     MemberMemorizationDto getUserMemorizationInfo(String memberId);
 
     // 유저 이름 조회
-    public String findUsername(Long memberId);
+    public String findUsername(String memberId);
 
 
     // 유저 정보 수정 (비밀번호 외 다른 수정 정보)
