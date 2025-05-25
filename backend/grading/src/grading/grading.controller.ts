@@ -34,8 +34,8 @@ export class GradingController {
             },
         },
     })
-    async grading(@Headers('X-User-Id') userId: number, @Body() userSubmissions: QuizSetDto) {
-        await this.gradingService.gradingAndSave(userId, userSubmissions.quizSetId, userSubmissions.answers);
+    async grading(@Headers('X-User-Id') userId: number, @Headers('Authorization') jwtToken: string, @Body() userSubmissions: QuizSetDto) {
+        await this.gradingService.gradingAndSave(userId, userSubmissions.quizSetId, userSubmissions.answers, jwtToken);
 
         return this.responseService.response(ResponseCode.GRADING_200, {});
     }
@@ -77,3 +77,4 @@ export class GradingController {
         return this.responseService.response(ResponseCode.GET_QUIZSETID_200, { quizSetId });
     }
 }
+
