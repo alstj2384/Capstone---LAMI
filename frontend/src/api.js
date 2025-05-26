@@ -36,12 +36,14 @@ export const signupUser = async (formData) => {
 
 // 회원가입 인증번호 전송
 export const signupRequestRegistCode = async (email) => {
-    return axios.post(endpoints.signupRequestRegistCode, { email });
+    const res = axios.post(endpoints.signupRequestRegistCode, { email });
+    return res.data;
 };
 
 // 회원가입 인증번호 확인
 export const signupVerifyRegistCode = async ({ email, code }) => {
-    return axios.post(endpoints.signupVerifyRegistCode, { email, code });
+    const res = await axios.post(endpoints.signupVerifyRegistCode, { email, code });
+    return res.data;
 };
 
 // 비밀번호 변경 인증번호 전송 API 
