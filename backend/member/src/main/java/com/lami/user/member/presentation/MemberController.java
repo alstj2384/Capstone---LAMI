@@ -108,18 +108,16 @@ public class MemberController {
     }
 
     // [PUBLIC] 로그아웃
-
-
     @PostMapping("/public/members/logout")
     public ResponseEntity<ApiResponseDto<?>> logout(@RequestBody LogoutDto dto) {
-        String memberId = dto.getMemberId();
+        Long memberId = dto.getMemberId();
 
         if (memberId == null) {
             return ResponseEntity.badRequest()
                     .body(ApiResponseDto.error(HttpStatus.BAD_REQUEST.value(), "로그아웃 ID가 존재하지 않습니다."));
         }
 
-        Optional<Member> memberOpt = memberRepository.findByUserId(memberId);
+        Optional<Member> memberOpt = memberRepository.findById(memberId);
         if (memberOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.error(HttpStatus.NOT_FOUND.value(), "존재하지 않는 사용자입니다."));
@@ -147,23 +145,23 @@ public class MemberController {
 
     // 회원 정보 조회
     @GetMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getMemberInfo(@PathVariable String memberId,
-            @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getMemberInfo(@PathVariable Long memberId,
+            @RequestHeader("X-User-Id") Long userId) {
         validateUserAuthorization(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보를 조회했습니다.", memberService.getUserInfo(userId)));
     }
 
     // 회원 암기법 조회
     @GetMapping("/members/memorization/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@PathVariable String memberId, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
         validateUserAuthorization(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("회원 암기법을 조회했습니다.", memberService.getUserMemorizationInfo(userId)));
     }
 
     // 회원 정보 수정
     @PatchMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> updateMemberInfo(@PathVariable String memberId,
-            @RequestHeader("X-User-Id") String userId,
+    public ResponseEntity<ApiResponseDto<?>> updateMemberInfo(@PathVariable Long memberId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestBody MemberInfoUpdateRequestDto dto) {
         validateUserAuthorization(memberId, userId);
         MemberInfoUpdateResponseDto updated = memberService.updateUserInfo(userId, dto);
@@ -172,7 +170,7 @@ public class MemberController {
 
     // 회원 탈퇴
     @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> deleteMember(@PathVariable String memberId, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> deleteMember(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
 
         validateUserAuthorization(memberId, userId);
 
@@ -192,12 +190,12 @@ public class MemberController {
 
     // 유저 이름 조회
     @GetMapping("/members/name/{memberId}")
-    public ResponseEntity<ApiResponseDto<?>> getUserName(@PathVariable String memberId, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<ApiResponseDto<?>> getUserName(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
         validateUserAuthorization(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("사용자 이름 조회 성공", memberService.findUsername(userId)));
     }
 
-    private static void validateUserAuthorization(String memberId, String userId) {
+    private static void validateUserAuthorization(Long memberId, Long userId) {
         if(!memberId.equals(userId)){
             throw new IllegalArgumentException("권한 다름!!!!!!");
         }

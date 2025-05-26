@@ -10,7 +10,7 @@ public interface MemberService {
 
     public String getName(Long id);
 
-    public boolean quitMember(String memberId);
+    public boolean quitMember(Long memberId);
 
 
     // 중복 아이디 조회
@@ -25,18 +25,18 @@ public interface MemberService {
 
 
     // 유저 정보 조회
-    public MemberInfoResponseDto getUserInfo(String memberId);
+    public MemberInfoResponseDto getUserInfo(Long memberId);
 
 
     // 유저 암기법 조회
-    MemberMemorizationDto getUserMemorizationInfo(String memberId);
+    MemberMemorizationDto getUserMemorizationInfo(Long memberId);
 
     // 유저 이름 조회
-    public String findUsername(String memberId);
+    public String findUsername(Long memberId);
 
 
     // 유저 정보 수정 (비밀번호 외 다른 수정 정보)
-    public MemberInfoUpdateResponseDto updateUserInfo(String memberId, MemberInfoUpdateRequestDto updateRequestDto);
+    public MemberInfoUpdateResponseDto updateUserInfo(Long memberId, MemberInfoUpdateRequestDto updateRequestDto);
 
 
 
