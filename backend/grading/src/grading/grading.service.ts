@@ -51,20 +51,37 @@ export class GradingService {
         }
     }
 
-    async getMemorizationMethod(userId: number): Promise<string> {
-        try {
-            const response = await firstValueFrom(this.httpService.get(`${process.env.MEMBER_SERVER_URL}/members/memorization/${userId}`));
-            const memorizationMethod = response.data.data.memorizationMethod;
+    async getMemorizationMethod(userId: number, jwtToken: string): Promise<string> {
 
-            if (!['AssociationMethod', 'StorytellingMethod', 'VocabConnectMethod'].includes(memorizationMethod)) {
-                throw new BadRequestException('유효하지 않은 암기법입니다.');
-            }
-
-            return memorizationMethod;
-        } catch (error) {
-            throw new InternalServerErrorException('유저 암기법을 가져오는데 오류가 발생하였습니다.');
-        }
+    if (userId === undefined || userId === null || isNaN(userId)) {
+        throw new BadRequestException('유효한 userId가 필요합니다.');
     }
+
+    try {
+        const response = await firstValueFrom(
+            this.httpService.get(
+                `${process.env.MEMBER_SERVER_URL}/members/memorization/${userId}`,
+                {
+                    headers: {
+                        Authorization: jwtToken,
+                        'X-User-Id': String(userId),
+                    },
+                }
+            )
+        );
+
+        const memorizationMethod = response.data.data.memorizationMethod;
+
+        if (!['AssociationMethod', 'StorytellingMethod', 'VocabConnectMethod'].includes(memorizationMethod)) {
+            throw new BadRequestException('유효하지 않은 암기법입니다.');
+        }
+
+        return memorizationMethod;
+
+    } catch (error) {
+        throw new InternalServerErrorException('유저 암기법을 가져오는데 오류가 발생하였습니다.');
+    }
+}
 
     private getKoreanMemorizationMethod(method: string): string {
         const map: Record<string, string> = {
@@ -112,11 +129,11 @@ export class GradingService {
                 }),
             );
 
-            if (!response.data?.data?.explain) {
+            if (!response.data?.data?.memorize) {
                 throw new BadRequestException('암기법이 존재하지 않습니다.');
             }
 
-            return response.data.data.explain;
+            return response.data.data.memorize;
         } catch (error) {
             console.error('getMemorization error:', error?.message || error);
             throw new InternalServerErrorException('암기법 생성 중 오류가 발생했습니다.');
@@ -154,10 +171,11 @@ export class GradingService {
         gradingResults: GradingResult[],
         userSubmissions: QuizDTO[],
         problemMap: Map<number, any>,
+        jwtToken: string
     ): Promise<Submission[]> {
         let method: string = '스토리텔링';
         try {
-            const methodEnum = await this.getMemorizationMethod(grading.userId);
+            const methodEnum = await this.getMemorizationMethod(grading.userId, jwtToken);
             method = this.getKoreanMemorizationMethod(methodEnum);
         } catch (e) {
             console.warn(`유저 암기법 조회에 실패하였습니다. <${e.message}>`);
@@ -213,7 +231,7 @@ export class GradingService {
         await this.updateScore(grading.id, correctCount);
     }
 
-    async saveData(gradingResults: GradingResult[], userSubmissions: QuizDTO[], userId: number, quizSetId: number): Promise<Submission[]> {
+    async saveData(gradingResults: GradingResult[], userSubmissions: QuizDTO[], userId: number, quizSetId: number, jwtToken: string): Promise<Submission[]> {
         const grading = await this.createGradingEntity(userId, quizSetId);
 
         const problems = await this.getProblems(quizSetId);
@@ -223,20 +241,26 @@ export class GradingService {
             throw new BadRequestException('제출 수와 채점 결과 수가 일치하지 않습니다.');
         }
 
-        const submissions = await this.createSubmissionsFromResults(grading, gradingResults, userSubmissions, problemMap);
+        const submissions = await this.createSubmissionsFromResults(grading, gradingResults, userSubmissions, problemMap, jwtToken);
 
         await this.persistSubmissionsAndScore(grading, submissions, gradingResults);
 
         return submissions;
     }
 
-    async gradingAndSave(userId: number, quizSetId: number, userSubmissions: QuizDTO[]): Promise<void> {
+    async gradingAndSave(userId: number, quizSetId: number, userSubmissions: QuizDTO[], jwtToken: string): Promise<void> {
+
         const gradingResults = await this.grading(quizSetId, userSubmissions);
 
-        await this.saveData(gradingResults, userSubmissions, userId, quizSetId);
+        await this.saveData(gradingResults, userSubmissions, userId, quizSetId, jwtToken);
     }
 
     async getUserGradingIds(userId: number): Promise<number[]> {
+
+        if (!userId && userId !== 0) {
+            throw new BadRequestException('유효하지 않은 UserID 입니다.');
+        }
+
         const gradings = await this.gradingRepository.find({
             where: { userId },
             select: ['id'],
