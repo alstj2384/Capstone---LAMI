@@ -5,5 +5,5 @@ import lombok.*;
 
 @Data
 public class LogoutDto {
-    private String memberId;
+    private Long memberId;
 }

@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class JwtTokenProvider {
 
-
     @Value("${spring.jwt.secret}")
     private String secret;
 
