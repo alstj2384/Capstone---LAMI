@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public boolean quitMember(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        Member member = memberRepository.findByUserId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         memberRepository.delete(member);
@@ -90,7 +90,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberInfoResponseDto getUserInfo(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        log.info("member id = {}", memberId);
+        Member member = memberRepository.findByUserId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         return new MemberInfoResponseDto(
@@ -102,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberMemorizationDto getUserMemorizationInfo(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        Member member = memberRepository.findByUserId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         return new MemberMemorizationDto(
@@ -110,11 +111,9 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-
-
     @Override
-    public String findUsername(Long memberId) {
-        Optional<Member> memberOpt = memberRepository.findById(memberId);
+    public String findUsername(String memberId) {
+        Optional<Member> memberOpt = memberRepository.findByUserId(memberId);
 
         if(memberOpt.isPresent()){
             Member member = memberOpt.get();
@@ -178,7 +177,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberInfoUpdateResponseDto updateUserInfo(String memberId, MemberInfoUpdateRequestDto updateRequestDto) {
 
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        Member member = memberRepository.findByUserId(memberId)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
         if(updateRequestDto.getNickname() != null)
