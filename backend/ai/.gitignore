@@ -1,3 +1,6 @@
 .env
 fastapi
 __pycache__
+
+../../README.md
+
