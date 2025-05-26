@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { server, endpoints } from "../url"; // server 변수 사용
+import { server, endpoints } from "../url";
 import axios from "axios";
 import "./css/Signup.css";
+import {
+  signupRequestRegistCode,
+  signupUser,
+  signupVerifyRegistCode,
+  validateUserId,
+} from "../api";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -17,6 +23,7 @@ const Signup = () => {
     customDomain: "",
     nickname: "",
     memorizationMethod: "AssociationMethod",
+    emailCode: "",
   });
 
   const [isUserIdAvailable, setIsUserIdAvailable] = useState(null);
@@ -24,6 +31,9 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
+  const [emailCodeSent, setEmailCodeSent] = useState(false);
+  const [emailCodeVerified, setEmailCodeVerified] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
 
   const emailDomains = [
     "hanmail.com",
@@ -40,7 +50,6 @@ const Signup = () => {
       setIsUserIdAvailable(null);
       setUserIdMessage("");
     }
-    
 
     if (name === "password" || name === "confirmPassword") {
       const newPassword = name === "password" ? value : formData.password;
@@ -67,13 +76,11 @@ const Signup = () => {
       memorizationMethod,
     } = formData;
 
-    // 이메일 조합
     const email =
       emailDomain === "직접 입력하기"
         ? `${emailLocal}@${customDomain}`
         : `${emailLocal}@${emailDomain}`;
 
-    // 입력 검증
     if (
       !userId ||
       !password ||
@@ -108,6 +115,12 @@ const Signup = () => {
       return;
     }
 
+    if (!emailCodeVerified) {
+      setError("이메일 인증을 완료해주세요.");
+      setSuccess("");
+      return;
+    }
+
     try {
       const response = await axios.post(`${server}/api/public/members/join`, {
         userId,
@@ -135,7 +148,6 @@ const Signup = () => {
     }
   };
 
-  //중복확인 함수
   const handleCheckUserId = async () => {
     const { userId } = formData;
 
@@ -164,12 +176,48 @@ const Signup = () => {
     }
   };
 
+  const handleSendEmailCode = async () => {
+    const email =
+      formData.emailDomain === "직접 입력하기"
+        ? `${formData.emailLocal}@${formData.customDomain}`
+        : `${formData.emailLocal}@${formData.emailDomain}`;
+
+    try {
+      const res = await signupRequestRegistCode(email);
+      setEmailMessage("인증 코드가 전송되었습니다.");
+      setEmailCodeSent(true);
+    } catch (err) {
+      setEmailMessage("이메일 전송에 실패했습니다.");
+    }
+  };
+
+  const handleVerifyEmailCode = async () => {
+    const email =
+      formData.emailDomain === "직접 입력하기"
+        ? `${formData.emailLocal}@${formData.customDomain}`
+        : `${formData.emailLocal}@${formData.emailDomain}`;
+
+    try {
+      const res = await signupVerifyRegistCode({
+        email,
+        code: formData.emailCode,
+      });
+      if (res.data?.status === 200) {
+        setEmailMessage("이메일 인증이 완료되었습니다.");
+        setEmailCodeVerified(true);
+      } else {
+        setEmailMessage("인증 코드가 일치하지 않습니다.");
+      }
+    } catch (err) {
+      setEmailMessage("인증 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="signup-page">
       <div className="signup-container">
         <h1 className="signup-title">회원가입</h1>
         <form onSubmit={handleSubmit}>
-          {/* 아이디 입력 */}
           <div className="signup-field">
             <label className="signup-label">아이디</label>
             <div className="signup-username-group">
@@ -181,6 +229,13 @@ const Signup = () => {
                 placeholder="아이디를 입력하세요."
                 className="signup-input"
               />
+              <button
+                type="button"
+                className="w-40 py-1 px-1 bg-green-500 text-white rounded-md border-none cursor-pointer font-semibold transition-colors hover:bg-green-600"
+                onClick={handleCheckUserId}
+              >
+                중복확인
+              </button>
             </div>
             {userIdMessage && (
               <p
@@ -195,7 +250,6 @@ const Signup = () => {
             )}
           </div>
 
-          {/* 비밀번호 입력 */}
           <div className="signup-field">
             <label className="signup-label">비밀번호</label>
             <input
@@ -208,7 +262,6 @@ const Signup = () => {
             />
           </div>
 
-          {/* 비밀번호 확인 */}
           <div className="signup-field">
             <label className="signup-label">비밀번호 확인</label>
             <input
@@ -226,7 +279,6 @@ const Signup = () => {
             )}
           </div>
 
-          {/* 이름 입력 */}
           <div className="signup-field">
             <label className="signup-label">이름</label>
             <input
@@ -239,7 +291,6 @@ const Signup = () => {
             />
           </div>
 
-          {/* 이메일 입력 */}
           <div className="signup-field">
             <label className="signup-label">이메일</label>
             <div className="signup-email-group">
@@ -275,10 +326,40 @@ const Signup = () => {
                   ))}
                 </select>
               )}
+              <button
+                type="button"
+                className="w-30 py-2 px-1 bg-green-500 text-white rounded-md border-none cursor-pointer font-semibold transition-colors hover:bg-green-600"
+                onClick={handleSendEmailCode}
+              >
+                인증코드 전송
+              </button>
             </div>
+            {emailCodeSent && (
+              <div className="signup-field">
+                <input
+                  type="text"
+                  name="emailCode"
+                  value={formData.emailCode}
+                  onChange={handleChange}
+                  placeholder="인증 코드를 입력하세요."
+                  className="signup-input"
+                />
+                <button
+                  type="button"
+                  className="signup-button"
+                  onClick={handleVerifyEmailCode}
+                >
+                  인증 확인
+                </button>
+              </div>
+            )}
+            {emailMessage && (
+              <p className="signup-message signup-message-info">
+                {emailMessage}
+              </p>
+            )}
           </div>
 
-          {/* 닉네임 입력 */}
           <div className="signup-field">
             <label className="signup-label">닉네임</label>
             <input
@@ -291,7 +372,6 @@ const Signup = () => {
             />
           </div>
 
-          {/* 암기 방법 선택 */}
           <div className="signup-field">
             <label className="signup-label">암기 방법</label>
             <select
@@ -305,7 +385,6 @@ const Signup = () => {
             </select>
           </div>
 
-          {/* 성공/에러 메시지 */}
           {success && (
             <p className="signup-message signup-message-success">{success}</p>
           )}
@@ -313,7 +392,6 @@ const Signup = () => {
             <p className="signup-message signup-message-error">{error}</p>
           )}
 
-          {/* 회원가입 버튼 */}
           <button
             type="submit"
             className="w-full py-3 bg-green-500 text-white rounded-lg border-none cursor-pointer font-semibold transition-colors hover:bg-green-600"

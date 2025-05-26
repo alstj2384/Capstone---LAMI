@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { endpoints } from "../url"; // 엔드포인트 정의 필요
+import { generateAiWorkbook } from "../api"; // AI 문제집 생성 API
 import "./css/Create.css";
 
 const Create = () => {
@@ -26,32 +25,28 @@ const Create = () => {
     e.preventDefault();
     e.stopPropagation();
     const droppedFile = e.dataTransfer.files[0];
-    if (
-      droppedFile &&
-      droppedFile.type === "application/pdf" &&
-      droppedFile.size <= 3 * 1024 * 1024
-    ) {
-      setFile(droppedFile);
-    } else {
-      alert("PDF 파일만 업로드 가능하며, 최대 3MB까지 허용됩니다.");
-    }
+    validateAndSetFile(droppedFile);
   };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (
-      selectedFile &&
-      selectedFile.type === "application/pdf" &&
-      selectedFile.size <= 3 * 1024 * 1024
-    ) {
-      setFile(selectedFile);
-    } else {
-      alert("PDF 파일만 업로드 가능하며, 최대 3MB까지 허용됩니다.");
-    }
+    validateAndSetFile(selectedFile);
   };
 
   const handleFileClick = () => {
     fileInputRef.current.click();
+  };
+
+  const validateAndSetFile = (file) => {
+    if (
+      file &&
+      file.type === "application/pdf" &&
+      file.size <= 3 * 1024 * 1024
+    ) {
+      setFile(file);
+    } else {
+      alert("PDF 파일만 업로드 가능하며, 최대 3MB까지 허용됩니다.");
+    }
   };
 
   const totalQuestions =
@@ -60,6 +55,7 @@ const Create = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!title) return alert("문제집 이름을 입력해주세요.");
     if (!difficulty) return alert("난이도를 선택해주세요.");
     if (!file) return alert("PDF 파일을 업로드해주세요.");
@@ -67,30 +63,41 @@ const Create = () => {
     if (!isAccuracyConfirmed)
       return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
-    const formData = new FormData();
-    formData.append("pdf", file);
-    formData.append("title", title);
-    formData.append("isPublic", "True");
-    formData.append("script", `${title} 문제집 설명입니다.`);
-    formData.append("difficulty", difficulty);
-    formData.append("multipleChoiceAmount", multipleChoiceCount.toString());
-    formData.append("trueFalseAmount", trueFalseCount.toString());
-    formData.append("shortAnswerAmount", shortAnswerCount.toString());
+    const token = localStorage.getItem("token");
+    const memberId = localStorage.getItem("memberId");
+
+    if (!token || !memberId) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
     setIsLoading(true);
 
     try {
-      const response = await axios.post(endpoints.createProblemSet, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await generateAiWorkbook({
+        pdf: file,
+        title,
+        isPublic: "True",
+        script: `${title} 문제집 설명입니다.`,
+        difficulty,
+        multiple: multipleChoiceCount,
+        ox: trueFalseCount,
+        short: shortAnswerCount,
+        token,
+        memberId,
       });
 
-      if (response.status === 201 && response.data.status === 201) {
-        alert("문제집이 성공적으로 생성되었습니다!");
-        navigate("/share-complete");
+      // 응답 구조 확인
+      console.log("생성된 문제집 응답:", response);
+
+      const workbookId =
+        response?.workbookId || response?.id || response?.quizSetId;
+
+      if (workbookId) {
+        alert("AI 문제집이 성공적으로 생성되었습니다!");
+        navigate("/share-complete", { state: { workbookId } });
       } else {
-        alert(response.data.message || "문제집 생성 실패");
+        alert("문제집은 생성되었지만 ID를 받아오지 못했습니다.");
       }
     } catch (err) {
       alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
@@ -126,7 +133,7 @@ const Create = () => {
               className="create-file-upload"
             >
               <p className="create-file-text">
-                {file ? file.name : "Link or drag and drop PDF (max. 3MB)"}
+                {file ? file.name : "링크 또는 PDF 드래그 앤 드롭 (최대 3MB)"}
               </p>
               <input
                 type="file"
@@ -153,12 +160,12 @@ const Create = () => {
             </select>
           </div>
 
-          {/* 문제 스크립트 */}
+          {/* 문제 개수 설정 */}
           <div className="create-field">
-            <label className="create-label">문제 스크립트</label>
+            <label className="create-label">문제 유형별 개수</label>
             <div className="create-question-counts">
               <div className="create-subfield">
-                <label className="create-sublabel">객관식 문제 수</label>
+                <label className="create-sublabel">객관식</label>
                 <select
                   value={multipleChoiceCount}
                   onChange={(e) =>
@@ -174,7 +181,7 @@ const Create = () => {
                 </select>
               </div>
               <div className="create-subfield">
-                <label className="create-sublabel">O/X 문제 수</label>
+                <label className="create-sublabel">O/X</label>
                 <select
                   value={trueFalseCount}
                   onChange={(e) => setTrueFalseCount(Number(e.target.value))}
@@ -188,7 +195,7 @@ const Create = () => {
                 </select>
               </div>
               <div className="create-subfield">
-                <label className="create-sublabel">단답형 문제 개수</label>
+                <label className="create-sublabel">단답형</label>
                 <select
                   value={shortAnswerCount}
                   onChange={(e) => setShortAnswerCount(Number(e.target.value))}
@@ -209,7 +216,7 @@ const Create = () => {
             )}
           </div>
 
-          {/* 정답 정확성 확인 체크박스 */}
+          {/* 정확성 확인 */}
           <div className="create-field">
             <label className="create-checkbox-label">
               <input
@@ -222,7 +229,7 @@ const Create = () => {
             </label>
           </div>
 
-          {/* 생성 버튼 */}
+          {/* 제출 버튼 */}
           <button
             type="submit"
             className="create-submit-button"

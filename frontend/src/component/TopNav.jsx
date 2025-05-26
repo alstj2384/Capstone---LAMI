@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
 import "./TopNav.css";
+import { getUserInfo } from "../api";
 
 const TopNav = ({ isLoggedIn, user, handleLogout }) => {
+  const [userInfo, setUserInfo] = useState(user);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem("token");
+      const memberId = localStorage.getItem("memberId");
+      if (isLoggedIn && token && memberId) {
+        try {
+          const res = await getUserInfo(memberId, token);
+          setUserInfo({
+            ...user,
+            name: res.data?.name || user.name,
+            profilePic: res.data?.profileImage || user.profilePic,
+          });
+        } catch (err) {
+          console.error("유저 정보 불러오기 실패:", err);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [isLoggedIn]);
+
   return (
     <nav className="top-nav">
       <Link to="/" className="nav-icon-link">
@@ -32,11 +56,11 @@ const TopNav = ({ isLoggedIn, user, handleLogout }) => {
       {isLoggedIn ? (
         <div className="topnav-text flex items-center space-x-2">
           <img
-            src={user.profilePic}
+            src={userInfo?.profilePic}
             alt="Profile"
             className="profile-pic w-8 h-8 rounded-full"
           />
-          <span className="text-sm">{user.name}님 반갑습니다</span>
+          <span className="text-sm">{userInfo?.name}님 반갑습니다</span>
           <button
             onClick={handleLogout}
             className="nav-button bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"

@@ -19,6 +19,7 @@ import Review from "./page/Review.jsx";
 import Login from "./page/Login.jsx";
 import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
+import EditMyPage from "./page/EditProfile.jsx";
 import "./App.css";
 
 // ProtectedRoute component to restrict access
@@ -82,7 +83,7 @@ const App = () => {
         />
         <Route path="/share" element={<Share />} />
         <Route path="/share-complete" element={<ShareComplete />} />
-        <Route path="/solve" element={<Solve />} />
+        <Route path="/solve/:quizSetId" element={<Solve />} />{" "}
         <Route path="/result" element={<Result />} />
         <Route
           path="/review"
@@ -102,6 +103,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/edit-mypage" element={<EditMyPage />} />
       </Routes>
     </Router>
   );

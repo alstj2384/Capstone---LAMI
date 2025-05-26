@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
+import { getUserInfo, getWorkbookList } from "../api";
 import "./css/Explore.css";
 
 const Explore = () => {
@@ -19,22 +20,22 @@ const Explore = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      if (!token || !userId) return;
+      const memberId = localStorage.getItem("memberId");
+      if (!token || !memberId) return;
 
       try {
-        const userRes = await axios.get(endpoints.getUserInfo, {
+        const userRes = await axios.get(endpoints.getUserInfo(memberId), {
           headers: {
             Authorization: `Bearer ${token}`,
-            "X-User-ID": userId,
+            "X-User-ID": memberId,
           },
         });
-        setCurrentUserId(userRes.data.data.userId);
+        setCurrentUserId(userRes.data.data.memberId);
 
-        const quizRes = await axios.get(endpoints.getPublicQuizzes, {
+        const quizRes = await axios.get(endpoints.getWorkbookList, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "X-User-ID": userId,
+            "X-User-ID": memberId,
           },
         });
         setQuizList(quizRes.data.data);
@@ -160,16 +161,16 @@ const Explore = () => {
       <div className="explore-grid">
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
-            <div key={item.id} className="explore-card">
+            <div key={item.workbookId} className="explore-card">
               <img
                 src={SquirrelIcon}
                 alt="Squirrel Icon"
                 className="explore-card-icon"
               />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">{item.date}</p>
+              <p className="explore-card-date">작성자: {item.nickname}</p>
               <button
-                onClick={() => handleSolve(item.id)}
+                onClick={() => handleSolve(item.workbookId)}
                 className="explore-card-button"
               >
                 풀어보기

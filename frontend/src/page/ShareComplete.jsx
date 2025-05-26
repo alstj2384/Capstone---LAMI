@@ -1,21 +1,33 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import "./css/ShareComplete.css"; // CSS 파일 임포트
+import { useNavigate, useLocation } from "react-router-dom";
+import "./css/ShareComplete.css";
 
 const ShareComplete = () => {
   const navigate = useNavigate();
-  const hardcodedUrl = "https://lami.co/asdf1234asdf...";
+  const location = useLocation();
+
+  // 전달받은 workbookId 추출
+  const workbookId = location.state?.workbookId;
+
+  // 공유 URL 생성
+  const shareUrl = workbookId
+    ? `https://lami.co/solve/${workbookId}`
+    : "문제집 ID 없음";
 
   // URL 복사 기능
   const handleCopy = () => {
-    navigator.clipboard.writeText(hardcodedUrl).then(() => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
       alert("URL이 복사되었습니다!");
     });
   };
 
-  // "탭에서 열기" 버튼 클릭 시 Solve 페이지로 이동
+  // "탭에서 열기" 클릭 시 Solve 페이지로 이동
   const handleOpen = () => {
-    navigate("/solve");
+    if (workbookId) {
+      navigate(`/solve/${workbookId}`);
+    } else {
+      alert("문제집 ID가 없어 열 수 없습니다.");
+    }
   };
 
   return (
@@ -24,7 +36,7 @@ const ShareComplete = () => {
         <h1 className="share-complete-title">🎉 문제집이 생성되었습니다! 🎉</h1>
         <div className="share-complete-url-box">
           <span className="share-complete-url-label">공유 URL:</span>
-          <span className="share-complete-url">{hardcodedUrl}</span>
+          <span className="share-complete-url">{shareUrl}</span>
         </div>
         <div className="share-complete-buttons">
           <button

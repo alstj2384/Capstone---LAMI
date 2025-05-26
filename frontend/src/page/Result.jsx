@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { endpoints } from "../url";
+import { getGrading } from "../api"; // ✅ 수정: API 함수 import
 import "./css/Result.css";
 
 const Result = () => {
@@ -19,17 +18,10 @@ const Result = () => {
       if (!gradingId) return;
 
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
 
       try {
-        const response = await axios.get(`${endpoints.getGradingResult}/${gradingId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "X-User-ID": userId,
-          },
-        });
-
-        setGradingResult(response.data.data);
+        const result = await getGrading(gradingId, token); // ✅ 수정: API 함수 사용
+        setGradingResult(result.data); // 또는 result.data.data → 실제 구조에 맞춰 확인
       } catch (error) {
         console.error("채점 결과 조회 실패:", error);
       } finally {
@@ -65,14 +57,18 @@ const Result = () => {
           <div key={item.quizId} className="result-problem">
             <h2 className="result-problem-title">문제 {item.quizId}번</h2>
             <p className="result-feedback-text">정답: {item.answer}</p>
-            <p className="result-feedback-text">제출한 답: {item.submittedAnswer}</p>
+            <p className="result-feedback-text">
+              제출한 답: {item.submittedAnswer}
+            </p>
             <span
               className={item.isCorrect ? "text-green-500" : "text-red-500"}
             >
               {item.isCorrect ? "정답" : "오답"}
             </span>
             <div className="result-feedback">
-              <p className="result-feedback-text">암기법: {item.memorization}</p>
+              <p className="result-feedback-text">
+                암기법: {item.memorization}
+              </p>
               <p className="result-feedback-text">피드백: {item.feedback}</p>
             </div>
           </div>
@@ -81,7 +77,9 @@ const Result = () => {
         <div className="result-overall-feedback">
           <h2 className="result-feedback-title">총평</h2>
           <p className="result-feedback-content">
-            총 문제 수: {gradingResult.totalCount}, 정답 수: {gradingResult.correctCount}, 오답 수: {gradingResult.incorrectCount}
+            총 문제 수: {gradingResult.totalCount}, 정답 수:{" "}
+            {gradingResult.correctCount}, 오답 수:{" "}
+            {gradingResult.incorrectCount}
           </p>
         </div>
 
