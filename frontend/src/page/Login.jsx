@@ -24,7 +24,6 @@ export default function Login({ onLogin }) {
       localStorage.setItem("token", token);
       localStorage.setItem("memberId", memberId);
       navigate("/");
-      console.log("headers:", response.headers);
     } catch (err) {
       console.error("로그인 에러:", err);
       const errorMessage =
