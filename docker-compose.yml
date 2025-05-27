@@ -1,0 +1,118 @@
+services:
+  frontend:
+    image: frontend
+    # environment:
+    networks:
+      - lami-backend
+
+
+  workbook:
+    image: workbook
+    environment:
+      - API_SERVER_URL=http://ai:8000 # API 서버 도커 컴포즈 연동 시 수정 필요
+      - FILE_PATH=/app/uploads
+      - DATABASE_HOST=${MYSQL_HOST}
+      - DATABASE_PORT=${MYSQL_PORT}
+      - DATABASE_DATABASE=${MYSQL_DATABASE}
+      - DATABASE_USERNAME=${MYSQL_USERNAME}
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - lami-backend
+    depends_on:
+      - db
+
+  ai:
+    image: ai
+    environment:
+      - GPT_API_KEY=${GPT_API_KEY}
+      - DIR_PATH=/tmp/
+    volumes:
+      - ./uploads:/tmp
+    networks:
+      - lami-backend
+
+  member:
+    image: member
+    environment:
+      - DATABASE_HOST=${MYSQL_HOST}
+      - DATABASE_PORT=${MYSQL_PORT}
+      - DATABASE_DATABASE=${MYSQL_DATABASE}
+      - DATABASE_USERNAME=${MYSQL_USERNAME}
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD}
+
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - REDIS_DATABASE=0
+
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ACCESS-TOKEN-EXPIRY=3600000
+      - JWT_REFRESH-TOKEN-EXPIRY=1209600
+
+      - MAIL_FROM=${MAIL_FROM}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_PORT=${MAIL_PORT}
+
+    networks:
+      - lami-backend
+    depends_on:
+      - db
+
+  review:
+    image: review
+    environment:
+      - DATABASE_HOST=${MYSQL_HOST}
+      - DATABASE_PORT=${MYSQL_PORT}
+      - DATABASE_DATABASE=${MYSQL_DATABASE}
+      - DATABASE_USERNAME=${MYSQL_USERNAME}
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD}
+      - WORKBOOK_SERVER_URL=http://workbook:8080/api
+      - GRADING_SERVER_URL=http://grading:3000/api
+    networks:
+      - lami-backend
+    depends_on:
+      - db
+
+  grading:
+    image: grading
+    environment:
+      - DATABASE_HOST=${MYSQL_HOST}
+      - DATABASE_PORT=${MYSQL_PORT}
+      - DATABASE_DATABASE=${MYSQL_DATABASE}
+      - DATABASE_USERNAME=${MYSQL_USERNAME}
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD}
+      - WORKBOOK_SERVER_URL=http://workbook:8080/api
+      - MEMBER_SERVER_URL=http://member:8080/api
+      - AI_SERVER_URL=http://ai:8000/api
+    networks:
+      - lami-backend
+    depends_on:
+      - db
+
+  redis:
+    image: redis:latest
+    networks:
+      - lami-backend
+
+  db:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./exec/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - lami-backend
+
+
+networks:
+  lami-backend:
+    external: true
+
+volumes:
+  db_data:

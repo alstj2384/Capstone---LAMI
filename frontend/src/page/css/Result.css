@@ -1,0 +1,152 @@
+.result-page {
+    background-color: #ffffff; /* 흰색 배경 */
+    display: flex;
+    flex-direction: column;
+    padding-top: 5rem; /* TopNav 높이 고려 */
+    padding-bottom: 2rem; /* 하단 여백 */
+    overflow-y: auto; /* 스크롤 활성화 */
+}
+
+/* 스크롤바 스타일링 */
+.result-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.result-page::-webkit-scrollbar-thumb {
+    background-color: #22c55e;
+    border-radius: 4px;
+}
+
+.result-page::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+.result-container {
+    width: 100%;
+    max-width: 640px; /* max-w-xl */
+    margin: 0 auto;
+    padding: 1rem; /* p-4 */
+    flex-grow: 1; /* 컨테이너가 콘텐츠에 맞게 확장 */
+}
+
+.result-title {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* text-gray-900 */
+    text-align: center;
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.result-empty {
+    text-align: center;
+    color: #4b5563; /* text-gray-600 */
+    font-size: 1rem;
+}
+
+.result-problem {
+    background-color: #FCFFFB; /* 요청된 박스 색상 */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow */
+    margin-bottom: 1rem; /* mb-4 */
+    border: 1px solid #22c55e; /* border-green-500 */
+}
+
+.result-problem-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.result-problem-question {
+    color: #1f2937; /* text-gray-800 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.result-answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* space-y-2 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.result-answer-option {
+    display: flex;
+    align-items: center;
+}
+
+.result-answer-input {
+    margin-right: 0.5rem; /* mr-2 */
+    width: 1rem; /* h-4 */
+    height: 1rem; /* w-4 */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    cursor: not-allowed;
+}
+
+.result-answer-input:checked {
+    background-color: #22c55e; /* text-green-500 */
+    border-color: #22c55e;
+}
+
+.result-short-answer-input {
+    width: 100%;
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.375rem; /* rounded-md */
+    margin-bottom: 1rem; /* mb-4 */
+    cursor: not-allowed;
+}
+
+.result-feedback {
+    margin-top: 0.5rem; /* mt-2 */
+}
+
+.result-feedback-text {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151; /* text-gray-700 */
+}
+
+.result-overall-feedback {
+    background-color: #FCFFFB; /* 요청된 박스 색상 */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow */
+    border: 1px solid #22c55e; /* border-green-500 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.result-feedback-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+    color: #374151; /* text-gray-700 */
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.result-feedback-content {
+    color: #1f2937; /* text-gray-800 */
+}
+
+.result-buttons {
+    display: flex;
+    gap: 0.75rem; /* space-x-3 */
+    margin-top: 1rem; /* mt-4 */
+}
+
+.result-retry-button,
+.result-exit-button {
+    flex: 1;
+    padding: 0.5rem; /* py-2 */
+    background-color: #22c55e; /* bg-green-500 */
+    color: #ffffff; /* text-white */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: none;
+    cursor: pointer;
+    font-weight: 600; /* font-semibold */
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.result-retry-button:hover,
+.result-exit-button:hover {
+    background-color: #16a34a; /* hover:bg-green-600 */
+}

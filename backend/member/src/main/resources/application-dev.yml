@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: lami-member
+  datasource:
+    url: jdbc:mariadb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}?characterEncoding=utf8mb4
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      url: redis://${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}
+  jwt:
+    secret : ${JWT_SECRET}
+    access-token-expiry: ${JWT_ACCESS-TOKEN-EXPIRY}
+    refresh-token-expiry: ${JWT_REFRESH-TOKEN-EXPIRY}
+
+  mail:
+    from: ${MAIL_FROM}
+    host: smtp.naver.com
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: off
