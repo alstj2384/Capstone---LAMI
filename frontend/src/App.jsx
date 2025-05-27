@@ -21,6 +21,7 @@ import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
 import EditMyPage from "./page/EditProfile.jsx";
 import "./App.css";
+import { getUserInfo } from "./api.js";
 
 // ProtectedRoute component to restrict access
 const ProtectedRoute = ({ isLoggedIn, children }) => {
@@ -35,22 +36,27 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      axios
-        .get(endpoints.user)
-        .then((response) => {
-          const { name, profilePic } = response.data;
-          setUser({ name, profilePic, token });
-          setIsLoggedIn(true);
-        })
-        .catch((error) => {
-          console.error("Failed to restore user:", error);
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-          setUser(null);
-        });
-    }
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem("token");
+      const memberId = localStorage.getItem("memberId");
+
+      if (!token || !memberId) return;
+
+      try {
+        const response = await getUserInfo(memberId, token);
+
+        const { name, email } = response.data;
+        setUser({ name, email, token });
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("유저 정보 요청 실패", error);
+        setIsLoggedIn(false);
+        setUser(null);
+        // localStorage.clear(); // 또는 특정 항목 제거
+      }
+    };
+
+    fetchUserInfo();
   }, []);
 
   const handleLogin = (userData) => {

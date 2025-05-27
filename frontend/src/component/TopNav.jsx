@@ -7,24 +7,24 @@ import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
 const TopNav = ({ isLoggedIn, user, logoutUser }) => {
   const [userInfo, setUserInfo] = useState(user);
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const token = localStorage.getItem("token");
-      const memberId = localStorage.getItem("memberId");
-      if (isLoggedIn && token && memberId) {
-        try {
-          const res = await getUserInfo(memberId, token);
-          setUserInfo({
-            ...user,
-            name: res.data?.name || user.name,
-            profilePic: res.data?.profileImage || user.profilePic,
-          });
-        } catch (err) {
-          console.error("유저 정보 불러오기 실패:", err);
-        }
-      }
-    };
+  const fetchUserInfo = async () => {
+    const token = localStorage.getItem("token");
+    const memberId = localStorage.getItem("memberId");
 
+    if (token && memberId) {
+      // 유저 정보 가져오기
+      const res = await getUserInfo(memberId, token);
+
+      // TODO: 에러 처리하기
+      setUserInfo({
+        userId: res.data.userId,
+        name: res.data.name,
+        email: res.data.email,
+      });
+    }
+  };
+
+  useEffect(() => {
     fetchUserInfo();
   }, [isLoggedIn]);
 
