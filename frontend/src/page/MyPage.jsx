@@ -81,36 +81,7 @@ const MyPage = ({ isLoggedIn }) => {
         });
         setProblemList(workbookRes.data.data || []);
       } catch (error) {
-        console.error("API fetch 실패, 목 데이터로 대체합니다.", error);
-        setUser({
-          name: "채승오",
-          email: "soongmin@daelim.ac.kr",
-          profilePic: SquirrelIcon,
-        });
-        setReviewList([
-          {
-            title: "정보처리기사 2회",
-            createdDate: "25.04.01",
-            id: 1,
-          },
-          {
-            title: "정보처리기사 2회",
-            createdDate: "25.04.01",
-            id: 2,
-          },
-        ]);
-        setProblemList([
-          {
-            title: "정보처리기사 모의고사 1",
-            count: 10,
-            date: "25.03.30",
-          },
-          {
-            title: "정보처리기사 실기",
-            count: 8,
-            date: "25.03.25",
-          },
-        ]);
+        console.log("사용자 정보를 불러올 수 없습니다.");
       }
     };
 

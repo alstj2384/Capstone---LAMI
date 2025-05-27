@@ -1,3 +1,4 @@
+import { getWorkbook } from "./api";
 import MyPage from "./page/MyPage";
 
 // url.js
@@ -22,6 +23,7 @@ export const endpoints = {
   createWorkbook: `${server}/api/workbook`, // 문제집 생성
   updateWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 수정 
   deleteWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 삭제 
+  getWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`,
   getWorkbookList: `${server}/api/workbook/list`, // 문제집 리스트 조회 
   getProblem: (problemId) => `${server}/api/problem/${problemId}`, // 문제 단건 조회 
   getProblemList: (workbookId) => `${server}/api/problem/list/${workbookId}`, // 문제 리스트 조회 
