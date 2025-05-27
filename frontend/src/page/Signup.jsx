@@ -191,24 +191,28 @@ const Signup = () => {
     }
   };
 
-  const handleVerifyEmailCode = async () => {
+const handleVerifyEmailCode = async () => {
     const email =
       formData.emailDomain === "직접 입력하기"
         ? `${formData.emailLocal}@${formData.customDomain}`
         : `${formData.emailLocal}@${formData.emailDomain}`;
+    const code = formData.emailCode;
 
     try {
-      const res = await signupVerifyRegistCode({
-        email,
-        code: formData.emailCode,
-      });
-      if (res.data?.status === 200) {
+      console.log("보내는 이메일:", email, "코드:", code);
+
+      const result = await signupVerifyRegistCode({ email, code });
+
+      console.log("서버 응답:", result); // result는 data임
+
+      if (result.status === 200) {
         setEmailMessage("이메일 인증이 완료되었습니다.");
         setEmailCodeVerified(true);
       } else {
-        setEmailMessage("인증 코드가 일치하지 않습니다.");
+        setEmailMessage(result.message || "인증 코드가 일치하지 않습니다.");
       }
     } catch (err) {
+      console.error("에러:", err);
       setEmailMessage("인증 중 오류가 발생했습니다.");
     }
   };

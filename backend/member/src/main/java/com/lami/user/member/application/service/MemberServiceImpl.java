@@ -61,8 +61,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public boolean quitMember(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+    public boolean quitMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         memberRepository.delete(member);
@@ -89,28 +89,27 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberInfoResponseDto getUserInfo(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+    public MemberInfoResponseDto getUserInfo(Long memberId) {
+        log.info("member id = {}", memberId);
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         return new MemberInfoResponseDto(
-                member.getUserId(),
+                member.getId(),
                 member.getName(),
                 member.getEmail()
         );
     }
 
     @Override
-    public MemberMemorizationDto getUserMemorizationInfo(String memberId) {
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+    public MemberMemorizationDto getUserMemorizationInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("유저를 찾지 못하였습니다."));
 
         return new MemberMemorizationDto(
                 member.getMemorizationMethod().toString()
         );
     }
-
-
 
     @Override
     public String findUsername(Long memberId) {
@@ -176,9 +175,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override // 닉네임, 암기법, 프로플 url (추후 수정할 수 있음)
     @Transactional
-    public MemberInfoUpdateResponseDto updateUserInfo(String memberId, MemberInfoUpdateRequestDto updateRequestDto) {
+    public MemberInfoUpdateResponseDto updateUserInfo(Long memberId, MemberInfoUpdateRequestDto updateRequestDto) {
 
-        Member member = memberRepository.findById(Long.parseLong(memberId))
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
         if(updateRequestDto.getNickname() != null)

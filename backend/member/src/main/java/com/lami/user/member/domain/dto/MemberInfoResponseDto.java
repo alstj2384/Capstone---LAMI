@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class MemberInfoResponseDto {
-    private String userId;
+    private Long userId;
     private String name;
     private String email;
 }

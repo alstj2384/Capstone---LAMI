@@ -8,7 +8,7 @@ public interface ResetService {
     MemberPasswordRequestDto requestMemberId(String userId);
 
     // 비밀번호 재설정 번호 전송
-    void sendRestRandomNumber(String userId);
+    void sendResetRandomNumber(String userId);
 
     // 비밀번호 재설정
     void resetPassword(String userId, String newPassword);
@@ -20,6 +20,6 @@ public interface ResetService {
     void sendRegistrationCode(String email);
 
     // 회원가입시 인증번호 일치 여부 확인
-    boolean isEqualNumber(String email, String code);
+    void isEqualNumber(String email, String code);
 
 }
