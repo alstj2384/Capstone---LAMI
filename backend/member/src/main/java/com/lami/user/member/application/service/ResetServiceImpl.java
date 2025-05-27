@@ -4,6 +4,7 @@ package com.lami.user.member.application.service;
 import com.lami.user.member.domain.dto.MemberPasswordRequestDto;
 import com.lami.user.member.domain.entity.Member;
 import com.lami.user.member.domain.repository.MemberRepository;
+import com.lami.user.member.global.exception.DuplicateEmailException;
 import com.lami.user.member.infrastructure.security.AuthenticationProviderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +80,11 @@ public class ResetServiceImpl implements ResetService {
 
     @Override
     public void sendRegistrationCode(String email) {
+
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException("이미 사용중인 이메일입니다. 다른 이메일을 사용해주세요");
+        }
+
         // 해당 이메일로 랜덤한 번호 보내기
         String resetCode = generateRandomCode(6);
 
@@ -110,5 +116,4 @@ public class ResetServiceImpl implements ResetService {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining());
     }
-
 }

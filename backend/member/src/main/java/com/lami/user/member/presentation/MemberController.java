@@ -6,11 +6,14 @@ import com.lami.user.member.application.service.ResetService;
 import com.lami.user.member.domain.dto.*;
 import com.lami.user.member.domain.entity.Member;
 import com.lami.user.member.domain.repository.MemberRepository;
+import com.lami.user.member.global.auth.AuthorizationUtil;
+import com.lami.user.member.global.exception.DuplicateEmailException;
 import com.lami.user.member.infrastructure.security.JwtCookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -86,7 +89,11 @@ public class MemberController {
         try {
             resetService.sendRegistrationCode(dto.getEmail());
             return ResponseEntity.ok(ApiResponseDto.success("인증번호가 이메일로 전송되었습니다.", null));
-        } catch (Exception e) {
+        } catch (DuplicateEmailException e) {
+            return ResponseEntity.ok()
+                    .body(ApiResponseDto.success("이미 사용중인 이메일입니다.", dto.getEmail()));
+        }
+        catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponseDto.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "인증번호 전송 중 오류가 발생했습니다."));
         }
@@ -98,9 +105,7 @@ public class MemberController {
         try {
             log.info("Dto {}: ", dto);
             resetService.isEqualNumber(dto.getEmail(), dto.getCode());
-
             return ResponseEntity.ok(ApiResponseDto.success("이메일 인증이 완료되었습니다.", null));
-
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponseDto.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "인증번호 확인 중 오류가 발생했습니다."));
@@ -147,14 +152,15 @@ public class MemberController {
     @GetMapping("/members/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> getMemberInfo(@PathVariable Long memberId,
             @RequestHeader("X-User-Id") Long userId) {
-        validateUserAuthorization(memberId, userId);
+        // X-User-Id와 memberId가 일치하는지 권한 확인
+        AuthorizationUtil.validateUserAccess(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보를 조회했습니다.", memberService.getUserInfo(userId)));
     }
 
     // 회원 암기법 조회
     @GetMapping("/members/memorization/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> getMemberMemorizatioonInfo(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
-        validateUserAuthorization(memberId, userId);
+        AuthorizationUtil.validateUserAccess(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("회원 암기법을 조회했습니다.", memberService.getUserMemorizationInfo(userId)));
     }
 
@@ -163,7 +169,7 @@ public class MemberController {
     public ResponseEntity<ApiResponseDto<?>> updateMemberInfo(@PathVariable Long memberId,
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody MemberInfoUpdateRequestDto dto) {
-        validateUserAuthorization(memberId, userId);
+        AuthorizationUtil.validateUserAccess(memberId, userId);
         MemberInfoUpdateResponseDto updated = memberService.updateUserInfo(userId, dto);
         return ResponseEntity.ok(ApiResponseDto.success("회원 정보가 수정되었습니다.", updated));
     }
@@ -172,7 +178,7 @@ public class MemberController {
     @DeleteMapping("/members/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> deleteMember(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
 
-        validateUserAuthorization(memberId, userId);
+        AuthorizationUtil.validateUserAccess(memberId, userId);
 
         if (memberService.quitMember(userId)) {
             redisService.deleteValue(userId);
@@ -191,14 +197,8 @@ public class MemberController {
     // 유저 이름 조회
     @GetMapping("/members/name/{memberId}")
     public ResponseEntity<ApiResponseDto<?>> getUserName(@PathVariable Long memberId, @RequestHeader("X-User-Id") Long userId) {
-        validateUserAuthorization(memberId, userId);
+        AuthorizationUtil.validateUserAccess(memberId, userId);
         return ResponseEntity.ok(ApiResponseDto.success("사용자 이름 조회 성공", memberService.findUsername(userId)));
-    }
-
-    private static void validateUserAuthorization(Long memberId, Long userId) {
-        if(!memberId.equals(userId)){
-            throw new IllegalArgumentException("권한 다름!!!!!!");
-        }
     }
 
 }
