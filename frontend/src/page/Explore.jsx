@@ -24,6 +24,10 @@ const Explore = () => {
       if (!token || !memberId) return;
 
       try {
+        console.error("Axios 오류 발생", error); // 중요
+        console.error("에러 메시지:", error.message);
+        console.error("에러 응답:", error.response); // HTTP 상태 코드 등
+        console.error("요청 정보:", error.config);
         const userRes = await axios.get(endpoints.getUserInfo(memberId), {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,13 +36,8 @@ const Explore = () => {
         });
         setCurrentUserId(userRes.data.data.memberId);
 
-        const quizRes = await axios.get(endpoints.getWorkbookList, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "X-User-ID": memberId,
-          },
-        });
-        setQuizList(quizRes.data.data);
+        const quizRes = await getWorkbookList(token);
+        setQuizList(quizRes.data);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
       }

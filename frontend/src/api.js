@@ -8,8 +8,13 @@ export const loginUser = async ({ userId, password }) => {
         userId,
         password,
     });
-    return response.data; // { memberId }
+
+    const token = response.headers["authorization"]; // 헤더 이름이 정확히 'authorization'인지 확인
+    const memberId = response.data?.data?.memberId; // 바디에 있을 경우
+
+    return { token, memberId };
 };
+
 
 // 로그아웃 
 export const logoutUser = async (token) => {
@@ -100,7 +105,7 @@ export const updateUserInfo = async ({ id, data, token }) => {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
-                "X-User-ID": id,
+                "X-User-ID": memberId,
             },
         }
     );
@@ -127,10 +132,10 @@ export const getUserName = async (id, token) => {
     const res = await axios.get(endpoints.getUserName(id), {
         headers: {
             Authorization: `Bearer ${token}`,
-            "X-User-ID": id, // 선택사항: 서버에서 요구하면 포함
+            "X-User-ID": memberId,
         },
     });
-    return res.data; // 예: { status: 200, message: "...", data: "홍길동" }
+    return res.data;
 };
 
 
@@ -159,9 +164,6 @@ export const createWorkbook = async ({ formData, token }) => {
 // 문제 단건 조회 
 export const getProblem = async (problemId, token) => {
     const res = await axios.get(endpoints.getProblem(problemId), {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
     return res.data.data;
 };
@@ -193,12 +195,15 @@ export const deleteWorkbook = async (workbookId, token) => {
     return res.data;
 };
 
+// 문제집 단건 조회 
+export const getWorkbook = async (workbookId) => {
+    const res = await axios.get(endpoints.getWorkbook(workbookId));
+    return res.data;
+};
+
 // 문제집 리스트 조회
-export const getWorkbookList = async (token) => {
+export const getWorkbookList = async () => {
     const res = await axios.get(endpoints.getWorkbookList, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
     return res.data;
 };
@@ -206,9 +211,6 @@ export const getWorkbookList = async (token) => {
 // 문제 리스트 조회
 export const getProblemList = async (workbookId, token) => {
     const res = await axios.get(endpoints.getProblemList(workbookId), {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
     return res.data;
 };
@@ -224,11 +226,12 @@ export const updateProblem = async ({ workbookId, data, token }) => {
     return res.data;
 };
 
-// 채점 리스트 조회
+// 채점 목록 조회
 export const getGradingList = async (token) => {
     const res = await axios.get(endpoints.getGradingList, {
         headers: {
             Authorization: `Bearer ${token}`,
+            "X-User-ID": memberId,
         },
     });
     return res.data;
@@ -256,31 +259,30 @@ export const requestGrading = async (payload, token) => {
 };
 
 // 채점 ID → 문제집 ID
-export const getQuizset = async (gradingId, token) => {
-    const res = await axios.get(endpoints.getQuizset(gradingId), {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const getQuizset = async (gradingId) => {
+    const res = await axios.get(endpoints.getQuizset(gradingId));
     return res.data;
 };
 
-// 복습 생성
-export const createReview = async (data, token) => {
+// 복습 문제 생성
+export const createReview = async (data, token, memberId) => {
     const res = await axios.post(endpoints.createReview, data, {
         headers: {
             Authorization: `Bearer ${token}`,
+            "X-User-ID": memberId,
             "Content-Type": "application/json",
         },
     });
     return res.data;
 };
 
+
 // 복습 조회
 export const getReviewList = async (token) => {
     const res = await axios.get(endpoints.getReview, {
         headers: {
             Authorization: `Bearer ${token}`,
+            "X-User-Id": memberId,
         },
     });
     return res.data;
