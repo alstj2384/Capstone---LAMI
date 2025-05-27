@@ -105,9 +105,7 @@ public class MemberController {
         try {
             log.info("Dto {}: ", dto);
             resetService.isEqualNumber(dto.getEmail(), dto.getCode());
-
             return ResponseEntity.ok(ApiResponseDto.success("이메일 인증이 완료되었습니다.", null));
-
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponseDto.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "인증번호 확인 중 오류가 발생했습니다."));
