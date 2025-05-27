@@ -34,21 +34,25 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  useEffect( () => {
     const token = localStorage.getItem("token");
+    const memberId = localStorage.getItem("memberId");
     if (token) {
-      axios
-        .get(endpoints.user)
+      axios.get(endpoints.getUserInfo(memberId), {
+        headers: {
+            Authorization: token,
+            "X-User-Id": memberId,
+        },
+    })
         .then((response) => {
-          const { name, profilePic } = response.data;
-          setUser({ name, profilePic, token });
+          const { name, email } = response.data;
+          setUser({ name, email, token });
           setIsLoggedIn(true);
         })
         .catch((error) => {
-          console.error("Failed to restore user:", error);
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-          setUser(null);
+          //localStorage.removeItem("token");
+          //setIsLoggedIn(false);
+          //setUser(null);
         });
     }
   }, []);

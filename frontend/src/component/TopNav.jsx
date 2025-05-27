@@ -15,9 +15,10 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
         try {
           const res = await getUserInfo(memberId, token);
           setUserInfo({
-            ...user,
+            userId: res.data?.userId || user.userId,
             name: res.data?.name || user.name,
-            profilePic: res.data?.profileImage || user.profilePic,
+            email: res.data?.email || user.email,
+            // profilePic: res.data?.profileImage || user.profilePic,
           });
         } catch (err) {
           console.error("유저 정보 불러오기 실패:", err);

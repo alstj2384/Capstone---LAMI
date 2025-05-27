@@ -17,12 +17,21 @@ export const loginUser = async ({ userId, password }) => {
 
 
 // 로그아웃 
-export const logoutUser = async (token) => {
-    return axios.post(endpoints.logout, {}, {
-        headers: {
-            Authorization: `${token}`,
-        },
-    });
+export const logoutUser = async (token, memberId) => {
+    // return axios.post(
+    //     endpoints.logout,
+    //     {
+    //         userId: memberId,
+    //     },
+    //     {
+    //         headers: {
+    //             Authorization: `${token}`,
+    //             'Content-Type': 'application/json',
+    //         },
+    //     }
+    // );
+    localStorage.removeItem("memberId")
+    localStorage.removeItem("token")
 };
 
 //회원 탈퇴 
@@ -41,12 +50,12 @@ export const signupUser = async (formData) => {
 
 // 회원가입 인증번호 전송
 export const signupRequestRegistCode = async (email) => {
-    return axios.post(endpoints.signRequestRegistCode, { email });
+    return axios.post(endpoints.signupRequestRegistCode, { email });
 };
 
 // 회원가입 인증번호 확인
 export const signupVerifyRegistCode = async ({ email, code }) => {
-    return axios.post(endpoints.signVerifyRegistCode, { email, code });
+    return axios.post(endpoints.signupVerifyRegistCode, { email, code });
 };
 
 // 비밀번호 변경 인증번호 전송 API 
@@ -75,7 +84,7 @@ export const updatePassword = async ({ userId, newPassword, token, memberId }) =
         {
             headers: {
                 Authorization: `${token}`,
-                "X-User-ID": memberId,
+                "X-User-Id": memberId,
                 "Content-Type": "application/json",
             },
         }
@@ -85,10 +94,11 @@ export const updatePassword = async ({ userId, newPassword, token, memberId }) =
 };
 
 // 사용자 정보 조회 
-export const getUserInfo = async (id) => {
+export const getUserInfo = async (id, token) => {
     const res = await axios.get(endpoints.getUserInfo(id), {
         headers: {
-            "X-User-ID": id,
+            "Authorization": token,
+            "X-User-Id": id,
         },
     });
     return res.data;
@@ -104,7 +114,7 @@ export const updateUserInfo = async ({ id, data, token }) => {
             headers: {
                 "Authorization": `${token}`,
                 "Content-Type": "application/json",
-                "X-User-ID": memberId,
+                "X-User-Id": memberId,
             },
         }
     );
@@ -131,7 +141,7 @@ export const getUserName = async (id, token) => {
     const res = await axios.get(endpoints.getUserName(id), {
         headers: {
             Authorization: `${token}`,
-            "X-User-ID": memberId,
+            "X-User-Id": memberId,
         },
     });
     return res.data;
@@ -143,7 +153,7 @@ export const getUserMemorizationMethod = async (memberId, token) => {
     const res = await axios.get(endpoints.getUserMemorizationMethod(memberId), {
         headers: {
             Authorization: `${token}`,
-            "X-User-ID": memberId, // 서버 요구 시에만 포함
+            "X-User-Id": memberId, // 서버 요구 시에만 포함
         },
     });
     return res.data; // 예: { data: "StorytellingMethod", ... }
@@ -230,7 +240,7 @@ export const getGradingList = async (token) => {
     const res = await axios.get(endpoints.getGradingList, {
         headers: {
             Authorization: `${token}`,
-            "X-User-ID": memberId,
+            "X-User-Id": memberId,
         },
     });
     return res.data;
@@ -268,7 +278,7 @@ export const createReview = async (data, token, memberId) => {
     const res = await axios.post(endpoints.createReview, data, {
         headers: {
             Authorization: `${token}`,
-            "X-User-ID": memberId,
+            "X-User-Id": memberId,
             "Content-Type": "application/json",
         },
     });
@@ -339,7 +349,7 @@ export const generateAiWorkbook = async ({
     const res = await axios.post(endpoints.generateAiWorkbook, formData, {
         headers: {
             Authorization: `${token}`,
-            "X-User-ID": memberId,
+            "X-User-Id": memberId,
             "Content-Type": "multipart/form-data",
         },
     });
