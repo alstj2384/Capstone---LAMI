@@ -12,8 +12,8 @@ import { SubmissionModule } from 'src/submissions/submission.module';
         ResponseModule,
         TypeOrmModule.forFeature([Grading]),
         HttpModule.register({
-            timeout: 5000, // 5초 이상 응답 없으면 타임아웃 시키기
-            maxRedirects: 5, // 최대 5번 리다이렉트
+            // timeout: 5000, // 5초 이상 응답 없으면 타임아웃 시키기
+            // maxRedirects: 5, // 최대 5번 리다이렉트
         }),
         SubmissionModule,
     ],
