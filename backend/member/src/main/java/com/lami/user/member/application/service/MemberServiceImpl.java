@@ -74,7 +74,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByUserId(memberId);
     }
 
-
     @Override
     public MemberInfoListResponseDto sendUserList() {
         // 모든 유저 조회

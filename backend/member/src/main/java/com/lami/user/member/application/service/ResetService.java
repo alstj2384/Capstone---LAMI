@@ -21,5 +21,4 @@ public interface ResetService {
 
     // 회원가입시 인증번호 일치 여부 확인
     void isEqualNumber(String email, String code);
-
 }
