@@ -17,12 +17,21 @@ export const loginUser = async ({ userId, password }) => {
 
 
 // 로그아웃 
-export const logoutUser = async (token) => {
-    return axios.post(endpoints.logout, {}, {
-        headers: {
-            Authorization: `${token}`,
-        },
-    });
+export const logoutUser = async (token, memberId) => {
+    // return axios.post(
+    //     endpoints.logout,
+    //     {
+    //         userId: memberId,
+    //     },
+    //     {
+    //         headers: {
+    //             Authorization: `${token}`,
+    //             'Content-Type': 'application/json',
+    //         },
+    //     }
+    // );
+    localStorage.removeItem("memberId")
+    localStorage.removeItem("token")
 };
 
 //회원 탈퇴 
