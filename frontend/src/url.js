@@ -9,9 +9,9 @@ export const endpoints = {
   login: `${server}/api/public/members/login`, // 로그인 
   logout: `${server}/api/public/members/logout`, // 로그아웃
   validateUserId: (memberId) => `${server}/api/public/members/validate/${memberId}`, //로그인 중복확인 
-  getUserInfo: (id) => `${server}/api/members/${id}`, // 회원정보 조회 
-  updateUser: (id) => `${server}/api/members/${id}`, // 회원정보 수정 
-  deleteUser: (id) => `${server}/api/members/${id}`, // 회원 탈퇴
+  getUserInfo: (memberId) => `${server}/api/members/${memberId}`, // 회원정보 조회 
+  updateUser: (memberId) => `${server}/api/members/${memberId}`, // 회원정보 수정 
+  deleteUser: (memberId) => `${server}/api/members/${memberId}`, // 회원 탈퇴
   resetPasswordRequestCode: `${server}/api/public/members/reset-password/request-code`, // 비밀번호 변경 인증번호 요청
   verifyResetPasswordCode: `${server}/api/public/members/reset-password/verify-code`, // 비밀번호 변경 인증번호 확인
   updatePassword: `${server}/api/members/reset-password`, // 비밀번호 변경 
@@ -23,7 +23,7 @@ export const endpoints = {
   createWorkbook: `${server}/api/workbook`, // 문제집 생성
   updateWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 수정 
   deleteWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 삭제 
-  getWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`,
+  getWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 조회 
   getWorkbookList: `${server}/api/workbook/list`, // 문제집 리스트 조회 
   getProblem: (problemId) => `${server}/api/problem/${problemId}`, // 문제 단건 조회 
   getProblemList: (workbookId) => `${server}/api/problem/list/${workbookId}`, // 문제 리스트 조회 

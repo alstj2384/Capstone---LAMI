@@ -10,7 +10,7 @@ export const loginUser = async ({ userId, password }) => {
     });
 
     const token = response.headers["authorization"]; // 헤더 이름이 정확히 'authorization'인지 확인
-    const memberId = response.data?.data?.memberId; // 바디에 있을 경우
+    const memberId = response.data?.memberId; // 바디에 있을 경우
 
     return { token, memberId };
 };
@@ -20,7 +20,7 @@ export const loginUser = async ({ userId, password }) => {
 export const logoutUser = async (token) => {
     return axios.post(endpoints.logout, {}, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
 };
@@ -29,7 +29,7 @@ export const logoutUser = async (token) => {
 export const deleteUser = async (id, token) => {
     return axios.delete(endpoints.deleteUser(id), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
 };
@@ -76,7 +76,7 @@ export const updatePassword = async ({ userId, newPassword, token, memberId }) =
         },
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
                 "X-User-ID": memberId,
                 "Content-Type": "application/json",
             },
@@ -87,10 +87,9 @@ export const updatePassword = async ({ userId, newPassword, token, memberId }) =
 };
 
 // 사용자 정보 조회 
-export const getUserInfo = async (id, token) => {
+export const getUserInfo = async (id) => {
     const res = await axios.get(endpoints.getUserInfo(id), {
         headers: {
-            Authorization: `Bearer ${token}`,
             "X-User-ID": id,
         },
     });
@@ -105,7 +104,7 @@ export const updateUserInfo = async ({ id, data, token }) => {
         data,
         {
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `${token}`,
                 "Content-Type": "application/json",
                 "X-User-ID": memberId,
             },
@@ -122,7 +121,7 @@ export const reissueToken = async (refreshToken) => {
         {},
         {
             headers: {
-                Authorization: `Bearer ${refreshToken}`,
+                Authorization: ` ${refreshToken}`,
             },
         }
     );
@@ -133,7 +132,7 @@ export const reissueToken = async (refreshToken) => {
 export const getUserName = async (id, token) => {
     const res = await axios.get(endpoints.getUserName(id), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId,
         },
     });
@@ -145,7 +144,7 @@ export const getUserName = async (id, token) => {
 export const getUserMemorizationMethod = async (memberId, token) => {
     const res = await axios.get(endpoints.getUserMemorizationMethod(memberId), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId, // 서버 요구 시에만 포함
         },
     });
@@ -157,7 +156,7 @@ export const createWorkbook = async ({ formData, token }) => {
     const res = await axios.post(endpoints.createWorkbook, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
     return res.data;
@@ -180,7 +179,7 @@ export const validateUserId = async (memberId) => {
 export const updateWorkbook = async ({ workbookId, data, token }) => {
     const res = await axios.patch(endpoints.updateWorkbook(workbookId), data, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "Content-Type": "application/json",
         },
     });
@@ -191,7 +190,7 @@ export const updateWorkbook = async ({ workbookId, data, token }) => {
 export const deleteWorkbook = async (workbookId, token) => {
     const res = await axios.delete(endpoints.deleteWorkbook(workbookId), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
     return res.data;
@@ -221,7 +220,7 @@ export const getProblemList = async (workbookId, token) => {
 export const updateProblem = async ({ workbookId, data, token }) => {
     const res = await axios.patch(endpoints.updateProblem(workbookId), data, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "Content-Type": "application/json",
         },
     });
@@ -232,7 +231,7 @@ export const updateProblem = async ({ workbookId, data, token }) => {
 export const getGradingList = async (token) => {
     const res = await axios.get(endpoints.getGradingList, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId,
         },
     });
@@ -243,7 +242,7 @@ export const getGradingList = async (token) => {
 export const getGrading = async (gradingId, token) => {
     const res = await axios.get(endpoints.getGrading(gradingId), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
     return res.data;
@@ -253,7 +252,7 @@ export const getGrading = async (gradingId, token) => {
 export const requestGrading = async (payload, token) => {
     const res = await axios.post(endpoints.gradingRequest, payload, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "Content-Type": "application/json",
         },
     });
@@ -270,7 +269,7 @@ export const getQuizset = async (gradingId) => {
 export const createReview = async (data, token, memberId) => {
     const res = await axios.post(endpoints.createReview, data, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId,
             "Content-Type": "application/json",
         },
@@ -283,7 +282,7 @@ export const createReview = async (data, token, memberId) => {
 export const getReviewList = async (token) => {
     const res = await axios.get(endpoints.getReview, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-Id": memberId,
         },
     });
@@ -294,7 +293,7 @@ export const getReviewList = async (token) => {
 export const deleteReview = async (reviewId, token) => {
     const res = await axios.delete(endpoints.deleteReview(reviewId), {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     });
     return res.data;
@@ -307,7 +306,7 @@ export const updateReviewSchedule = async ({ reviewId, difficulty, token }) => {
         { difficulty },
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
                 "Content-Type": "application/json",
             },
         }
@@ -341,7 +340,7 @@ export const generateAiWorkbook = async ({
 
     const res = await axios.post(endpoints.generateAiWorkbook, formData, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId,
             "Content-Type": "multipart/form-data",
         },
@@ -358,7 +357,7 @@ export const getAiFeedback = async ({ question, choices, answer, token }) => {
         { question, choices, answer },
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
                 "Content-Type": "application/json",
             },
         }
@@ -373,7 +372,7 @@ export const generateMemorization = async ({ question, choices, answer, method, 
         { question, choices, answer, method },
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
                 "Content-Type": "application/json",
             },
         }
