@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
 import "./TopNav.css";
-import { getUserInfo } from "../api";
+import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
 
-const TopNav = ({ isLoggedIn, user, handleLogout }) => {
+const TopNav = ({ isLoggedIn, user, logoutUser }) => {
   const [userInfo, setUserInfo] = useState(user);
 
   useEffect(() => {
@@ -62,7 +62,16 @@ const TopNav = ({ isLoggedIn, user, handleLogout }) => {
           />
           <span className="text-sm">{userInfo?.name}님 반갑습니다</span>
           <button
-            onClick={handleLogout}
+            onClick={async () => {
+              try {
+                const token = localStorage.getItem("token");
+                const memberId = localStorage.getItem("memberId");
+                await logoutUserAPI(token, memberId); // 실제 API 호출
+                logoutUser();
+              } catch (err) {
+                console.error("로그아웃 실패", err);
+              }
+            }}
             className="nav-button bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
           >
             로그아웃

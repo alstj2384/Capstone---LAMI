@@ -21,3 +21,5 @@ yarn-error.log*
 
 # VSCode settings (optional)
 .vscode/
+
+vite.config.js

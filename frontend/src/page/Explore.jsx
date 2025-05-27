@@ -20,21 +20,21 @@ const Explore = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const memberId = localStorage.getItem("memberId");
-      if (!token || !memberId) return;
+      const userId = localStorage.getItem("userId");
+      if (!token || !userId) return;
 
       try {
         console.error("Axios 오류 발생", error); // 중요
         console.error("에러 메시지:", error.message);
         console.error("에러 응답:", error.response); // HTTP 상태 코드 등
         console.error("요청 정보:", error.config);
-        const userRes = await axios.get(endpoints.getUserInfo(memberId), {
+        const userRes = await axios.get(endpoints.getUserInfo(userId), {
           headers: {
             Authorization: `Bearer ${token}`,
-            "X-User-ID": memberId,
+            "X-User-ID": userId,
           },
         });
-        setCurrentUserId(userRes.data.data.memberId);
+        setCurrentUserId(userRes.data.data.userId);
 
         const quizRes = await getWorkbookList(token);
         setQuizList(quizRes.data);
