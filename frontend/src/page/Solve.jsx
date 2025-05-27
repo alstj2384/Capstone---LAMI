@@ -14,6 +14,20 @@ const Solve = () => {
   const [currentProblem, setCurrentProblem] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [time, setTime] = useState(0);
+  const [workbook, setWorkbook] = useState(null);
+
+  useEffect(() => {
+    const fetchWorkbookInfo = async () => {
+      try {
+        const res = await getWorkbook(quizSetId);
+        setWorkbook(res.data); // API 구조에 따라 조정
+      } catch (err) {
+        console.error("문제집 정보 불러오기 실패", err);
+      }
+    };
+
+    fetchWorkbookInfo();
+  }, [quizSetId]);
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -90,7 +104,7 @@ const Solve = () => {
   return (
     <div className="solve-page">
       <div className="solve-header">
-        <h1 className="solve-title">문제 풀기</h1>
+        <h1 className="solve-title">{workbook?.title} 문제 풀이</h1>
         <span className="solve-timer">소요시간 {formatTime(time)}</span>
       </div>
 

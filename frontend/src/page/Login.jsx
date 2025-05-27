@@ -14,28 +14,6 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     setError("");
 
-    // 👉 하드코딩된 아이디/비밀번호
-    const hardcodedId = "demo";
-    const hardcodedPw = "1234";
-
-    if (userId === hardcodedId && password === hardcodedPw) {
-      // 가짜 로그인 성공 처리
-      const fakeUser = {
-        memberId: 999,
-        name: "임시 유저",
-        token: "fake-token",
-        profilePic: "https://via.placeholder.com/150",
-      };
-
-      onLogin(fakeUser);
-      localStorage.setItem("token", fakeUser.token);
-      localStorage.setItem("memberId", fakeUser.memberId);
-      navigate("/");
-    } else {
-      // 가짜 로그인 실패
-      setError("아이디 또는 비밀번호가 올바르지 않습니다.");
-    }
-
     try {
       const { memberId, name, token, profilePic } = await loginUser({
         userId,
@@ -46,6 +24,7 @@ export default function Login({ onLogin }) {
       localStorage.setItem("token", token);
       localStorage.setItem("memberId", memberId);
       navigate("/");
+      console.log("headers:", response.headers);
     } catch (err) {
       console.error("로그인 에러:", err);
       const errorMessage =
