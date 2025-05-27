@@ -15,12 +15,12 @@ export default function Login({ onLogin }) {
     setError("");
 
     try {
-      const { memberId, name, token, profilePic } = await loginUser({
+      const { memberId, token } = await loginUser({
         userId,
         password,
       });
 
-      onLogin({ memberId, name, token, profilePic });
+      onLogin({ memberId, token });
       localStorage.setItem("token", token);
       localStorage.setItem("memberId", memberId);
       navigate("/");

@@ -22,44 +22,10 @@ const MyPage = ({ isLoggedIn }) => {
     const memberId = localStorage.getItem("memberId");
     const token = localStorage.getItem("token");
 
-    if (!memberId || !token) {
-      setUser({
-        name: "채승오",
-        email: "soongmin@daelim.ac.kr",
-        profilePic: SquirrelIcon,
-      });
-      setReviewList([
-        {
-          title: "정보처리기사 2회",
-          createdDate: "25.04.01",
-          id: 1,
-        },
-        {
-          title: "정보처리기사 2회",
-          createdDate: "25.04.01",
-          id: 2,
-        },
-      ]);
-      setProblemList([
-        {
-          title: "정보처리기사 모의고사 1",
-          count: 10,
-          date: "25.03.30",
-        },
-        {
-          title: "정보처리기사 실기",
-          count: 8,
-          date: "25.03.25",
-        },
-      ]);
-      return;
-    }
-
     const fetchUserData = async () => {
       try {
         const userRes = await axios.get(endpoints.getUserInfo(memberId), {
           headers: {
-            Authorization: `Bearer ${token}`,
             "X-User-ID": memberId,
           },
         });
@@ -67,7 +33,7 @@ const MyPage = ({ isLoggedIn }) => {
 
         const reviewRes = await axios.get(endpoints.getReview, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
             "X-User-ID": memberId,
           },
         });
@@ -75,8 +41,8 @@ const MyPage = ({ isLoggedIn }) => {
 
         const workbookRes = await axios.get(endpoints.getWorkbookList, {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "X-User-ID": memberId,
+            Authorization: `${token}`,
+            "X-User-ID": id,
           },
         });
         setProblemList(workbookRes.data.data || []);
