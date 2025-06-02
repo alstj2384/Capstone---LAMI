@@ -92,11 +92,11 @@ const Solve = () => {
         //const resGradingList = await getGradingList(token, memberId)
 
         //const GradingId = resGradingList.data.gradingList[0]
-        
+
         console.log(res.data.gradingId)
         const GradingId = res.data.gradingId
 
-        navigate("/result", { state: GradingId });
+        navigate("/result", { state: { gradingId: GradingId } });
       }
 
     } catch (err) {
