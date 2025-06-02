@@ -93,9 +93,6 @@ const Solve = () => {
 
         const GradingId = resGradingList.data.gradingList[0]
 
-        console.log("AAAAAAA_Grading_AAAAAAA")
-        console.log(GradingId)
-
         navigate("/result", { state: GradingId });
       }
 
