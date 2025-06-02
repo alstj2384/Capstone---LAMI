@@ -35,7 +35,7 @@ const Result = () => {
 
     console.log("AAAA GRADiong")
     console.log(gradingId)
-
+    if(!gradingId){ return; }
     const token = localStorage.getItem("token");
     if(!gradingResult){
       try {
@@ -49,7 +49,7 @@ const Result = () => {
       }
     }
 
-  }, [gradingResult]);
+  }, [gradingResult, gradingId]);
 
   const handleRetry = () => {
     navigate("/solve");
