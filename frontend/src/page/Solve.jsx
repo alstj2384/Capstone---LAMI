@@ -92,6 +92,8 @@ const Solve = () => {
         //const resGradingList = await getGradingList(token, memberId)
 
         //const GradingId = resGradingList.data.gradingList[0]
+        console.log("AAAAA_AAAAA_ResData")
+        console.log(res.data)
         const GradingId = res.data
 
         navigate("/result", { state: GradingId });
