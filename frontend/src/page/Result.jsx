@@ -33,6 +33,9 @@ const Result = () => {
     // };
     //fetchGradingResult();
 
+    console.log("AAAA GRADiong")
+    console.log(gradingId)
+
     const token = localStorage.getItem("token");
     if(!gradingResult){
       try {
