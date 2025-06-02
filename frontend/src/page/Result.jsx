@@ -32,6 +32,8 @@ const Result = () => {
     //   }
     // };
     //fetchGradingResult();
+
+    const token = localStorage.getItem("token");
     if(!gradingResult){
       try {
         const result = getGrading(gradingId, token); // 채점 결과를 가져오는 api 실행

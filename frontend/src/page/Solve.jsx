@@ -89,9 +89,12 @@ const Solve = () => {
       if (res) {
         // 채점 목록 가져오기 - 채점 완료시 해당 채점ID 넘기게 변경필요
         // 아래는 임시로 채점목록중 최신 채점으로 이동
-        const resGradingList = await getGradingList(token, memberId)
+        //const resGradingList = await getGradingList(token, memberId)
 
-        const GradingId = resGradingList.data.gradingList[0]
+        //const GradingId = resGradingList.data.gradingList[0]
+        console.log("AAAAA_AAAAA_ResData")
+        console.log(res.data)
+        const GradingId = res.data
 
         navigate("/result", { state: GradingId });
       }
