@@ -14,23 +14,37 @@ const Result = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const fetchGradingResult = async () => {
-      if (!gradingId) return;
+    // const fetchGradingResult = async () => {
+    //   console.log("AAAA_gradingId_AAA")
+    //   console.log(gradingId)
+    //   if (!gradingId) return;
 
-      const token = localStorage.getItem("token");
+    //   const token = localStorage.getItem("token");
 
+    //   try {
+    //     const result = await getGrading(gradingId, token); // ✅ 수정: API 함수 사용
+    //     console.log("BBBB_Grading_RES_BBBBB")
+    //     setGradingResult(result.data); // 또는 result.data.data → 실제 구조에 맞춰 확인
+    //   } catch (error) {
+    //     console.error("채점 결과 조회 실패:", error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    //fetchGradingResult();
+    if(!gradingResult){
       try {
-        const result = await getGrading(gradingId, token); // ✅ 수정: API 함수 사용
+        const result = getGrading(gradingId, token); // 채점 결과를 가져오는 api 실행
+        console.log("BBBB_Grading_RES_BBBBB")
         setGradingResult(result.data); // 또는 result.data.data → 실제 구조에 맞춰 확인
       } catch (error) {
         console.error("채점 결과 조회 실패:", error);
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchGradingResult();
-  }, [gradingId]);
+  }, [gradingResult]);
 
   const handleRetry = () => {
     navigate("/solve");
