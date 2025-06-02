@@ -231,7 +231,7 @@ export class GradingService {
         await this.updateScore(grading.id, correctCount);
     }
 
-    async saveData(gradingResults: GradingResult[], userSubmissions: QuizDTO[], userId: number, quizSetId: number, jwtToken: string): Promise<Submission[]> {
+    async saveData(gradingResults: GradingResult[], userSubmissions: QuizDTO[], userId: number, quizSetId: number, jwtToken: string): Promise<number> {
         const grading = await this.createGradingEntity(userId, quizSetId);
 
         const problems = await this.getProblems(quizSetId);
@@ -245,14 +245,16 @@ export class GradingService {
 
         await this.persistSubmissionsAndScore(grading, submissions, gradingResults);
 
-        return submissions;
+        return grading.id;
     }
 
-    async gradingAndSave(userId: number, quizSetId: number, userSubmissions: QuizDTO[], jwtToken: string): Promise<void> {
+    async gradingAndSave(userId: number, quizSetId: number, userSubmissions: QuizDTO[], jwtToken: string): Promise<number> {
 
         const gradingResults = await this.grading(quizSetId, userSubmissions);
 
-        await this.saveData(gradingResults, userSubmissions, userId, quizSetId, jwtToken);
+        const gradingId = await this.saveData(gradingResults, userSubmissions, userId, quizSetId, jwtToken);
+
+        return gradingId;
     }
 
     async getUserGradingIds(userId: number): Promise<number[]> {
