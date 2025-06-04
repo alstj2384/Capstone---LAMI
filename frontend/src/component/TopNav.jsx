@@ -4,6 +4,7 @@ import LogoImg from "../assets/LAMI_icon.svg";
 import profile from "../assets/DALAMI_1.svg";
 import "./TopNav.css";
 import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
+
 const TopNav = ({ isLoggedIn, user, handleLogout }) => {
   const [userInfo, setUserInfo] = useState(user);
 
