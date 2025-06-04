@@ -51,9 +51,6 @@ const App = () => {
           setIsLoggedIn(true);
         })
         .catch((error) => {
-          //localStorage.removeItem("token");
-          //setIsLoggedIn(false);
-          //setUser(null);
         });
     }
   }, []);
