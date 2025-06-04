@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
 import "./TopNav.css";
-import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
+import { getUserInfo, logoutUser } from "../api";
+import { handleLogout } from "../App";
 
 const TopNav = ({ isLoggedIn, user, logoutUser }) => {
   const [userInfo, setUserInfo] = useState(user);
@@ -66,8 +67,8 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
               try {
                 const token = localStorage.getItem("token");
                 const memberId = localStorage.getItem("memberId");
-                await logoutUserAPI(token, memberId); // 실제 API 호출
-                logoutUser();
+                await logoutUser(token, memberId);
+                handleLogout();
               } catch (err) {
                 console.error("로그아웃 실패", err);
               }
