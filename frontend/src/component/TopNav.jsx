@@ -2,30 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
 import "./TopNav.css";
-import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
-
+import { getUserInfo, logoutUser } from "../api";
+import { handleLogout } from "../App";
 const TopNav = ({ isLoggedIn, user, logoutUser }) => {
   const [userInfo, setUserInfo] = useState(user);
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const token = localStorage.getItem("token");
-      const memberId = localStorage.getItem("memberId");
-      if (isLoggedIn && token && memberId) {
-        try {
-          const res = await getUserInfo(memberId, token);
-          setUserInfo({
-            userId: res.data?.userId || user.userId,
-            name: res.data?.name || user.name,
-            email: res.data?.email || user.email,
-            // profilePic: res.data?.profileImage || user.profilePic,
-          });
-        } catch (err) {
-          console.error("유저 정보 불러오기 실패:", err);
-        }
-      }
-    };
+  const fetchUserInfo = async () => {
+    const token = localStorage.getItem("token");
+    const memberId = localStorage.getItem("memberId");
 
+    if (token && memberId) {
+      // 유저 정보 가져오기
+      const res = await getUserInfo(memberId, token);
+
+      // TODO: 에러 처리하기
+      setUserInfo({
+        userId: res.data.userId,
+        name: res.data.name,
+        email: res.data.email,
+      });
+    }
+  };
+
+  useEffect(() => {
     fetchUserInfo();
   }, [isLoggedIn]);
 
@@ -67,8 +66,8 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
               try {
                 const token = localStorage.getItem("token");
                 const memberId = localStorage.getItem("memberId");
-                await logoutUserAPI(token, memberId); // 실제 API 호출
-                logoutUser();
+                await logoutUser(token, memberId); 
+                handleLogout();
               } catch (err) {
                 console.error("로그아웃 실패", err);
               }

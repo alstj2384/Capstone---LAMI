@@ -34,16 +34,17 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect( () => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const memberId = localStorage.getItem("memberId");
     if (token) {
-      axios.get(endpoints.getUserInfo(memberId), {
-        headers: {
+      axios
+        .get(endpoints.getUserInfo(memberId), {
+          headers: {
             Authorization: token,
             "X-User-Id": memberId,
-        },
-    })
+          },
+        })
         .then((response) => {
           const { name, email } = response.data;
           setUser({ name, email, token });
@@ -66,6 +67,7 @@ const App = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     localStorage.setItem("timeSpent", "0");
     setIsLoggedIn(false);
     setUser(null);
