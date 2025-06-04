@@ -34,7 +34,7 @@ public class ProblemDto{
         for(int i = 0; i < 3; i++){
             sb.append(choices.get(Integer.toString(i+1))).append(",");
         }
-        sb.append(choices.get(Integer.toString(3)));
+        sb.append(choices.get(Integer.toString(4)));
         return sb.toString();
     }
 }

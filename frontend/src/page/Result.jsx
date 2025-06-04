@@ -12,16 +12,18 @@ const Result = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
     const fetchGradingResult = async () => {
-      if (!gradingId) return;
+      if (!gradingId) {
+        console.warn("gradingId가 없습니다.");
+        return;
+      }
 
       const token = localStorage.getItem("token");
 
       try {
-        const result = await getGrading(gradingId, token); // ✅ 수정: API 함수 사용
-        setGradingResult(result.data); // 또는 result.data.data → 실제 구조에 맞춰 확인
+        const result = await getGrading(gradingId, token);
+        console.log("채점 결과:", result);
+        setGradingResult(result.data);
       } catch (error) {
         console.error("채점 결과 조회 실패:", error);
       } finally {

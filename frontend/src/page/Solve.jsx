@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProblemList, getProblem, requestGrading } from "../api";
+import { getProblemList, getProblem, requestGrading, getGradingList } from "../api";
 import "./css/Solve.css";
 
 const Solve = () => {
@@ -76,6 +76,7 @@ const Solve = () => {
     }));
 
     try {
+      console.log(answers)
       const res = await requestGrading(
         {
           quizSetId: parseInt(quizSetId),
@@ -84,7 +85,20 @@ const Solve = () => {
         token
       );
 
-      navigate("/result", { state: res.data });
+      //res에서 채점 ID를 가져올 필요가 있다.
+      if (res) {
+        // 채점 목록 가져오기 - 채점 완료시 해당 채점ID 넘기게 변경필요
+        // 아래는 임시로 채점목록중 최신 채점으로 이동
+        //const resGradingList = await getGradingList(token, memberId)
+
+        //const GradingId = resGradingList.data.gradingList[0]
+
+        console.log(res.data.gradingId)
+        const GradingId = res.data.gradingId
+
+        navigate("/result", { state: { gradingId: GradingId } });
+      }
+
     } catch (err) {
       console.error("채점 실패", err);
     }
@@ -113,18 +127,20 @@ const Solve = () => {
           {problemList.map((problem, idx) => (
             <div
               key={problem.problemId}
-              className={`solve-problem-item ${
-                currentProblemId === problem.problemId
-                  ? "active"
-                  : userAnswers[problem.problemId]
+              className={`solve-problem-item ${currentProblemId === problem.problemId
+                ? "active"
+                : userAnswers[problem.problemId]
                   ? "completed"
                   : ""
-              }`}
+                }`}
               onClick={() => setCurrentProblemId(problem.problemId)}
             >
               {idx + 1}. {problem.questionType.replace("_", " ")}
             </div>
           ))}
+          <button onClick={handleSubmit} className="solve-submit-button">
+            제출하기
+          </button>
         </div>
 
         <div className="solve-content">
@@ -207,9 +223,6 @@ const Solve = () => {
             </div>
           )}
 
-          <button onClick={handleSubmit} className="solve-submit-button">
-            제출하기
-          </button>
         </div>
       </div>
     </div>

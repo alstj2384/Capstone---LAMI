@@ -10,7 +10,7 @@ const Explore = () => {
   const navigate = useNavigate();
 
   const [quizList, setQuizList] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(localStorage.getItem("memberId"));
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
@@ -23,28 +23,16 @@ const Explore = () => {
       const userId = localStorage.getItem("memberId");
       if (!token || !userId) return;
 
-      console.log(token)
-      console.log(userId)
       try {
-
-        // const userRes = await axios.get(endpoints.getUserInfo(userId), {
-        //   headers: {
-        //     Authorization: `${token}`,
-        //     "X-User-ID": userId,
-        //   },
-        // });
-        //console.log(userRes)
-        setCurrentUserId(userId);
-
-        console.log("AAAAAAAA")
-
+        //setCurrentUserId(userId);
+        
+        console.log("AAAAAAA")
         const quizRes = await getWorkbookList(token);
-        setQuizList(quizRes.data);
 
+        setQuizList(quizRes.data.content);
 
-        console.log("BBBBBB")
       } catch (error) {
-        console.error("데이터를 불러오는 중 오류 발생", error);
+        console.log("데이터를 불러오는 중 오류 발생", error);
       }
     };
 

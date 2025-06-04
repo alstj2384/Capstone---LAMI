@@ -13,6 +13,6 @@ public interface RedisService {
 
     String getValue(String key);
 
-    void deleteValue(String key);
+    void deleteValue(Long key);
 
 }
