@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
+import profile from "../assets/DALAMI_1.svg";
 import "./TopNav.css";
-import { getUserInfo, logoutUser } from "../api";
-import { handleLogout } from "../App";
+import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
 
-const TopNav = ({ isLoggedIn, user, logoutUser }) => {
+const TopNav = ({ isLoggedIn, user, handleLogout }) => {
   const [userInfo, setUserInfo] = useState(user);
 
   const fetchUserInfo = async () => {
@@ -16,7 +16,6 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
       // 유저 정보 가져오기
       const res = await getUserInfo(memberId, token);
 
-      // TODO: 에러 처리하기
       setUserInfo({
         userId: res.data.userId,
         name: res.data.name,
@@ -57,17 +56,19 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
       {isLoggedIn ? (
         <div className="topnav-text flex items-center space-x-2">
           <img
-            src={userInfo?.profilePic}
+            src={userInfo?.profilePic || profile}
             alt="Profile"
             className="profile-pic w-8 h-8 rounded-full"
           />
-          <span className="text-sm">{userInfo?.name}님 반갑습니다</span>
+          <span className="text-sm">
+            {userInfo?.name ? `${userInfo.name}님 반갑습니다` : ""}
+          </span>
           <button
             onClick={async () => {
               try {
                 const token = localStorage.getItem("token");
                 const memberId = localStorage.getItem("memberId");
-                await logoutUser(token, memberId); 
+                await logoutUserAPI(token, memberId);
                 handleLogout();
               } catch (err) {
                 console.error("로그아웃 실패", err);
