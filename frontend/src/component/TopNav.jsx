@@ -67,7 +67,7 @@ const TopNav = ({ isLoggedIn, user, logoutUser }) => {
               try {
                 const token = localStorage.getItem("token");
                 const memberId = localStorage.getItem("memberId");
-                await logoutUser(token, memberId);
+                await logoutUser(token, memberId); 
                 handleLogout();
               } catch (err) {
                 console.error("로그아웃 실패", err);
