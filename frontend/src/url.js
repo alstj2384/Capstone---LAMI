@@ -36,7 +36,7 @@ export const endpoints = {
   getReview: `${server}/api/review`, // 복습 조회
   deleteReview: (reviewId) => `${server}/api/review/${reviewId}`, // 복습 문제 삭제
   updateReviewSchedule: (reviewId) => `${server}/api/review/${reviewId}`,
-  generateAiWorkbook: `${server}/api/ai/workbook`,
-  getAiFeedback: `${server}/api/ai/feedback`,
-  generateMemorization: `${server}/api/ai/memorization`,
+  generateAiWorkbook: `${server}/api/workbook`,
+  getAiFeedback: `${server}/api/feedback`,
+  generateMemorization: `${server}/api/memorization`,
 };

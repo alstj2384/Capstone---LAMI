@@ -177,7 +177,7 @@
       <i>Backend, Infra</i>
     </td>
     <td align="center">
-      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채승"/><br />
+      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채승오"/><br />
       <b>채승오</b><br />
       <i>Backend</i>
     </td>

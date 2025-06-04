@@ -60,7 +60,6 @@ public class Member implements UserDetails  {
     private String provider; // 소셜 로그인 타입
     private String providerId; // 소셜 로그인 ID
 
-
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)

@@ -34,10 +34,10 @@ export class GradingController {
             },
         },
     })
-    async grading(@Headers('X-User-Id') userId: number, @Body() userSubmissions: QuizSetDto) {
-        await this.gradingService.gradingAndSave(userId, userSubmissions.quizSetId, userSubmissions.answers);
+    async grading(@Headers('X-User-Id') userId: number, @Headers('Authorization') jwtToken: string, @Body() userSubmissions: QuizSetDto) {
+        const gradingId = await this.gradingService.gradingAndSave(userId, userSubmissions.quizSetId, userSubmissions.answers, jwtToken);
 
-        return this.responseService.response(ResponseCode.GRADING_200, {});
+        return this.responseService.response(ResponseCode.GRADING_200, {gradingId});
     }
 
     @Get()
@@ -60,8 +60,14 @@ export class GradingController {
     @Get(':gradingId')
     @ApiTags('Grading')
     @ApiOperation({ summary: '채점 결과 조회' })
+    @ApiHeader({
+        name: 'X-User-Id',
+        required: true,
+        description: '유저의 고유 ID',
+    })
     @ApiParam({ name: 'gradingId', description: '채점 ID' })
-    async submit(@Param('gradingId', ParseIntPipe) gradingId: number) {
+    async submit(@Param('gradingId', ParseIntPipe) gradingId: number, @Headers('X-User-Id') userId: number) {
+
         const gradingResults = await this.gradingService.getGrading(gradingId);
 
         return this.responseService.response(ResponseCode.GRADING_VIEW_200, { ...gradingResults });
@@ -77,3 +83,4 @@ export class GradingController {
         return this.responseService.response(ResponseCode.GET_QUIZSETID_200, { quizSetId });
     }
 }
+

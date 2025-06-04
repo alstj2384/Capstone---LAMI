@@ -227,7 +227,7 @@ export const updateProblem = async ({ workbookId, data, token }) => {
 };
 
 // 채점 목록 조회
-export const getGradingList = async (token) => {
+export const getGradingList = async (token, memberId) => {
     const res = await axios.get(endpoints.getGradingList, {
         headers: {
             Authorization: `${token}`,
