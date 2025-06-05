@@ -26,7 +26,7 @@ const MyPage = () => {
         const userRes = await axios.get(endpoints.getUserInfo(state.memberId), {
           headers: {
             Authorization: state.token,
-            "X-User-ID": memberId,
+            "X-User-ID": state.memberId,
           },
         });
         setUser(userRes.data);
