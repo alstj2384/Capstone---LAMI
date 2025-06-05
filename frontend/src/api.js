@@ -87,14 +87,20 @@ export const updatePassword = async ({ userId, newPassword, token, memberId }) =
 
 // 사용자 정보 조회 
 export const getUserInfo = async (id, token) => {
+    if (!id || !token) {
+        throw new Error("memberId 또는 token이 누락되었습니다.");
+    }
+
     const res = await axios.get(endpoints.getUserInfo(id), {
         headers: {
-            "Authorization": token,
-            "X-User-Id": id,
+            Authorization: `${token}`,
+            "X-User-ID": id, // 대문자 ID로 통일
         },
     });
+
     return res.data;
 };
+
 
 
 //회원정보 수정 함수 
@@ -204,10 +210,10 @@ export const getWorkbook = async (workbookId) => {
 
 // 문제집 리스트 조회
 export const getWorkbookList = async () => {
-    const res = await axios.get(endpoints.getWorkbookList, {
-    });
-    return res.data;
+    const res = await axios.get(endpoints.getWorkbookList);
+    return res.data?.data || []; // ⚠️ data가 없을 경우 빈 배열 반환
 };
+
 
 // 문제 리스트 조회
 export const getProblemList = async (workbookId, token) => {
