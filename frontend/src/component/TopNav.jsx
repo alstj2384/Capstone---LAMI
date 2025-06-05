@@ -4,18 +4,23 @@ import LogoImg from "../assets/LAMI_icon.svg";
 import profile from "../assets/DALAMI_1.svg";
 import "./TopNav.css";
 import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
-import { useAuth } from "../store/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/authSlice";
 
 const TopNav = () => {
   const navigate = useNavigate();
-  const { state, dispatch } = useAuth();
+  const dispatch = useDispatch();
+  const { token, memberId, isLoggedIn, isInitialized } = useSelector(
+    (state) => state.auth
+  );
+
   const [userInfo, setUserInfo] = useState(null);
 
   const fetchUserInfo = async () => {
-    if (!state.memberId || !state.token) return;
+    if (!memberId || !token) return;
 
     try {
-      const res = await getUserInfo(state.memberId, state.token);
+      const res = await getUserInfo(memberId, token);
       const data = res?.data?.data || res?.data || res;
 
       setUserInfo({
@@ -30,25 +35,20 @@ const TopNav = () => {
   };
 
   useEffect(() => {
-    if (
-      state.isInitialized &&
-      state.isLoggedIn &&
-      state.memberId &&
-      state.token
-    ) {
+    if (isInitialized && isLoggedIn && memberId && token) {
       fetchUserInfo();
     }
-  }, [state.isInitialized, state.isLoggedIn, state.memberId, state.token]);
+  }, [isInitialized, isLoggedIn, memberId, token]);
 
-  if (!state.isInitialized) return null;
+  if (!isInitialized) return null;
 
   const handleLogout = async () => {
     try {
-      await logoutUserAPI(state.token, state.memberId);
+      await logoutUserAPI(token, memberId);
     } catch (err) {
       console.error("서버 로그아웃 실패", err);
     } finally {
-      dispatch({ type: "LOGOUT" });
+      dispatch(logout());
       navigate("/");
     }
   };
