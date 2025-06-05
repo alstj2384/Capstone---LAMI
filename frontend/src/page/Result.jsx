@@ -55,24 +55,21 @@ const Result = () => {
       <div className="result-container">
         <h1 className="result-title">채점 결과</h1>
 
-        {gradingResult.submissions.map((item) => (
+        {gradingResult.submissions.map((item, index) => (
           <div key={item.quizId} className="result-problem">
-            <h2 className="result-problem-title">문제 {item.quizId}번</h2>
+            <h2 className="result-problem-title">문제 {index + 1}번</h2>
             <p className="result-feedback-text">정답: {item.answer}</p>
-            <p className="result-feedback-text">
-              제출한 답: {item.submittedAnswer}
-            </p>
-            <span
-              className={item.isCorrect ? "text-green-500" : "text-red-500"}
-            >
+            <p className="result-feedback-text">제출한 답: {item.submittedAnswer}</p>
+            <span className={item.isCorrect ? "text-green-500" : "text-red-500"}>
               {item.isCorrect ? "정답" : "오답"}
             </span>
             <div className="result-feedback">
+              <p className="result-feedback-text">피드백: {item.feedback.explain}</p>
               <p className="result-feedback-text">
-                암기법: {item.memorization}
+                암기법: {item.memorization.explain}
               </p>
-              <p className="result-feedback-text">피드백: {item.feedback}</p>
             </div>
+            <button className="review-add-button">복습에 추가하기</button>
           </div>
         ))}
 
