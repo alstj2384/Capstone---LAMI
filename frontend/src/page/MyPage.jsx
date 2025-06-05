@@ -24,38 +24,41 @@ const MyPage = () => {
   );
 
   useEffect(() => {
-    if (!isInitialized) return; // 초기화 안됐으면 아무 것도 안 함
-
+    if (!isInitialized) return;
     if (!isLoggedIn) {
       navigate("/login");
       return;
     }
 
-  const fetchUserData = async () => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "X-User-ID": memberId,
-    },
-  };
+    const fetchUserData = async () => {
+      const config = {
+        headers: {
+          Authorization: `${token}`,
+          "X-User-ID": memberId,
+        },
+      };
 
-  try {
-    const userRes = await axios.get(endpoints.getUserInfo(memberId), config);
-    const userData = userRes?.data?.data || userRes?.data;
-    setUser(userData);
+      try {
+        const userRes = await axios.get(
+          endpoints.getUserInfo(memberId),
+          config
+        );
+        const userData = userRes?.data?.data || userRes?.data;
+        setUser(userData);
 
-    const reviewRes = await axios.get(endpoints.getReview, config);
-    const reviews = reviewRes.data?.data;
-    setReviewList(Array.isArray(reviews) ? reviews : []);
+        const reviewRes = await axios.get(endpoints.getReview, config);
+        const reviews = reviewRes.data?.data;
+        setReviewList(Array.isArray(reviews) ? reviews : []);
 
-    const workbookRes = await axios.get(endpoints.getWorkbookList, config);
-    const workbooks = workbookRes.data?.data;
-    setProblemList(Array.isArray(workbooks) ? workbooks : []);
-  } catch (error) {
-    console.error("사용자 정보를 불러올 수 없습니다.", error);
-  }
-};
+        const workbookRes = await axios.get(endpoints.getWorkbookList, config);
+        const workbooks = workbookRes.data?.data;
+        setProblemList(Array.isArray(workbooks) ? workbooks : []);
+      } catch (error) {
+        console.error("사용자 정보를 불러올 수 없습니다.", error);
+      }
+    };
 
+    fetchUserData();
   }, [isInitialized, isLoggedIn, token, memberId, navigate]);
 
   useEffect(() => {
