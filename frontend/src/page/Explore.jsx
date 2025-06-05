@@ -134,7 +134,7 @@ const Explore = () => {
               onChange={handleShowMyQuizzesChange}
             />
             <label htmlFor="my-posts" className="explore-checkbox-label">
-              내가 생성한 문제집 보기
+              내가 생성한 문제집만 보기
             </label>
           </div>
         </div>

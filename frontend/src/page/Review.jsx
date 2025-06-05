@@ -68,7 +68,7 @@ const Review = () => {
                   className="review-problem-set-button"
                   onClick={() => handleSolve(review.quizSetId, review.reviewId)}
                 >
-                  풀어보기
+                  해당 문제집 다시 풀기
                 </button>
               </div>
             ))}

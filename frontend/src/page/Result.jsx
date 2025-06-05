@@ -85,10 +85,17 @@ const Result = () => {
               {item.isCorrect ? "정답" : "오답"}
             </span>
             <div className="result-feedback">
-              <p className="result-feedback-text">피드백: {item.feedback}</p>
-              <p className="result-feedback-text">
-                암기법: {item.memorization}
-              </p>
+              <div className="result-feedback">
+                <div className="result-feedback-block">
+                  <p className="result-feedback-label">피드백</p>
+                  <p className="result-feedback-text">{item.feedback}</p>
+                </div>
+
+                <div className="result-feedback-block">
+                  <p className="result-feedback-label">암기법</p>
+                  <p className="result-feedback-text">{item.memorization}</p>
+                </div>
+              </div>
             </div>
             {reviewedQuizIds.has(item.quizId) ? (
               <div className="review-done">
