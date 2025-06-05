@@ -39,10 +39,7 @@ const MyPage = () => {
       };
 
       try {
-        const userRes = await axios.get(
-          endpoints.getUserInfo(memberId),
-          config
-        );
+        const userRes = await axios.get(endpoints.getUserInfo(memberId), config);
         const userData = userRes?.data?.data || userRes?.data;
         setUser(userData);
 
@@ -51,8 +48,11 @@ const MyPage = () => {
         setReviewList(Array.isArray(reviews) ? reviews : []);
 
         const workbookRes = await axios.get(endpoints.getWorkbookList, config);
-        const workbooks = workbookRes.data?.data;
-        setProblemList(Array.isArray(workbooks) ? workbooks : []);
+        const allWorkbooks = workbookRes.data?.data || [];
+        const myWorkbooks = allWorkbooks.filter(
+          (workbook) => workbook.userId === Number(memberId)
+        );
+        setProblemList(myWorkbooks);
       } catch (error) {
         console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
@@ -118,41 +118,34 @@ const MyPage = () => {
           </div>
         </div>
 
-        {/* 복습 리스트 */}
         <div className="mypage-main">
-          <div className="mypage-today-review">
-            <h2 className="mypage-section-title">오늘의 복습</h2>
-            <div className="mypage-review-list">
-              {reviewList.map((review) => (
-                <div key={review.id} className="mypage-review-item">
-                  <div className="mypage-review-info">
-                    <span className="mypage-review-title">{review.title}</span>
-                    <span className="mypage-review-date">
-                      {review.createdDate} 생성
-                    </span>
-                  </div>
-                  <button
-                    className="mypage-review-button"
-                    onClick={() => handleSolve(review.id)}
-                  >
-                    풀어보기
-                  </button>
-                </div>
-              ))}
-            </div>
+          {/* 총 푼 문제 수 */}
+          <div className="mypage-review-summary">
+            <h2 className="mypage-section-title">총 푼 문제 수</h2>
+            <p className="mypage-section-content">{user.solvedCount ?? 12}개</p>
           </div>
+        </div>
 
-          {/* 문제집 */}
-          <div className="mypage-problem-section">
-            <h2 className="mypage-section-title">내가 생성한 문제집</h2>
-            <div className="mypage-problem-list">
-              {problemList.map((problem, idx) => (
-                <div key={idx} className="mypage-problem-item">
-                  <div className="mypage-problem-title">{problem.title}</div>
-                  <div className="mypage-problem-date">{problem.date}</div>
+        {/* 내가 만든 문제집 리스트 */}
+        <div className="mypage-myworkbook-section">
+          <h2 className="mypage-section-title">내가 만든 문제집</h2>
+          <div className="mypage-problem-list">
+            {problemList.length === 0 ? (
+              <p className="mypage-section-content">문제집이 없습니다.</p>
+            ) : (
+              problemList.map((workbook) => (
+                <div
+                  key={workbook.workbookId}
+                  className="mypage-problem-item"
+                  onClick={() => handleSolve(workbook.workbookId)}
+                >
+                  <div className="mypage-problem-title">{workbook.title}</div>
+                  <div className="mypage-problem-meta">
+                    문제 수: {workbook.questionAmount}개 | 난이도: {workbook.difficulty}
+                  </div>
                 </div>
-              ))}
-            </div>
+              ))
+            )}
           </div>
         </div>
 
