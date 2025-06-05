@@ -7,20 +7,17 @@ import { useAuth } from "../store/AuthContext";
 export default function Login() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { dispatch } = useAuth(); // ✅ 전역 상태 dispatch 사용
+  const { dispatch } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const { memberId, token } = await loginUser({
-        userId,
-        password,
-      });
+      const { memberId, token } = await loginUser({ userId, password });
 
-      // ✅ 전역 로그인 처리
       dispatch({
         type: "LOGIN",
         payload: { memberId, token },
@@ -63,13 +60,13 @@ export default function Login() {
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-primaryGreen hover:bg-primaryGreen text-white py-2 rounded-md font-medium transition duration-200"
+            className="w-full bg-primaryGreen text-white py-2 rounded-md font-medium transition duration-200"
           >
             로그인
           </button>
           <Link
             to="/signup"
-            className="w-full block bg-gray-300 hover:bg-gray-400 text-black py-2 rounded-md font-medium text-center transition duration-200"
+            className="w-full block bg-gray-300 text-black py-2 rounded-md font-medium text-center transition duration-200"
           >
             회원가입
           </Link>
