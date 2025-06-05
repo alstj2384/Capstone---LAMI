@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { server, endpoints } from "../url";
-import axios from "axios";
+import axios from "../axiosInstance";
 import "./css/Signup.css";
 import {
   signupRequestRegistCode,
@@ -191,7 +191,7 @@ const Signup = () => {
     }
   };
 
-const handleVerifyEmailCode = async () => {
+  const handleVerifyEmailCode = async () => {
     const email =
       formData.emailDomain === "직접 입력하기"
         ? `${formData.emailLocal}@${formData.customDomain}`
