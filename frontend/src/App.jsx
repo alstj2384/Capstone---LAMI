@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
   const { state } = useAuth();
 
   if (!state.isInitialized) {
-    return null; // 또는 <LoadingSpinner />
+    return null;
   }
 
   if (!state.isLoggedIn) {

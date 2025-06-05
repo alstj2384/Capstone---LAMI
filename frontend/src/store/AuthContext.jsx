@@ -7,7 +7,7 @@ const initialState = {
   isLoggedIn: false,
   token: null,
   memberId: null,
-  isInitialized: false, // 초기엔 아직 초기화 안 됨
+  isInitialized: false,
 };
 
 function authReducer(state, action) {
@@ -18,6 +18,7 @@ function authReducer(state, action) {
         isLoggedIn: true,
         token: action.payload.token,
         memberId: action.payload.memberId,
+        isInitialized: true,
       };
     case "LOGOUT":
       return {
@@ -25,6 +26,7 @@ function authReducer(state, action) {
         isLoggedIn: false,
         token: null,
         memberId: null,
+        isInitialized: true,
       };
     case "INIT":
       return {
@@ -32,7 +34,7 @@ function authReducer(state, action) {
         isLoggedIn: !!(action.payload.token && action.payload.memberId),
         token: action.payload.token,
         memberId: action.payload.memberId,
-        isInitialized: true, // 여기서 초기화 완료됨
+        isInitialized: true,
       };
     default:
       return state;
@@ -46,11 +48,21 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const memberId = localStorage.getItem("memberId");
-
-    dispatch({
-      type: "INIT",
-      payload: { token, memberId },
-    });
+    if (token && memderId) {
+      dispatch({
+        type: "INIT",
+        payload: { isLoggedIn: true, token, memberId },
+      });
+    } else {
+      dispatch({
+        type: "INIT",
+        payload: {
+          isLoggedIn: false,
+          token: null,
+          memberId: null,
+        },
+      });
+    }
   }, []);
 
   // 로그인/로그아웃 시 localStorage 동기화
