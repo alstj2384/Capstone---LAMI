@@ -54,7 +54,7 @@ pipeline {
         stage('Show Backend Dockerfiles') {
             steps {
                 script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook', 'nginx']
+                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def dockerfilePath = "backend/${service}/Dockerfile"
                         def dockerfileExists = fileExists(dockerfilePath)
@@ -108,7 +108,7 @@ pipeline {
         stage('Build Backend Docker Images') {
             steps {
                 script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook', 'nginx']
+                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
                     for (service in services) {
                         def image = "${service}:${DOCKER_TAG}"
                         def dockerfilePath = "backend/${service}/Dockerfile"
@@ -156,13 +156,6 @@ pipeline {
                     fi
 
                     cp ${WORKSPACE}/exec/sql/init.sql ${DEPLOY_DIR}/exec/sql/init.sql
-
-                    if [ ! -d "${DEPLOY_DIR}/nginx" ]; then
-                        mkdir -p "${DEPLOY_DIR}/nginx"
-                    fi
-
-                    cp -r ${WORKSPACE}/backend/nginx/* ${DEPLOY_DIR}/nginx/
-
 
                     docker compose down
                     docker compose up --build -d

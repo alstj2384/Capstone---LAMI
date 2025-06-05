@@ -91,26 +91,6 @@ services:
     depends_on:
       - db
 
-  nginx:
-    image: nginx
-    environment:
-      - JWT_SECRET=${JWT_SECRET}
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/lua:/etc/nginx/lua:ro
-        # - ./nginx/secrets:/etc/nginx/secrets:ro
-      - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
-    networks:
-      - lami-backend
-    depends_on:
-      - workbook
-      - ai
-      - member
-      - review
-      - grading
-
   redis:
     image: redis:latest
     networks:
