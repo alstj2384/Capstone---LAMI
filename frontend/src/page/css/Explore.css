@@ -261,3 +261,24 @@
 .explore-pagination-ellipsis {
     padding: 0 0.5rem;
 }
+
+.explore-card {
+  position: relative;
+  /* 기존 스타일 유지 */
+}
+
+.explore-edit-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  color: #4b5563; /* gray-600 */
+}
+
+.explore-edit-button:hover {
+  color: #1f2937; /* darker gray */
+}
