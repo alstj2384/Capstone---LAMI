@@ -26,48 +26,19 @@ import "./App.css";
 // ProtectedRoute component to restrict access
 const ProtectedRoute = ({ children }) => {
   const { state } = useAuth();
+
+  if (!state.isInitialized) {
+    return null; // 또는 <LoadingSpinner />
+  }
+
   if (!state.isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
+
   return children;
 };
 
 const App = () => {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const memberId = localStorage.getItem("memberId");
-    if (token) {
-      axios
-        .get(endpoints.getUserInfo(memberId), {
-          headers: {
-            Authorization: token,
-            "X-User-Id": memberId,
-          },
-        })
-        .then((response) => {
-          const { name, email } = response.data;
-          setUser({ name, email, token });
-          setIsLoggedIn(true);
-        })
-        .catch((error) => {});
-    }
-  }, []);
-
-  const handleLogin = (userData) => {
-    const { name, profilePic, token } = userData;
-    localStorage.setItem("token", token);
-    setUser({ name, profilePic, token });
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.setItem("timeSpent", "0");
-    setIsLoggedIn(false);
-    setUser(null);
-  };
-
   return (
     <Router>
       <TopNav />

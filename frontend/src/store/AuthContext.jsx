@@ -7,21 +7,32 @@ const initialState = {
   isLoggedIn: false,
   token: null,
   memberId: null,
+  isInitialized: false, // 초기엔 아직 초기화 안 됨
 };
 
 function authReducer(state, action) {
   switch (action.type) {
     case "LOGIN":
       return {
+        ...state,
         isLoggedIn: true,
         token: action.payload.token,
         memberId: action.payload.memberId,
       };
     case "LOGOUT":
       return {
+        ...state,
         isLoggedIn: false,
         token: null,
         memberId: null,
+      };
+    case "INIT":
+      return {
+        ...state,
+        isLoggedIn: !!(action.payload.token && action.payload.memberId),
+        token: action.payload.token,
+        memberId: action.payload.memberId,
+        isInitialized: true, // 여기서 초기화 완료됨
       };
     default:
       return state;
@@ -29,15 +40,20 @@ function authReducer(state, action) {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState, () => {
-    // 초기 상태: localStorage에서 가져오기
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // 앱 시작 시 1회: 초기 localStorage 기반 로그인 복원
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const memberId = localStorage.getItem("memberId");
-    return token && memberId
-      ? { isLoggedIn: true, token, memberId }
-      : initialState;
-  });
 
+    dispatch({
+      type: "INIT",
+      payload: { token, memberId },
+    });
+  }, []);
+
+  // 로그인/로그아웃 시 localStorage 동기화
   useEffect(() => {
     if (state.isLoggedIn) {
       localStorage.setItem("token", state.token);
@@ -46,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
       localStorage.removeItem("memberId");
     }
-  }, [state]);
+  }, [state.isLoggedIn, state.token, state.memberId]);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

@@ -7,7 +7,6 @@ import { useAuth } from "../store/AuthContext";
 export default function Login() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { dispatch } = useAuth(); // ✅ 전역 상태 dispatch 사용
 
