@@ -111,6 +111,8 @@ export class GradingService {
                 throw new BadRequestException('피드백이 존재하지 않습니다.');
             }
 
+            console.log(response.data)
+
             return response.data.data.explain;
         } catch (error) {
             console.error('getFeedback error:', error?.message || error);
@@ -132,6 +134,7 @@ export class GradingService {
             if (!response.data?.data?.memorize) {
                 throw new BadRequestException('암기법이 존재하지 않습니다.');
             }
+            console.log(response.data)
 
             return response.data.data.memorize;
         } catch (error) {
@@ -276,9 +279,10 @@ export class GradingService {
         return gradings.map((g) => g.id);
     }
 
-    async getGrading(gradingId: number): Promise<FormattedGradingResultDTO> {
+    async getGrading(gradingId: number, userId: number): Promise<FormattedGradingResultDTO> {
+
         const grading = await this.gradingRepository.findOne({
-            where: { id: gradingId },
+            where: { id: gradingId, userId },
             relations: ['submissions'],
         });
 
