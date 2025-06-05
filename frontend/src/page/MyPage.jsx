@@ -31,25 +31,31 @@ const MyPage = () => {
       return;
     }
 
-    const fetchUserData = async () => {
-      try {
-        const userRes = await axios.get(endpoints.getUserInfo(memberId));
-        const userData = userRes?.data?.data || userRes?.data;
-        setUser(userData);
+  const fetchUserData = async () => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "X-User-ID": memberId,
+    },
+  };
 
-        const reviewRes = await axios.get(endpoints.getReview);
-        const reviews = reviewRes.data?.data;
-        setReviewList(Array.isArray(reviews) ? reviews : []);
+  try {
+    const userRes = await axios.get(endpoints.getUserInfo(memberId), config);
+    const userData = userRes?.data?.data || userRes?.data;
+    setUser(userData);
 
-        const workbookRes = await axios.get(endpoints.getWorkbookList);
-        const workbooks = workbookRes.data?.data;
-        setProblemList(Array.isArray(workbooks) ? workbooks : []);
-      } catch (error) {
-        console.error("사용자 정보를 불러올 수 없습니다.", error);
-      }
-    };
+    const reviewRes = await axios.get(endpoints.getReview, config);
+    const reviews = reviewRes.data?.data;
+    setReviewList(Array.isArray(reviews) ? reviews : []);
 
-    fetchUserData();
+    const workbookRes = await axios.get(endpoints.getWorkbookList, config);
+    const workbooks = workbookRes.data?.data;
+    setProblemList(Array.isArray(workbooks) ? workbooks : []);
+  } catch (error) {
+    console.error("사용자 정보를 불러올 수 없습니다.", error);
+  }
+};
+
   }, [isInitialized, isLoggedIn, token, memberId, navigate]);
 
   useEffect(() => {
