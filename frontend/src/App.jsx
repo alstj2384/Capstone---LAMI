@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "./axiosInstance";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import { endpoints } from "./url";
+import { useDispatch, useSelector } from "react-redux";
+import { checkAuth } from "./redux/authSlice";
+
 import TopNav from "./component/TopNav.jsx";
 import Home from "./page/Home.jsx";
 import Create from "./page/Create.jsx";
@@ -20,25 +21,25 @@ import Login from "./page/Login.jsx";
 import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
 import EditMyPage from "./page/EditProfile.jsx";
-import { useAuth } from "./store/AuthContext.jsx";
 import "./App.css";
 
-// ProtectedRoute component to restrict access
+//  인증이 필요한 라우트
 const ProtectedRoute = ({ children }) => {
-  const { state } = useAuth();
+  const { isLoggedIn, isInitialized } = useSelector((state) => state.auth);
 
-  if (!state.isInitialized) {
-    return null;
-  }
-
-  if (!state.isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
-
+  if (!isInitialized) return null;
+  if (!isLoggedIn) return <Navigate to="/login" replace />;
   return children;
 };
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  //  앱 시작 시 토큰 검증 요청
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   return (
     <Router>
       <TopNav />
@@ -55,7 +56,7 @@ const App = () => {
         />
         <Route path="/share" element={<Share />} />
         <Route path="/share-complete" element={<ShareComplete />} />
-        <Route path="/solve/:quizSetId" element={<Solve />} />{" "}
+        <Route path="/solve/:quizSetId" element={<Solve />} />
         <Route path="/result" element={<Result />} />
         <Route
           path="/review"
