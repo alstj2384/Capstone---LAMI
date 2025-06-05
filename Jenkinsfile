@@ -157,6 +157,13 @@ pipeline {
 
                     cp ${WORKSPACE}/exec/sql/init.sql ${DEPLOY_DIR}/exec/sql/init.sql
 
+                    if [ ! -d "${DEPLOY_DIR}/nginx" ]; then
+                        mkdir -p "${DEPLOY_DIR}/nginx"
+                    fi
+
+                    cp -r ${WORKSPACE}/backend/nginx/* ${DEPLOY_DIR}/nginx/
+
+
                     docker compose down
                     docker compose up --build -d
                     """
