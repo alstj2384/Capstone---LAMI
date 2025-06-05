@@ -111,8 +111,17 @@ const Solve = () => {
   const total = problemList.length;
   const progress = (answeredCount / total) * 100;
 
+
   return (
     <div className="solve-page">
+
+      {isSubmitting && (
+        <div className="loading-overlay">
+          <div className="spinner" />
+          <p>제출 중입니다...</p>
+        </div>
+      )}
+
       <div className="solve-header">
         <h1 className="solve-title">{workbook?.title} 문제 풀이</h1>
         <span className="solve-timer">소요시간 {formatTime(time)}</span>
