@@ -1,5 +1,6 @@
 /* 전체 문서에 기본 레이아웃 설정 */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -14,7 +15,8 @@ html, body {
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  padding-top: 5rem; /* TopNav 높이 고려 */
+  padding-top: 5rem;
+  /* TopNav 높이 고려 */
   padding-bottom: 2rem;
 }
 
@@ -22,10 +24,12 @@ html, body {
 .result-page::-webkit-scrollbar {
   width: 8px;
 }
+
 .result-page::-webkit-scrollbar-thumb {
   background-color: #22c55e;
   border-radius: 4px;
 }
+
 .result-page::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
@@ -159,4 +163,33 @@ html, body {
 .result-retry-button:hover,
 .result-exit-button:hover {
   background-color: #16a34a;
+}
+
+.review-add-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.review-add-button:hover {
+  background-color: #2563eb;
+}
+
+.review-add-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.review-done {
+  margin-top: 0.5rem;
+  text-align: right;
+  color: #10b981;
+  /* emerald-500 */
+  font-weight: bold;
 }

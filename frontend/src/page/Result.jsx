@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getGrading } from "../api"; // ✅ 수정: API 함수 import
+import { getGrading, createReview } from "../api"; // ✅ 수정: API 함수 import
 import "./css/Result.css";
 
 const Result = () => {
@@ -10,6 +10,8 @@ const Result = () => {
 
   const [gradingResult, setGradingResult] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reviewedQuizIds, setReviewedQuizIds] = useState(new Set());
+
 
   useEffect(() => {
     const fetchGradingResult = async () => {
@@ -42,6 +44,25 @@ const Result = () => {
     navigate("/explore");
   };
 
+  const handleAddReview = async (gradingId, quizId) => {
+    const token = localStorage.getItem("token");
+    const memberId = localStorage.getItem("memberId");
+
+    const data = {
+      gradingId: gradingId,
+      quizId: quizId,
+    };
+
+    try {
+      await createReview(token, memberId, data);
+      alert("복습 목록에 추가되었습니다.");
+      setReviewedQuizIds((prev) => new Set(prev).add(quizId));
+    } catch (error) {
+      console.error("복습 추가 실패:", error);
+      alert("복습 추가에 실패했습니다.");
+    }
+  };
+
   if (loading) {
     return <div className="result-page">채점 결과를 불러오는 중입니다...</div>;
   }
@@ -55,24 +76,35 @@ const Result = () => {
       <div className="result-container">
         <h1 className="result-title">채점 결과</h1>
 
-        {gradingResult.submissions.map((item) => (
+        {gradingResult.submissions.map((item, index) => (
           <div key={item.quizId} className="result-problem">
-            <h2 className="result-problem-title">문제 {item.quizId}번</h2>
+            <h2 className="result-problem-title">문제 {index + 1}번</h2>
             <p className="result-feedback-text">정답: {item.answer}</p>
-            <p className="result-feedback-text">
-              제출한 답: {item.submittedAnswer}
-            </p>
-            <span
-              className={item.isCorrect ? "text-green-500" : "text-red-500"}
-            >
+            <p className="result-feedback-text">제출한 답: {item.submittedAnswer}</p>
+            <span className={item.isCorrect ? "text-green-500" : "text-red-500"}>
               {item.isCorrect ? "정답" : "오답"}
             </span>
             <div className="result-feedback">
+              <p className="result-feedback-text">피드백: {item.feedback}</p>
               <p className="result-feedback-text">
                 암기법: {item.memorization}
               </p>
-              <p className="result-feedback-text">피드백: {item.feedback}</p>
             </div>
+            {reviewedQuizIds.has(item.quizId) ? (
+              <div className="review-done">
+                ✅ 복습에 추가 완료
+              </div>
+            ) : (
+              <div className="review-add-button-container">
+                <button
+                  className="review-add-button"
+                  onClick={() => handleAddReview(gradingResult.gradingId, item.quizId)}
+                >
+                  복습에 추가하기
+                </button>
+              </div>
+            )}
+
           </div>
         ))}
 

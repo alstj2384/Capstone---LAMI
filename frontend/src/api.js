@@ -216,10 +216,11 @@ export const getProblemList = async (workbookId, token) => {
 };
 
 // 문제 수정
-export const updateProblem = async ({ workbookId, data, token }) => {
+export const updateProblems = async (token, memberId, workbookId, data) => {
     const res = await axios.patch(endpoints.updateProblem(workbookId), data, {
         headers: {
             Authorization: `${token}`,
+            "X-User-Id": memberId,
             "Content-Type": "application/json",
         },
     });
@@ -264,8 +265,8 @@ export const getQuizset = async (gradingId) => {
     return res.data;
 };
 
-// 복습 문제 생성
-export const createReview = async (data, token, memberId) => {
+// 복습 문제 담기
+export const createReview = async (token, memberId, data) => {
     const res = await axios.post(endpoints.createReview, data, {
         headers: {
             Authorization: `${token}`,
@@ -278,7 +279,7 @@ export const createReview = async (data, token, memberId) => {
 
 
 // 복습 조회
-export const getReviewList = async (token) => {
+export const getReviewList = async (token, memberId) => {
     const res = await axios.get(endpoints.getReview, {
         headers: {
             Authorization: `${token}`,
