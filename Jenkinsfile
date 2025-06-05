@@ -54,7 +54,7 @@ pipeline {
         stage('Show Backend Dockerfiles') {
             steps {
                 script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
+                    def services = ['ai', 'grading', 'member', 'review', 'workbook', 'nginx']
                     for (service in services) {
                         def dockerfilePath = "backend/${service}/Dockerfile"
                         def dockerfileExists = fileExists(dockerfilePath)
@@ -108,7 +108,7 @@ pipeline {
         stage('Build Backend Docker Images') {
             steps {
                 script {
-                    def services = ['ai', 'grading', 'member', 'review', 'workbook']
+                    def services = ['ai', 'grading', 'member', 'review', 'workbook', 'nginx']
                     for (service in services) {
                         def image = "${service}:${DOCKER_TAG}"
                         def dockerfilePath = "backend/${service}/Dockerfile"
