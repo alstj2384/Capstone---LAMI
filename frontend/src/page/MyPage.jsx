@@ -39,10 +39,7 @@ const MyPage = () => {
       };
 
       try {
-        const userRes = await axios.get(
-          endpoints.getUserInfo(memberId),
-          config
-        );
+        const userRes = await axios.get(endpoints.getUserInfo(memberId), config);
         const userData = userRes?.data?.data || userRes?.data;
         setUser(userData);
 
@@ -51,8 +48,11 @@ const MyPage = () => {
         setReviewList(Array.isArray(reviews) ? reviews : []);
 
         const workbookRes = await axios.get(endpoints.getWorkbookList, config);
-        const workbooks = workbookRes.data?.data;
-        setProblemList(Array.isArray(workbooks) ? workbooks : []);
+        const allWorkbooks = workbookRes.data?.data || [];
+        const myWorkbooks = allWorkbooks.filter(
+          (workbook) => workbook.userId === Number(memberId)
+        );
+        setProblemList(myWorkbooks);
       } catch (error) {
         console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
@@ -124,26 +124,28 @@ const MyPage = () => {
             <h2 className="mypage-section-title">총 푼 문제 수</h2>
             <p className="mypage-section-content">{user.solvedCount ?? 12}개</p>
           </div>
+        </div>
 
-          {/* 선호 암기법 / 피드백 스타일 */}
-          <div className="mypage-preference-summary">
-            <h2 className="mypage-section-title">나의 학습 설정</h2>
-            <p className="mypage-section-content">
-              암기법:{" "}
-              {user.memorizationMethod === "StorytellingMethod"
-                ? "이야기 기반 암기법"
-                : user.memorizationMethod === "AssociationMethod"
-                ? "연상 암기법"
-                : "어휘 연결 암기법"}
-            </p>
-            <p className="mypage-section-content">
-              피드백:{" "}
-              {user.feedbackStyle === "GENTLE_FEEDBACK"
-                ? "부드러운 피드백"
-                : user.feedbackStyle === "DETAILED_FEEDBACK"
-                ? "자세한 설명"
-                : "긍정적인 피드백"}
-            </p>
+        {/* 내가 만든 문제집 리스트 */}
+        <div className="mypage-myworkbook-section">
+          <h2 className="mypage-section-title">내가 만든 문제집</h2>
+          <div className="mypage-problem-list">
+            {problemList.length === 0 ? (
+              <p className="mypage-section-content">문제집이 없습니다.</p>
+            ) : (
+              problemList.map((workbook) => (
+                <div
+                  key={workbook.workbookId}
+                  className="mypage-problem-item"
+                  onClick={() => handleSolve(workbook.workbookId)}
+                >
+                  <div className="mypage-problem-title">{workbook.title}</div>
+                  <div className="mypage-problem-meta">
+                    문제 수: {workbook.questionAmount}개 | 난이도: {workbook.difficulty}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
