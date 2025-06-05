@@ -21,6 +21,7 @@ import Login from "./page/Login.jsx";
 import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
 import EditMyPage from "./page/EditProfile.jsx";
+import EditWorkBook from "./page/EditWorkBook.jsx";
 import "./App.css";
 
 //  인증이 필요한 라우트
@@ -74,7 +75,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-mypage" element={<EditMyPage />} />
       </Routes>
