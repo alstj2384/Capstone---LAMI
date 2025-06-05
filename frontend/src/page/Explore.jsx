@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { getWorkbookList } from "../api";
 import "./css/Explore.css";
@@ -17,11 +16,8 @@ const Explore = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
       try {
-        const quizRes = await getWorkbookList(token);
+        const quizRes = await getWorkbookList();
         setQuizList(quizRes.data.content);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
