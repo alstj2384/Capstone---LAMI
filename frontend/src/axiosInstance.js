@@ -1,5 +1,5 @@
 // src/axiosInstance.js
-import axios from "../axiosInstance";
+import axios from "./axiosInstance";
 
 const axiosInstance = axios.create({
     // 필요하면 baseURL 추가
