@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
+import { useAuth } from "../store/AuthContext";
 import "./css/MyPage.css";
 
-const MyPage = ({ isLoggedIn }) => {
+const MyPage = () => {
   const navigate = useNavigate();
+  const { state } = useAuth();
 
   const [user, setUser] = useState(null);
   const [reviewList, setReviewList] = useState([]);
@@ -19,40 +21,42 @@ const MyPage = ({ isLoggedIn }) => {
   );
 
   useEffect(() => {
-    const memberId = localStorage.getItem("memberId");
-    const token = localStorage.getItem("token");
-
     const fetchUserData = async () => {
       try {
-        const userRes = await axios.get(endpoints.getUserInfo(memberId), {
+        const userRes = await axios.get(endpoints.getUserInfo(state.memberId), {
           headers: {
+            Authorization: state.token,
             "X-User-ID": memberId,
           },
         });
-        setUser(userRes.data.data);
+        setUser(userRes.data);
 
         const reviewRes = await axios.get(endpoints.getReview, {
           headers: {
-            Authorization: `${token}`,
-            "X-User-ID": memberId,
+            Authorization: state.token,
+            "X-User-ID": state.memberId,
           },
         });
         setReviewList(reviewRes.data.data || []);
 
         const workbookRes = await axios.get(endpoints.getWorkbookList, {
           headers: {
-            Authorization: `${token}`,
-            "X-User-ID": id,
+            Authorization: state.token,
+            "X-User-ID": state.memberId,
           },
         });
         setProblemList(workbookRes.data.data || []);
       } catch (error) {
-        console.log("사용자 정보를 불러올 수 없습니다.");
+        console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
     };
 
-    fetchUserData();
-  }, []);
+    if (state.isLoggedIn) {
+      fetchUserData();
+    } else {
+      navigate("/login");
+    }
+  }, [state.isLoggedIn, state.token, state.memberId, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -75,12 +79,6 @@ const MyPage = ({ isLoggedIn }) => {
   const handleSolve = (quizSetId) => {
     navigate(`/solve/${quizSetId}`);
   };
-
-  if (!isLoggedIn) {
-    alert("로그인 화면으로 이동합니다.");
-    navigate("/login");
-    return null;
-  }
 
   if (!user) {
     return <p className="mypage-loading">사용자 정보를 불러오는 중입니다...</p>;
