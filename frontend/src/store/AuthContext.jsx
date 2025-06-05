@@ -48,21 +48,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const memberId = localStorage.getItem("memberId");
-    if (token && memderId) {
-      dispatch({
-        type: "INIT",
-        payload: { isLoggedIn: true, token, memberId },
-      });
-    } else {
-      dispatch({
-        type: "INIT",
-        payload: {
-          isLoggedIn: false,
-          token: null,
-          memberId: null,
-        },
-      });
-    }
+
+    dispatch({
+      type: "INIT",
+      payload: { token, memberId },
+    });
   }, []);
 
   // 로그인/로그아웃 시 localStorage 동기화
