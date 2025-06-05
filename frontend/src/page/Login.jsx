@@ -2,14 +2,15 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api";
 import LogoImg from "../assets/LAMI_icon.svg";
-import { useAuth } from "../store/AuthContext";
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/authSlice'; // redux로부터 login action
 
 export default function Login() {
+  const dispatch = useDispatch(); // redux용 dispatch 사용
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const { dispatch } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,11 +19,7 @@ export default function Login() {
     try {
       const { memberId, token } = await loginUser({ userId, password });
 
-      dispatch({
-        type: "LOGIN",
-        payload: { memberId, token },
-      });
-
+      dispatch(login({ memberId, token })); // redux 상태 저장
       navigate("/");
     } catch (err) {
       console.error("로그인 에러:", err);
@@ -32,6 +29,7 @@ export default function Login() {
       setError(errorMessage);
     }
   };
+
 
   return (
     <div className="flex justify-center bg-white min-h-screen">
