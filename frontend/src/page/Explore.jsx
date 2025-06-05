@@ -9,7 +9,7 @@ const Explore = () => {
   const navigate = useNavigate();
 
   const [quizList, setQuizList] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(localStorage.getItem("memberId"));
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
@@ -17,20 +17,24 @@ const Explore = () => {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token || !currentUserId) return;
+    const memberId = localStorage.getItem("memberId");
 
-      try {
-        const quizRes = await getWorkbookList(token);
-        setQuizList(quizRes.data.content);
-      } catch (error) {
-        console.error("데이터를 불러오는 중 오류 발생", error);
-      }
-    };
+    if (memberId) {
+      setCurrentUserId(memberId);
+      const fetchData = async () => {
+        const token = localStorage.getItem("token");
+        if (!token || !currentUserId) return;
 
-    fetchData();
-  }, []);
+        try {
+          const quizRes = await getWorkbookList(token);
+          setQuizList(quizRes.data.content);
+        } catch (error) {
+          console.error("데이터를 불러오는 중 오류 발생", error);
+        }
+      };
+
+      fetchData();
+    }, []);
 
   const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
