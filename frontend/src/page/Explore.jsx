@@ -9,7 +9,6 @@ const Explore = () => {
   const navigate = useNavigate();
 
   const [quizList, setQuizList] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
@@ -17,13 +16,9 @@ const Explore = () => {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    const memberId = localStorage.getItem("memberId");
-    if (memberId) {
-      setCurrentUserId(memberId);
-    }
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      if (!token || !currentUserId) return;
+      if (!token) return;
 
       try {
         const quizRes = await getWorkbookList(token);
@@ -36,10 +31,12 @@ const Explore = () => {
     fetchData();
   }, []);
 
+  const memberId = localStorage.getItem("memberId");
+
   const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
-    const matchesUser = showMyQuizzes ? item.userId === currentUserId : true;
+    const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
 
@@ -135,12 +132,12 @@ const Explore = () => {
               <div className="explore-card-button-group">
                 <button
                   onClick={() => handleSolve(item.workbookId)}
-                  className={`explore-card-button ${item.userId !== currentUserId ? "full-width" : ""}`}
+                  className={`explore-card-button ${item.userId !== memberId ? "full-width" : ""}`}
                 >
                   풀어보기
                 </button>
 
-                {item.userId === currentUserId && (
+                {item.userId === memberId && (
                   <button
                     onClick={() => handleEditWorkBook(item.workbookId)}
                     className="explore-card-edit-button"
