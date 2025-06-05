@@ -10,6 +10,8 @@ import { logout } from "../redux/authSlice";
 const TopNav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Redux 상태
   const { token, memberId, isLoggedIn, isInitialized } = useSelector(
     (state) => state.auth
   );
@@ -79,7 +81,7 @@ const TopNav = () => {
         </Link>
       </div>
 
-      {state.isLoggedIn ? (
+      {isLoggedIn ? (
         <div className="topnav-text flex items-center space-x-2">
           <img
             src={userInfo?.profilePic || profile}
