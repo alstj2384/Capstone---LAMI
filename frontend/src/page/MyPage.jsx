@@ -24,7 +24,7 @@ const MyPage = () => {
   );
 
   useEffect(() => {
-    if (!isInitialized) return; // 초기화 안 됐으면 아무것도 안 함
+    if (!isInitialized) return; // 초기화 안됐으면 아무 것도 안 함
 
     if (!isLoggedIn) {
       navigate("/login");
@@ -38,10 +38,12 @@ const MyPage = () => {
         setUser(userData);
 
         const reviewRes = await axios.get(endpoints.getReview);
-        setReviewList(reviewRes.data?.data || []);
+        const reviews = reviewRes.data?.data;
+        setReviewList(Array.isArray(reviews) ? reviews : []);
 
         const workbookRes = await axios.get(endpoints.getWorkbookList);
-        setProblemList(workbookRes.data?.data || []);
+        const workbooks = workbookRes.data?.data;
+        setProblemList(Array.isArray(workbooks) ? workbooks : []);
       } catch (error) {
         console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
