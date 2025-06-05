@@ -1,5 +1,3 @@
-import { getWorkbook } from "./api";
-import MyPage from "./page/MyPage";
 
 // url.js
 export const server = "http://10.116.64.23:80";

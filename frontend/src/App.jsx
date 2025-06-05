@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "./axiosInstance";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import { endpoints } from "./url";
+import { useDispatch, useSelector } from "react-redux";
+import { checkAuth } from "./redux/authSlice";
+
 import TopNav from "./component/TopNav.jsx";
 import Home from "./page/Home.jsx";
 import Create from "./page/Create.jsx";
@@ -23,76 +24,45 @@ import EditMyPage from "./page/EditProfile.jsx";
 import EditWorkBook from "./page/EditWorkBook.jsx";
 import "./App.css";
 
-// ProtectedRoute component to restrict access
-const ProtectedRoute = ({ isLoggedIn, children }) => {
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
+//  인증이 필요한 라우트
+const ProtectedRoute = ({ children }) => {
+  const { isLoggedIn, isInitialized } = useSelector((state) => state.auth);
+
+  if (!isInitialized) return null;
+  if (!isLoggedIn) return <Navigate to="/login" replace />;
   return children;
 };
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
 
+  //  앱 시작 시 토큰 검증 요청
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const memberId = localStorage.getItem("memberId");
-    if (token) {
-      axios
-        .get(endpoints.getUserInfo(memberId), {
-          headers: {
-            Authorization: token,
-            "X-User-Id": memberId,
-          },
-        })
-        .then((response) => {
-          const { name, email } = response.data;
-          setUser({ name, email, token });
-          setIsLoggedIn(true);
-        })
-        .catch((error) => {
-        });
-    }
-  }, []);
-
-  const handleLogin = (userData) => {
-    const { name, profilePic, token } = userData;
-    localStorage.setItem("token", token);
-    setUser({ name, profilePic, token });
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.setItem("timeSpent", "0");
-    setIsLoggedIn(false);
-    setUser(null);
-  };
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   return (
     <Router>
-      <TopNav isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <TopNav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route
           path="/create"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <ProtectedRoute>
               <Create />
             </ProtectedRoute>
           }
         />
         <Route path="/share" element={<Share />} />
         <Route path="/share-complete" element={<ShareComplete />} />
-        <Route path="/solve/:quizSetId" element={<Solve />} />{" "}
+        <Route path="/solve/:quizSetId" element={<Solve />} />
         <Route path="/result" element={<Result />} />
         <Route
           path="/review"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <ProtectedRoute>
               <Review />
             </ProtectedRoute>
           }
@@ -100,16 +70,8 @@ const App = () => {
         <Route
           path="/mypage"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <MyPage isLoggedIn={isLoggedIn} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/editworkbook"
-          element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <EditWorkBook isLoggedIn={isLoggedIn} />
+            <ProtectedRoute>
+              <MyPage />
             </ProtectedRoute>
           }
         />

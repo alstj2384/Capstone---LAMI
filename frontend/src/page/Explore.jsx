@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
 import { getUserInfo, getWorkbookList } from "../api";
@@ -10,7 +10,9 @@ const Explore = () => {
   const navigate = useNavigate();
 
   const [quizList, setQuizList] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(localStorage.getItem("memberId"));
+  const [currentUserId, setCurrentUserId] = useState(
+    localStorage.getItem("memberId")
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
@@ -25,12 +27,11 @@ const Explore = () => {
 
       try {
         //setCurrentUserId(userId);
-
+        
         console.log("AAAAAAA")
         const quizRes = await getWorkbookList(token);
 
         setQuizList(quizRes.data.content);
-
       } catch (error) {
         console.log("데이터를 불러오는 중 오류 발생", error);
       }

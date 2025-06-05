@@ -1,32 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoImg from "../assets/LAMI_icon.svg";
 import profile from "../assets/DALAMI_1.svg";
 import "./TopNav.css";
 import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/authSlice";
 
-const TopNav = ({ isLoggedIn, user, handleLogout }) => {
-  const [userInfo, setUserInfo] = useState(user);
+const TopNav = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Redux 상태
+  const { token, memberId, isLoggedIn, isInitialized } = useSelector(
+    (state) => state.auth
+  );
+
+  const [userInfo, setUserInfo] = useState(null);
 
   const fetchUserInfo = async () => {
-    const token = localStorage.getItem("token");
-    const memberId = localStorage.getItem("memberId");
+    if (!memberId || !token) return;
 
-    if (token && memberId) {
-      // 유저 정보 가져오기
+    try {
       const res = await getUserInfo(memberId, token);
+      const data = res?.data?.data || res?.data || res;
 
       setUserInfo({
-        userId: res.data.userId,
-        name: res.data.name,
-        email: res.data.email,
+        userId: data.userId,
+        name: data.name,
+        email: data.email,
+        profilePic: data.profilePic,
       });
+    } catch (err) {
+      console.error("유저 정보 불러오기 실패", err);
     }
   };
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [isLoggedIn]);
+    if (isInitialized && isLoggedIn && memberId && token) {
+      fetchUserInfo();
+    }
+  }, [isInitialized, isLoggedIn, memberId, token]);
+
+  if (!isInitialized) return null;
+
+  const handleLogout = async () => {
+    try {
+      await logoutUserAPI(token, memberId);
+    } catch (err) {
+      console.error("서버 로그아웃 실패", err);
+    } finally {
+      dispatch(logout());
+      navigate("/");
+    }
+  };
 
   return (
     <nav className="top-nav">
@@ -53,6 +80,7 @@ const TopNav = ({ isLoggedIn, user, handleLogout }) => {
           마이페이지
         </Link>
       </div>
+
       {isLoggedIn ? (
         <div className="topnav-text flex items-center space-x-2">
           <img
@@ -64,16 +92,7 @@ const TopNav = ({ isLoggedIn, user, handleLogout }) => {
             {userInfo?.name ? `${userInfo.name}님 반갑습니다` : ""}
           </span>
           <button
-            onClick={async () => {
-              try {
-                const token = localStorage.getItem("token");
-                const memberId = localStorage.getItem("memberId");
-                await logoutUserAPI(token, memberId);
-                handleLogout();
-              } catch (err) {
-                console.error("로그아웃 실패", err);
-              }
-            }}
+            onClick={handleLogout}
             className="nav-button bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
           >
             로그아웃

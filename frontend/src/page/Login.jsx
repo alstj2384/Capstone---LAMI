@@ -1,32 +1,26 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { server, endpoints } from "../url";
 import { loginUser } from "../api";
 import LogoImg from "../assets/LAMI_icon.svg";
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/authSlice'; // redux로부터 login action
 
-export default function Login({ onLogin }) {
+export default function Login() {
+  const dispatch = useDispatch(); // redux용 dispatch 사용
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const { memberId, token } = await loginUser({
-        userId,
-        password,
-      });
+      const { memberId, token } = await loginUser({ userId, password });
 
-      onLogin({ memberId, token });
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("memberId", memberId);
-
+      dispatch(login({ memberId, token })); // redux 상태 저장
       navigate("/");
-
     } catch (err) {
       console.error("로그인 에러:", err);
       const errorMessage =
@@ -35,6 +29,7 @@ export default function Login({ onLogin }) {
       setError(errorMessage);
     }
   };
+
 
   return (
     <div className="flex justify-center bg-white min-h-screen">
@@ -63,13 +58,13 @@ export default function Login({ onLogin }) {
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-primaryGreen hover:bg-primaryGreen text-white py-2 rounded-md font-medium transition duration-200"
+            className="w-full bg-primaryGreen text-white py-2 rounded-md font-medium transition duration-200"
           >
             로그인
           </button>
           <Link
             to="/signup"
-            className="w-full block bg-gray-300 hover:bg-gray-400 text-black py-2 rounded-md font-medium text-center transition duration-200"
+            className="w-full block bg-gray-300 text-black py-2 rounded-md font-medium text-center transition duration-200"
           >
             회원가입
           </Link>

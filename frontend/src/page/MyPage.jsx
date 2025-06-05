@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
+import { useSelector } from "react-redux";
 import "./css/MyPage.css";
 
-const MyPage = ({ isLoggedIn }) => {
+const MyPage = () => {
   const navigate = useNavigate();
+
+  const { token, memberId, isLoggedIn, isInitialized } = useSelector(
+    (state) => state.auth
+  );
 
   const [user, setUser] = useState(null);
   const [reviewList, setReviewList] = useState([]);
@@ -19,40 +24,42 @@ const MyPage = ({ isLoggedIn }) => {
   );
 
   useEffect(() => {
-    const memberId = localStorage.getItem("memberId");
-    const token = localStorage.getItem("token");
+    if (!isInitialized) return;
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
 
     const fetchUserData = async () => {
+      const config = {
+        headers: {
+          Authorization: `${token}`,
+          "X-User-ID": memberId,
+        },
+      };
+
       try {
-        const userRes = await axios.get(endpoints.getUserInfo(memberId), {
-          headers: {
-            "X-User-ID": memberId,
-          },
-        });
-        setUser(userRes.data.data);
+        const userRes = await axios.get(
+          endpoints.getUserInfo(memberId),
+          config
+        );
+        const userData = userRes?.data?.data || userRes?.data;
+        setUser(userData);
 
-        const reviewRes = await axios.get(endpoints.getReview, {
-          headers: {
-            Authorization: `${token}`,
-            "X-User-ID": memberId,
-          },
-        });
-        setReviewList(reviewRes.data.data || []);
+        const reviewRes = await axios.get(endpoints.getReview, config);
+        const reviews = reviewRes.data?.data;
+        setReviewList(Array.isArray(reviews) ? reviews : []);
 
-        const workbookRes = await axios.get(endpoints.getWorkbookList, {
-          headers: {
-            Authorization: `${token}`,
-            "X-User-ID": id,
-          },
-        });
-        setProblemList(workbookRes.data.data || []);
+        const workbookRes = await axios.get(endpoints.getWorkbookList, config);
+        const workbooks = workbookRes.data?.data;
+        setProblemList(Array.isArray(workbooks) ? workbooks : []);
       } catch (error) {
-        console.log("사용자 정보를 불러올 수 없습니다.");
+        console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [isInitialized, isLoggedIn, token, memberId, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -76,10 +83,8 @@ const MyPage = ({ isLoggedIn }) => {
     navigate(`/solve/${quizSetId}`);
   };
 
-  if (!isLoggedIn) {
-    alert("로그인 화면으로 이동합니다.");
-    navigate("/login");
-    return null;
+  if (!isInitialized) {
+    return <p className="mypage-loading">초기화 중입니다...</p>;
   }
 
   if (!user) {
@@ -89,6 +94,7 @@ const MyPage = ({ isLoggedIn }) => {
   return (
     <div className="mypage-page">
       <div className="mypage-container">
+        {/* 프로필 섹션 */}
         <div className="mypage-header">
           <div className="mypage-profile-section">
             <img
@@ -112,6 +118,7 @@ const MyPage = ({ isLoggedIn }) => {
           </div>
         </div>
 
+        {/* 복습 리스트 */}
         <div className="mypage-main">
           <div className="mypage-today-review">
             <h2 className="mypage-section-title">오늘의 복습</h2>
@@ -135,6 +142,7 @@ const MyPage = ({ isLoggedIn }) => {
             </div>
           </div>
 
+          {/* 문제집 */}
           <div className="mypage-problem-section">
             <h2 className="mypage-section-title">내가 생성한 문제집</h2>
             <div className="mypage-problem-list">
@@ -148,6 +156,7 @@ const MyPage = ({ isLoggedIn }) => {
           </div>
         </div>
 
+        {/* 하단 */}
         <div className="mypage-footer">
           <div className="mypage-section">
             <h2 className="mypage-section-title">접속시간</h2>
