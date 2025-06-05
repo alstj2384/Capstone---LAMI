@@ -129,12 +129,18 @@ const Explore = () => {
               <p className="explore-card-date">작성자: {item.userId}</p>
 
               <div className="explore-card-button-group">
-                <button onClick={() => handleSolve(item.workbookId)} className="explore-card-button">
+                <button
+                  onClick={() => handleSolve(item.workbookId)}
+                  className={`explore-card-button ${item.userId !== currentUserId ? "full-width" : ""}`}
+                >
                   풀어보기
                 </button>
 
                 {item.userId === currentUserId && (
-                  <button onClick={() => handleEditWorkBook(item.workbookId)} className="explore-card-edit-button">
+                  <button
+                    onClick={() => handleEditWorkBook(item.workbookId)}
+                    className="explore-card-edit-button"
+                  >
                     수정하기
                   </button>
                 )}
