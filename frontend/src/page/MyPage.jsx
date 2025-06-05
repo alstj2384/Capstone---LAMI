@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
 import { useAuth } from "../store/AuthContext";
