@@ -52,14 +52,21 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 
 // 비밀번호 변경 인증번호 전송 API 
 // 수정 후 ✅
+// api.js
+
 export const resetPasswordRequestCode = async (userId) => {
-    const res = await axiosBasic.post(endpoints.resetPasswordRequestCode, { userId }, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    const res = await axiosBasic.post(
+        "http://10.116.64.23/api/public/members/reset-password/request-code",
+        { userId },
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
     return res.data;
 };
+
 // 비밀번호 변경 인증번호 확인 API
 export const verifyResetPasswordCode = async ({ userId, code }) => {
     const res = await axios.post(endpoints.verifyResetPasswordCode, {
