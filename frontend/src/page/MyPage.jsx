@@ -118,41 +118,32 @@ const MyPage = () => {
           </div>
         </div>
 
-        {/* 복습 리스트 */}
         <div className="mypage-main">
-          <div className="mypage-today-review">
-            <h2 className="mypage-section-title">오늘의 복습</h2>
-            <div className="mypage-review-list">
-              {reviewList.map((review) => (
-                <div key={review.id} className="mypage-review-item">
-                  <div className="mypage-review-info">
-                    <span className="mypage-review-title">{review.title}</span>
-                    <span className="mypage-review-date">
-                      {review.createdDate} 생성
-                    </span>
-                  </div>
-                  <button
-                    className="mypage-review-button"
-                    onClick={() => handleSolve(review.id)}
-                  >
-                    풀어보기
-                  </button>
-                </div>
-              ))}
-            </div>
+          {/* 총 푼 문제 수 */}
+          <div className="mypage-review-summary">
+            <h2 className="mypage-section-title">총 푼 문제 수</h2>
+            <p className="mypage-section-content">{user.solvedCount ?? 12}개</p>
           </div>
 
-          {/* 문제집 */}
-          <div className="mypage-problem-section">
-            <h2 className="mypage-section-title">내가 생성한 문제집</h2>
-            <div className="mypage-problem-list">
-              {problemList.map((problem, idx) => (
-                <div key={idx} className="mypage-problem-item">
-                  <div className="mypage-problem-title">{problem.title}</div>
-                  <div className="mypage-problem-date">{problem.date}</div>
-                </div>
-              ))}
-            </div>
+          {/* 선호 암기법 / 피드백 스타일 */}
+          <div className="mypage-preference-summary">
+            <h2 className="mypage-section-title">나의 학습 설정</h2>
+            <p className="mypage-section-content">
+              암기법:{" "}
+              {user.memorizationMethod === "StorytellingMethod"
+                ? "이야기 기반 암기법"
+                : user.memorizationMethod === "AssociationMethod"
+                ? "연상 암기법"
+                : "어휘 연결 암기법"}
+            </p>
+            <p className="mypage-section-content">
+              피드백:{" "}
+              {user.feedbackStyle === "GENTLE_FEEDBACK"
+                ? "부드러운 피드백"
+                : user.feedbackStyle === "DETAILED_FEEDBACK"
+                ? "자세한 설명"
+                : "긍정적인 피드백"}
+            </p>
           </div>
         </div>
 

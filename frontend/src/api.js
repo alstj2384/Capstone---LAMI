@@ -64,6 +64,7 @@ export const verifyResetPasswordCode = async ({ userId, code }) => {
     return res.data;
 };
 
+
 // 비밀번호 변경 API
 export const updatePassword = async ({ userId, newPassword, token, memberId }) => {
     const response = await axios.post(

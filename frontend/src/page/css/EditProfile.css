@@ -1,15 +1,16 @@
-/* 페이지 전체에 스크롤 허용 */
+/* 기본 페이지 설정 */
 .edit-profile-page {
   max-width: 640px;
   margin: 0 auto;
   padding: 7rem 1rem;
   font-family: 'Noto Sans KR', sans-serif;
-  min-height: 100vh;         /* 전체 화면 높이 확보 */
-  overflow-y: auto;          /* 세로 스크롤 허용 */
+  min-height: 100vh;
   box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-
+/* 타이틀 및 서브텍스트 */
 .edit-title {
   font-size: 1.875rem;
   font-weight: 700;
@@ -23,6 +24,11 @@
   color: #6b7280;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
+/* 프로필 이미지 영역 */
 .edit-profile-pic-section {
   display: flex;
   justify-content: center;
@@ -37,14 +43,15 @@
   object-fit: cover;
 }
 
+/* 폼 전체 설정 */
 .edit-form {
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  overflow: visible;
 }
 
+/* 라벨 및 입력 */
 .edit-label {
   font-weight: 600;
   font-size: 0.875rem;
@@ -82,6 +89,7 @@
   gap: 0.5rem;
 }
 
+/* 라디오 버튼 그룹 */
 .edit-radio {
   display: flex;
   align-items: center;
@@ -89,6 +97,7 @@
   font-size: 0.875rem;
 }
 
+/* 제출 버튼 */
 .edit-submit {
   background-color: #22c55e !important;
   color: white;
@@ -97,31 +106,32 @@
   border-radius: 0.5rem;
   font-weight: 600;
   cursor: pointer;
-  display: block !important;
+  display: block;
   position: relative;
-  z-index: 1 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .edit-submit:hover {
   background-color: #16a34a;
-  transform: translateY(-2px); /* 위로 살짝 이동 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 더 진한 그림자 */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 인증번호 버튼 및 입력 그룹 */
 .edit-verification-wrapper {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .edit-code-button {
-  background-color: #22c55e !important;
-  display: block !important; 
-  color: white !important;
+  background-color: #22c55e;
+  color: white;
   font-size: 0.875rem;
   border: none;
   padding: 0.5rem 2rem;
@@ -129,11 +139,27 @@
   border-radius: 0.375rem;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
-  white-space: nowrap; /* 줄바꿈 방지 */
+  white-space: nowrap;
 }
-
 
 .edit-code-button:hover {
   background-color: #16a34a;
   transform: scale(1.05);
+}
+
+/* 반응형 개선 (선택 사항) */
+@media (max-width: 480px) {
+  .edit-upload-box {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .edit-code-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .edit-input {
+    font-size: 0.875rem;
+  }
 }
