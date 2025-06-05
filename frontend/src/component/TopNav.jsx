@@ -4,21 +4,23 @@ import LogoImg from "../assets/LAMI_icon.svg";
 import profile from "../assets/DALAMI_1.svg";
 import "./TopNav.css";
 import { getUserInfo, logoutUser as logoutUserAPI } from "../api";
-import { useAuth } from "../store/AuthContext"; 
+import { useAuth } from "../store/AuthContext";
 
 const TopNav = () => {
   const navigate = useNavigate();
-  const { state, dispatch } = useAuth(); 
+  const { state, dispatch } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
 
   const fetchUserInfo = async () => {
     try {
       const res = await getUserInfo(state.memberId, state.token);
+      const data = res.data || res; // 어떤 구조든 대응
+
       setUserInfo({
-        userId: res.userId,
-        name: res.name,
-        email: res.email,
-        profilePic: res.profilePic,
+        userId: data.userId,
+        name: data.name,
+        email: data.email,
+        profilePic: data.profilePic,
       });
     } catch (err) {
       console.error("유저 정보 불러오기 실패", err);
@@ -26,8 +28,8 @@ const TopNav = () => {
   };
 
   useEffect(() => {
-    if (state.isLoggedIn) fetchUserInfo();
-  }, [state.isLoggedIn]);
+    if (state.isLoggedIn && state.memberId && state.token) fetchUserInfo();
+  }, [state.isLoggedIn, state.memberId, state.token]);
 
   const handleLogout = async () => {
     try {
@@ -45,10 +47,26 @@ const TopNav = () => {
       <Link to="/" className="nav-icon-link">
         <img src={LogoImg} className="nav-icon" alt="LAMI Logo" />
       </Link>
-      <div className="topnav-text"><Link to="/explore" className="nav-button">조회</Link></div>
-      <div className="topnav-text"><Link to="/create" className="nav-button">생성</Link></div>
-      <div className="topnav-text"><Link to="/review" className="nav-button">복습</Link></div>
-      <div className="topnav-text"><Link to="/mypage" className="nav-button">마이페이지</Link></div>
+      <div className="topnav-text">
+        <Link to="/explore" className="nav-button">
+          조회
+        </Link>
+      </div>
+      <div className="topnav-text">
+        <Link to="/create" className="nav-button">
+          생성
+        </Link>
+      </div>
+      <div className="topnav-text">
+        <Link to="/review" className="nav-button">
+          복습
+        </Link>
+      </div>
+      <div className="topnav-text">
+        <Link to="/mypage" className="nav-button">
+          마이페이지
+        </Link>
+      </div>
 
       {state.isLoggedIn ? (
         <div className="topnav-text flex items-center space-x-2">
@@ -69,8 +87,16 @@ const TopNav = () => {
         </div>
       ) : (
         <>
-          <div className="topnav-text"><Link to="/login" className="nav-button">로그인</Link></div>
-          <div className="topnav-text"><Link to="/signup" className="nav-button">회원가입</Link></div>
+          <div className="topnav-text">
+            <Link to="/login" className="nav-button">
+              로그인
+            </Link>
+          </div>
+          <div className="topnav-text">
+            <Link to="/signup" className="nav-button">
+              회원가입
+            </Link>
+          </div>
         </>
       )}
     </nav>
