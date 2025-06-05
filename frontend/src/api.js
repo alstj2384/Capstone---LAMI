@@ -1,4 +1,5 @@
 import axios from "./axiosInstance";
+import axiosBasic from "axios";
 import { endpoints } from "./url";
 
 
@@ -50,11 +51,15 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 };
 
 // 비밀번호 변경 인증번호 전송 API 
+// 수정 후 ✅
 export const resetPasswordRequestCode = async (userId) => {
-    const res = await axios.post(endpoints.resetPasswordRequestCode, { userId });
+    const res = await axiosBasic.post(endpoints.resetPasswordRequestCode, { userId }, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
     return res.data;
 };
-
 // 비밀번호 변경 인증번호 확인 API
 export const verifyResetPasswordCode = async ({ userId, code }) => {
     const res = await axios.post(endpoints.verifyResetPasswordCode, {
@@ -103,20 +108,20 @@ export const getUserInfo = async (id, token) => {
 
 
 
-//회원정보 수정 함수 
-export const updateUserInfo = async ({ id, data, token }) => {
+
+// ✅ 수정 방법 (함수 파라미터에 memberId 포함시켜야 함)
+export const updateUserInfo = async ({ id, data, token, memberId }) => {
     const response = await axios.patch(
         endpoints.updateUser(id),
         data,
         {
             headers: {
-                "Authorization": `${token}`,
+                Authorization: `${token}`,
                 "Content-Type": "application/json",
                 "X-User-Id": memberId,
             },
         }
     );
-
     return response.data;
 };
 
