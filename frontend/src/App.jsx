@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
   const { state } = useAuth();
 
   if (!state.isInitialized) {
-    return null;
+    return <div>로딩 중...</div>;
   }
 
   if (!state.isLoggedIn) {

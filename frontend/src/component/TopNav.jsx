@@ -11,10 +11,15 @@ const TopNav = () => {
   const { state, dispatch } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
 
+  // ⭐ 초기화 전 렌더링 방지
+  if (!state.isInitialized) return null;
+
   const fetchUserInfo = async () => {
+    if (!state.memberId || !state.token) return;
+
     try {
       const res = await getUserInfo(state.memberId, state.token);
-      const data = res.data || res; // 어떤 구조든 대응
+      const data = res?.data?.data || res?.data || res;
 
       setUserInfo({
         userId: data.userId,
@@ -37,8 +42,8 @@ const TopNav = () => {
     } catch (err) {
       console.error("서버 로그아웃 실패", err);
     } finally {
-      dispatch({ type: "LOGOUT" }); // 상태 초기화
-      navigate("/"); // 로그아웃 후 홈으로 이동
+      dispatch({ type: "LOGOUT" });
+      navigate("/");
     }
   };
 
