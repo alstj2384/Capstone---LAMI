@@ -31,7 +31,7 @@ const Explore = () => {
     fetchData();
   }, []);
 
-  const memberId = localStorage.getItem("memberId");
+  const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
