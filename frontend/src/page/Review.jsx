@@ -22,26 +22,7 @@ const Review = () => {
         }
       } catch (error) {
         console.error("리뷰 불러오기 실패. 임시 데이터 사용:", error);
-        setReviews([
-          {
-            reviewId: 5,
-            quizSetId: 1,
-            quizId: 1,
-            quizContent:
-              "컴파일러의 각 챕터가 다루는 내용 중 Part I에 포함되지 않는 것은 무엇인가?",
-            answer: "3",
-            choices: "렉시컬 분석,활성 레코드,가비지 컬렉션,가비지 컬렉션",
-          },
-          {
-            reviewId: 7,
-            quizSetId: 2,
-            quizId: 2,
-            quizContent:
-              "컴파일러의 각 챕터가 다루는 내용 중 Part I에 포함되지 않는 것은 무엇인가?",
-            answer: "3",
-            choices: "렉시컬 분석,활성 레코드,가비지 컬렉션,가비지 컬렉션",
-          },
-        ]);
+        setReviews([]);
       } finally {
         setLoading(false);
       }

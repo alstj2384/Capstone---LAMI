@@ -278,7 +278,7 @@ export const createReview = async (data, token, memberId) => {
 
 
 // 복습 조회
-export const getReviewList = async (token) => {
+export const getReviewList = async (token, memberId) => {
     const res = await axios.get(endpoints.getReview, {
         headers: {
             Authorization: `${token}`,
