@@ -11,9 +11,6 @@ const TopNav = () => {
   const { state, dispatch } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
 
-  // ⭐ 초기화 전 렌더링 방지
-  if (!state.isInitialized) return null;
-
   const fetchUserInfo = async () => {
     if (!state.memberId || !state.token) return;
 
@@ -33,8 +30,17 @@ const TopNav = () => {
   };
 
   useEffect(() => {
-    if (state.isLoggedIn && state.memberId && state.token) fetchUserInfo();
-  }, [state.isLoggedIn, state.memberId, state.token]);
+    if (
+      state.isInitialized &&
+      state.isLoggedIn &&
+      state.memberId &&
+      state.token
+    ) {
+      fetchUserInfo();
+    }
+  }, [state.isInitialized, state.isLoggedIn, state.memberId, state.token]);
+
+  if (!state.isInitialized) return null;
 
   const handleLogout = async () => {
     try {
