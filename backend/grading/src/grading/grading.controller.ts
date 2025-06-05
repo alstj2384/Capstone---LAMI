@@ -68,7 +68,7 @@ export class GradingController {
     @ApiParam({ name: 'gradingId', description: '채점 ID' })
     async submit(@Param('gradingId', ParseIntPipe) gradingId: number, @Headers('X-User-Id') userId: number) {
 
-        const gradingResults = await this.gradingService.getGrading(gradingId);
+        const gradingResults = await this.gradingService.getGrading(gradingId, userId);
 
         return this.responseService.response(ResponseCode.GRADING_VIEW_200, { ...gradingResults });
     }
