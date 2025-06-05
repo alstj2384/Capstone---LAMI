@@ -79,7 +79,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-mypage" element={<EditMyPage />} />
         <Route
-          path="/editworkbook"
+          path="/editworkbook/:workbookId"
           element={
             <ProtectedRoute>
               <EditWorkBook />

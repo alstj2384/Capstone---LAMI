@@ -70,7 +70,7 @@ const Explore = () => {
   };
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
-  const handleEditWorkBook = (quizId) => navigate(`/editworkbook/${quizId}`);
+  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
 
   return (
     <div className="explore-container">
