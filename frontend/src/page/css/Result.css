@@ -169,7 +169,7 @@ body {
 .review-add-button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #3b82f6;
+  background-color: #16a34a;
   color: white;
   border: none;
   border-radius: 6px;
@@ -179,4 +179,18 @@ body {
 
 .review-add-button:hover {
   background-color: #2563eb;
+}
+
+.review-add-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.review-done {
+  margin-top: 0.5rem;
+  text-align: right;
+  color: #10b981;
+  /* emerald-500 */
+  font-weight: bold;
 }
