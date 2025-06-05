@@ -1,12 +1,14 @@
+/* 페이지 전체에 스크롤 허용 */
 .edit-profile-page {
   max-width: 640px;
   margin: 0 auto;
   padding: 7rem 1rem;
   font-family: 'Noto Sans KR', sans-serif;
-  min-height: 100vh;       
-  overflow-y: auto;         
+  min-height: 100vh;         /* 전체 화면 높이 확보 */
+  overflow-y: auto;          /* 세로 스크롤 허용 */
   box-sizing: border-box;
 }
+
 
 .edit-title {
   font-size: 1.875rem;
