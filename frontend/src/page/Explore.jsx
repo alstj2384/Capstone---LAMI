@@ -10,9 +10,6 @@ const Explore = () => {
   const navigate = useNavigate();
 
   const [quizList, setQuizList] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(
-    localStorage.getItem("memberId")
-  );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
@@ -22,32 +19,25 @@ const Explore = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("memberId");
-      if (!token || !userId) return;
+      if (!token) return;
 
       try {
-        //setCurrentUserId(userId);
-
-        console.log("AAAAAAA");
         const quizRes = await getWorkbookList(token);
-
         setQuizList(quizRes.data.content);
       } catch (error) {
-        console.log("데이터를 불러오는 중 오류 발생", error);
+        console.error("데이터를 불러오는 중 오류 발생", error);
       }
     };
 
     fetchData();
   }, []);
 
+  const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
+
   const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty
-      ? item.difficulty === selectedDifficulty
-      : true;
-    const matchesUser = showMyQuizzes ? item.userId === currentUserId : true;
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
+    const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
 
@@ -88,9 +78,8 @@ const Explore = () => {
     setCurrentPage(1);
   };
 
-  const handleSolve = (quizId) => {
-    navigate(`/solve/${quizId}`);
-  };
+  const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
+  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
 
   return (
     <div className="explore-container">
@@ -161,13 +150,25 @@ const Explore = () => {
                 className="explore-card-icon"
               />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">작성자: {item.nickname}</p>
-              <button
-                onClick={() => handleSolve(item.workbookId)}
-                className="explore-card-button"
-              >
-                풀어보기
-              </button>
+              <p className="explore-card-date">작성자: {item.userId}</p>
+
+              <div className="explore-card-button-group">
+                <button
+                  onClick={() => handleSolve(item.workbookId)}
+                  className={`explore-card-button ${item.userId !== memberId ? "full-width" : ""}`}
+                >
+                  풀어보기
+                </button>
+
+                {item.userId === memberId && (
+                  <button
+                    onClick={() => handleEditWorkBook(item.workbookId)}
+                    className="explore-card-edit-button"
+                  >
+                    수정하기
+                  </button>
+                )}
+              </div>
             </div>
           ))
         ) : (
