@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
-import { endpoints } from "../url";
-import { getUserInfo, getWorkbookList } from "../api";
+import { getWorkbookList } from "../api";
 import "./css/Explore.css";
 
 const Explore = () => {
@@ -43,16 +42,12 @@ const Explore = () => {
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
   const startPage = Math.max(1, currentPage - 2);
   const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
@@ -62,14 +57,10 @@ const Explore = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleSearch = () => {
-    setCurrentPage(1);
-  };
+  const handleSearch = () => setCurrentPage(1);
 
   const handleDifficultyChange = (difficulty) => {
-    setSelectedDifficulty(
-      difficulty === selectedDifficulty ? null : difficulty
-    );
+    setSelectedDifficulty(difficulty === selectedDifficulty ? null : difficulty);
     setCurrentPage(1);
   };
 
@@ -95,16 +86,10 @@ const Explore = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="explore-input"
             />
-            <button onClick={handleSearch} className="explore-search-button">
-              검색하기
-            </button>
+            <button onClick={handleSearch} className="explore-search-button">검색하기</button>
           </div>
           <div className="explore-category-wrapper">
-            <input
-              type="text"
-              placeholder="카테고리"
-              className="explore-input explore-input-small"
-            />
+            <input type="text" placeholder="카테고리" className="explore-input explore-input-small" />
             <button className="explore-category-button">필터링</button>
           </div>
         </div>
@@ -115,11 +100,7 @@ const Explore = () => {
               <button
                 key={level}
                 onClick={() => handleDifficultyChange(level)}
-                className={`explore-filter-button ${
-                  selectedDifficulty === level
-                    ? "explore-filter-button-active"
-                    : ""
-                }`}
+                className={`explore-filter-button ${selectedDifficulty === level ? "explore-filter-button-active" : ""}`}
               >
                 {level}
               </button>
@@ -134,7 +115,7 @@ const Explore = () => {
               onChange={handleShowMyQuizzesChange}
             />
             <label htmlFor="my-posts" className="explore-checkbox-label">
-              내가 생성한 문제집 보기
+              내가 생성한 문제집만 보기
             </label>
           </div>
         </div>
@@ -144,11 +125,7 @@ const Explore = () => {
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
             <div key={item.workbookId} className="explore-card">
-              <img
-                src={SquirrelIcon}
-                alt="Squirrel Icon"
-                className="explore-card-icon"
-              />
+              <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">작성자: {item.userId}</p>
 
@@ -172,9 +149,7 @@ const Explore = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 col-span-full">
-            검색 결과가 없습니다.
-          </p>
+          <p className="text-center text-gray-500 col-span-full">검색 결과가 없습니다.</p>
         )}
       </div>
 
@@ -187,30 +162,23 @@ const Explore = () => {
           >
             Previous
           </button>
-          {startPage > 1 && (
-            <span className="explore-pagination-ellipsis">...</span>
-          )}
+          {startPage > 1 && <span className="explore-pagination-ellipsis">...</span>}
           {pageNumbers.map((page) => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`explore-pagination-button ${
-                currentPage === page ? "explore-pagination-button-active" : ""
-              }`}
+              className={`explore-pagination-button ${currentPage === page ? "explore-pagination-button-active" : ""}`}
             >
               {page}
             </button>
           ))}
           {endPage < totalPages && (
-            <span className="explore-pagination-ellipsis">...</span>
-          )}
-          {endPage < totalPages && (
-            <button
-              onClick={() => handlePageChange(totalPages)}
-              className="explore-pagination-button"
-            >
-              {totalPages}
-            </button>
+            <>
+              <span className="explore-pagination-ellipsis">...</span>
+              <button onClick={() => handlePageChange(totalPages)} className="explore-pagination-button">
+                {totalPages}
+              </button>
+            </>
           )}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
