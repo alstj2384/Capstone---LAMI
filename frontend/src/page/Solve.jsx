@@ -8,6 +8,8 @@ const Solve = () => {
   const { quizSetId } = useParams();
   const token = localStorage.getItem("token");
   const memberId = localStorage.getItem("memberId");
+  // 로딩 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [problemList, setProblemList] = useState([]);
   const [currentProblemId, setCurrentProblemId] = useState(null);
@@ -69,6 +71,9 @@ const Solve = () => {
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return; // 두 번 클릭 방지
+    setIsSubmitting(true); // 로딩 시작
+
     const answers = problemList.map((problem) => ({
       quizId: problem.problemId,
       quizType: problem.questionType,
@@ -76,7 +81,6 @@ const Solve = () => {
     }));
 
     try {
-      console.log(answers)
       const res = await requestGrading(
         {
           quizSetId: parseInt(quizSetId),
@@ -85,22 +89,14 @@ const Solve = () => {
         token
       );
 
-      //res에서 채점 ID를 가져올 필요가 있다.
       if (res) {
-        // 채점 목록 가져오기 - 채점 완료시 해당 채점ID 넘기게 변경필요
-        // 아래는 임시로 채점목록중 최신 채점으로 이동
-        //const resGradingList = await getGradingList(token, memberId)
-
-        //const GradingId = resGradingList.data.gradingList[0]
-
-        console.log(res.data.gradingId)
-        const GradingId = res.data.gradingId
-
+        const GradingId = res.data.gradingId;
         navigate("/result", { state: { gradingId: GradingId } });
       }
-
     } catch (err) {
       console.error("채점 실패", err);
+      alert("채점 도중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsSubmitting(false); // 실패 시 다시 클릭 가능하도록
     }
   };
 
