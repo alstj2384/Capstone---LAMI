@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { server, endpoints } from "../url";
 import { loginUser } from "../api";
 import LogoImg from "../assets/LAMI_icon.svg";
+import { useAuth } from "../store/AuthContext";
 
-export default function Login({ onLogin }) {
+export default function Login() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { dispatch } = useAuth(); // ✅ 전역 상태 dispatch 사용
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,13 +21,13 @@ export default function Login({ onLogin }) {
         password,
       });
 
-      onLogin({ memberId, token });
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("memberId", memberId);
+      // ✅ 전역 로그인 처리
+      dispatch({
+        type: "LOGIN",
+        payload: { memberId, token },
+      });
 
       navigate("/");
-
     } catch (err) {
       console.error("로그인 에러:", err);
       const errorMessage =
