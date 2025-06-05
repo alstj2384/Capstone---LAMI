@@ -18,11 +18,11 @@ export const loginUser = async ({ userId, password }) => {
 
 // 로그아웃 
 export const logoutUser = async (token, memberId) => {
-    localStorage.removeItem("memberId")
-    localStorage.removeItem("token")
-    setIsLoggedIn(false); // 로그인 상태 false 처리
-    setUser(null);        // 유저 정보 제거
-    navigate("/");
+    return axios.post(endpoints.logout, { memberId }, {
+        headers: {
+            Authorization: `${token}`,
+        },
+    });
 };
 
 //회원 탈퇴 
