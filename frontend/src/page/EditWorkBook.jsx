@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProblemList, getWorkbook, updateProblems } from "../api";
-import "./css/Solve.css";
+import "./css/EditWorkBook.css";
 
 const EditWorkBook = () => {
   const navigate = useNavigate();
@@ -58,15 +58,12 @@ const EditWorkBook = () => {
     try {
       const patchData = problemList.map((p) => ({
         question: p.question,
-        choices:
-          p.questionType === "MULTIPLE_CHOICE"
-            ? p.choicesArray.join(",")
-            : null,
+        choices: p.questionType === "MULTIPLE_CHOICE" ? p.choicesArray.join(",") : null,
         answer: p.answer,
         questionType: p.questionType,
       }));
 
-      await updateProblems(token, memberId, workbookId, patchData)
+      await updateProblems(token, memberId, workbookId, patchData);
 
       alert("문제가 성공적으로 수정되었습니다.");
       navigate("/explore");
@@ -78,7 +75,7 @@ const EditWorkBook = () => {
   };
 
   return (
-    <div className="solve-page">
+    <div className="editworkbook-page">
       {isSubmitting && (
         <div className="loading-overlay">
           <div className="spinner" />
@@ -86,21 +83,22 @@ const EditWorkBook = () => {
         </div>
       )}
 
-      <div className="solve-header">
-        <h1 className="solve-title">{workbookMeta.title} 문제 수정</h1>
+      <div className="editworkbook-header">
+        <h1 className="editworkbook-title">{workbookMeta.title} 문제 수정</h1>
       </div>
 
-      <div className="solve-main">
-        <div className="solve-content">
+      <div className="editworkbook-main">
+        <div className="editworkbook-content">
           {problemList.map((problem, i) => (
-            <div key={problem.problemId} className="solve-problem">
-              <h2 className="solve-problem-title">
+            <div key={problem.problemId} className="editworkbook-problem">
+              <h2 className="editworkbook-problem-title">
                 문제 {problem.sequenceNumber}번
               </h2>
 
+              <label className="editworkbook-label">문제</label>
               <input
                 type="text"
-                className="solve-short-answer-input"
+                className="editworkbook-short-answer-input"
                 placeholder="문제 내용"
                 value={problem.question}
                 onChange={(e) => handleQuestionChange(i, e.target.value)}
@@ -109,22 +107,24 @@ const EditWorkBook = () => {
               {problem.questionType === "MULTIPLE_CHOICE" && (
                 <>
                   {problem.choicesArray.map((choice, j) => (
-                    <input
-                      key={j}
-                      type="text"
-                      className="solve-short-answer-input"
-                      placeholder={`선택지 ${j + 1}`}
-                      value={choice}
-                      onChange={(e) =>
-                        handleChoiceChange(i, j, e.target.value)
-                      }
-                    />
+                    <div key={j}>
+                      <label className="editworkbook-label">선택지 {j + 1}</label>
+                      <input
+                        type="text"
+                        className="editworkbook-short-answer-input"
+                        placeholder={`선택지 ${j + 1}`}
+                        value={choice}
+                        onChange={(e) => handleChoiceChange(i, j, e.target.value)}
+                      />
+                    </div>
                   ))}
+
+                  <label className="editworkbook-label">정답</label>
                   <input
                     type="number"
                     min="1"
                     max="4"
-                    className="solve-short-answer-input"
+                    className="editworkbook-short-answer-input"
                     placeholder="정답 번호 (1~4)"
                     value={problem.answer}
                     onChange={(e) => handleAnswerChange(i, e.target.value)}
@@ -133,35 +133,42 @@ const EditWorkBook = () => {
               )}
 
               {problem.questionType === "TRUE_FALSE" && (
-                <div className="solve-answer-options">
-                  {["O", "X"].map((val) => (
-                    <label key={val} className="solve-answer-option">
-                      <input
-                        type="radio"
-                        name={`true-false-${i}`}
-                        value={val}
-                        checked={problem.answer === val}
-                        onChange={() => handleAnswerChange(i, val)}
-                      />
-                      <span>{val}</span>
-                    </label>
-                  ))}
-                </div>
+                <>
+                  <label className="editworkbook-label">정답</label>
+                  <div className="editworkbook-answer-options">
+                    {["O", "X"].map((val) => (
+                      <label key={val} className="editworkbook-answer-option">
+                        <input
+                          type="radio"
+                          name={`true-false-${i}`}
+                          value={val}
+                          checked={problem.answer === val}
+                          onChange={() => handleAnswerChange(i, val)}
+                          className="editworkbook-answer-input"
+                        />
+                        <span>{val}</span>
+                      </label>
+                    ))}
+                  </div>
+                </>
               )}
 
               {problem.questionType === "SHORT_ANSWER" && (
-                <input
-                  type="text"
-                  className="solve-short-answer-input"
-                  placeholder="정답 입력"
-                  value={problem.answer}
-                  onChange={(e) => handleAnswerChange(i, e.target.value)}
-                />
+                <>
+                  <label className="editworkbook-label">정답</label>
+                  <input
+                    type="text"
+                    className="editworkbook-short-answer-input"
+                    placeholder="정답 입력"
+                    value={problem.answer}
+                    onChange={(e) => handleAnswerChange(i, e.target.value)}
+                  />
+                </>
               )}
             </div>
           ))}
 
-          <button onClick={handleSubmit} className="solve-submit-button">
+          <button onClick={handleSubmit} className="editworkbook-submit-button">
             수정 사항 저장하기
           </button>
         </div>
