@@ -264,8 +264,8 @@ export const getQuizset = async (gradingId) => {
     return res.data;
 };
 
-// 복습 문제 생성
-export const createReview = async (data, token, memberId) => {
+// 복습 문제 담기
+export const createReview = async (token, memberId, data) => {
     const res = await axios.post(endpoints.createReview, data, {
         headers: {
             Authorization: `${token}`,
