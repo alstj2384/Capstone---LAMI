@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProblemList, getWorkbook, updateProblems } from "../api";
-import axios from "axios";
 import "./css/Solve.css";
 
 const EditWorkBook = () => {

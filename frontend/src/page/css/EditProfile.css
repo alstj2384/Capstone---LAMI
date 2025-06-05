@@ -3,6 +3,9 @@
   margin: 0 auto;
   padding: 7rem 1rem;
   font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;       
+  overflow-y: auto;         
+  box-sizing: border-box;
 }
 
 .edit-title {
