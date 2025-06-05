@@ -20,20 +20,19 @@ import Login from "./page/Login.jsx";
 import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
 import EditMyPage from "./page/EditProfile.jsx";
+import { useAuth } from "./store/AuthContext.jsx";
 import "./App.css";
 
 // ProtectedRoute component to restrict access
-const ProtectedRoute = ({ isLoggedIn, children }) => {
-  if (!isLoggedIn) {
+const ProtectedRoute = ({ children }) => {
+  const { state } = useAuth();
+  if (!state.isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
   return children;
 };
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const memberId = localStorage.getItem("memberId");
@@ -50,8 +49,7 @@ const App = () => {
           setUser({ name, email, token });
           setIsLoggedIn(true);
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     }
   }, []);
 
@@ -72,14 +70,14 @@ const App = () => {
 
   return (
     <Router>
-      <TopNav isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+      <TopNav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route
           path="/create"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <ProtectedRoute>
               <Create />
             </ProtectedRoute>
           }
@@ -91,7 +89,7 @@ const App = () => {
         <Route
           path="/review"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <ProtectedRoute>
               <Review />
             </ProtectedRoute>
           }
@@ -99,12 +97,12 @@ const App = () => {
         <Route
           path="/mypage"
           element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <MyPage isLoggedIn={isLoggedIn} />
+            <ProtectedRoute>
+              <MyPage />
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-mypage" element={<EditMyPage />} />
       </Routes>
