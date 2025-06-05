@@ -55,14 +55,11 @@ const Review = () => {
                   {review.quizContent}
                 </h3>
 
-                {/* 보기 숨김 처리 */}
-                {/* <ul className="review-problem-set-choices" style={{ display: "none" }}>
-                  {review.choices.split(",").map((choice, index) => (
-                    <li key={index}>
-                      {String.fromCharCode(65 + index)}. {choice}
-                    </li>
-                  ))}
-                </ul> */}
+                <p className="review-answer">
+                  정답: {review.choices
+                    ? review.choices.split(",")[parseInt(review.answer, 10) - 1] || "선택지 없음"
+                    : review.answer}
+                </p>
 
                 <button
                   className="review-problem-set-button"
