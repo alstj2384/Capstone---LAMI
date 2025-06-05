@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
-import { useAuth } from "../store/AuthContext";
+import { useSelector } from "react-redux";
 import "./css/MyPage.css";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { state } = useAuth();
+
+  const { token, memberId, isLoggedIn, isInitialized } = useSelector(
+    (state) => state.auth
+  );
 
   const [user, setUser] = useState(null);
   const [reviewList, setReviewList] = useState([]);
@@ -21,42 +24,31 @@ const MyPage = () => {
   );
 
   useEffect(() => {
+    if (!isInitialized) return; // 초기화 안 됐으면 아무것도 안 함
+
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
-        const userRes = await axios.get(endpoints.getUserInfo(state.memberId), {
-          headers: {
-            Authorization: state.token,
-            "X-User-ID": state.memberId,
-          },
-        });
-        setUser(userRes.data);
+        const userRes = await axios.get(endpoints.getUserInfo(memberId));
+        const userData = userRes?.data?.data || userRes?.data;
+        setUser(userData);
 
-        const reviewRes = await axios.get(endpoints.getReview, {
-          headers: {
-            Authorization: state.token,
-            "X-User-ID": state.memberId,
-          },
-        });
-        setReviewList(reviewRes.data.data || []);
+        const reviewRes = await axios.get(endpoints.getReview);
+        setReviewList(reviewRes.data?.data || []);
 
-        const workbookRes = await axios.get(endpoints.getWorkbookList, {
-          headers: {
-            Authorization: state.token,
-            "X-User-ID": state.memberId,
-          },
-        });
-        setProblemList(workbookRes.data.data || []);
+        const workbookRes = await axios.get(endpoints.getWorkbookList);
+        setProblemList(workbookRes.data?.data || []);
       } catch (error) {
         console.error("사용자 정보를 불러올 수 없습니다.", error);
       }
     };
 
-    if (state.isLoggedIn) {
-      fetchUserData();
-    } else {
-      navigate("/login");
-    }
-  }, [state.isLoggedIn, state.token, state.memberId, navigate]);
+    fetchUserData();
+  }, [isInitialized, isLoggedIn, token, memberId, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -80,6 +72,10 @@ const MyPage = () => {
     navigate(`/solve/${quizSetId}`);
   };
 
+  if (!isInitialized) {
+    return <p className="mypage-loading">초기화 중입니다...</p>;
+  }
+
   if (!user) {
     return <p className="mypage-loading">사용자 정보를 불러오는 중입니다...</p>;
   }
@@ -87,6 +83,7 @@ const MyPage = () => {
   return (
     <div className="mypage-page">
       <div className="mypage-container">
+        {/* 프로필 섹션 */}
         <div className="mypage-header">
           <div className="mypage-profile-section">
             <img
@@ -110,6 +107,7 @@ const MyPage = () => {
           </div>
         </div>
 
+        {/* 복습 리스트 */}
         <div className="mypage-main">
           <div className="mypage-today-review">
             <h2 className="mypage-section-title">오늘의 복습</h2>
@@ -133,6 +131,7 @@ const MyPage = () => {
             </div>
           </div>
 
+          {/* 문제집 */}
           <div className="mypage-problem-section">
             <h2 className="mypage-section-title">내가 생성한 문제집</h2>
             <div className="mypage-problem-list">
@@ -146,6 +145,7 @@ const MyPage = () => {
           </div>
         </div>
 
+        {/* 하단 */}
         <div className="mypage-footer">
           <div className="mypage-section">
             <h2 className="mypage-section-title">접속시간</h2>
