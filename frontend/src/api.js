@@ -216,10 +216,11 @@ export const getProblemList = async (workbookId, token) => {
 };
 
 // 문제 수정
-export const updateProblem = async ({ workbookId, data, token }) => {
+export const updateProblems = async (token, memberId, workbookId, data) => {
     const res = await axios.patch(endpoints.updateProblem(workbookId), data, {
         headers: {
             Authorization: `${token}`,
+            "X-User-Id": memberId,
             "Content-Type": "application/json",
         },
     });

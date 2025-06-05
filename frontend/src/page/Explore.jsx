@@ -25,7 +25,7 @@ const Explore = () => {
 
       try {
         //setCurrentUserId(userId);
-        
+
         console.log("AAAAAAA")
         const quizRes = await getWorkbookList(token);
 
@@ -91,6 +91,10 @@ const Explore = () => {
     navigate(`/solve/${quizId}`);
   };
 
+  const handleEditWorkBook = (quizSetId) => {
+    navigate(`/editworkbook/${quizSetId}`)
+  };
+
   return (
     <div className="explore-container">
       <h1 className="explore-title">문제집 둘러보기</h1>
@@ -125,11 +129,10 @@ const Explore = () => {
               <button
                 key={level}
                 onClick={() => handleDifficultyChange(level)}
-                className={`explore-filter-button ${
-                  selectedDifficulty === level
-                    ? "explore-filter-button-active"
-                    : ""
-                }`}
+                className={`explore-filter-button ${selectedDifficulty === level
+                  ? "explore-filter-button-active"
+                  : ""
+                  }`}
               >
                 {level}
               </button>
@@ -154,13 +157,21 @@ const Explore = () => {
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
             <div key={item.workbookId} className="explore-card">
+              {item.userId === currentUserId && (
+                <button
+                  className="explore-edit-button"
+                  onClick={() => handleEditWorkBook(item.workbookId)}
+                >
+                  수정
+                </button>
+              )}
               <img
                 src={SquirrelIcon}
                 alt="Squirrel Icon"
                 className="explore-card-icon"
               />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">작성자: {item.nickname}</p>
+              <p className="explore-card-date">작성자: {item.userId}</p>
               <button
                 onClick={() => handleSolve(item.workbookId)}
                 className="explore-card-button"
@@ -192,9 +203,8 @@ const Explore = () => {
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`explore-pagination-button ${
-                currentPage === page ? "explore-pagination-button-active" : ""
-              }`}
+              className={`explore-pagination-button ${currentPage === page ? "explore-pagination-button-active" : ""
+                }`}
             >
               {page}
             </button>

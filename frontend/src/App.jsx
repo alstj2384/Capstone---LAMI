@@ -20,6 +20,7 @@ import Login from "./page/Login.jsx";
 import Signup from "./page/Signup.jsx";
 import MyPage from "./page/MyPage.jsx";
 import EditMyPage from "./page/EditProfile.jsx";
+import EditWorkBook from "./page/EditWorkBook.jsx";
 import "./App.css";
 
 // ProtectedRoute component to restrict access
@@ -101,6 +102,14 @@ const App = () => {
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <MyPage isLoggedIn={isLoggedIn} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editworkbook"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <EditWorkBook isLoggedIn={isLoggedIn} />
             </ProtectedRoute>
           }
         />
