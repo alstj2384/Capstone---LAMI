@@ -12,6 +12,8 @@ const GradingHistory = () => {
   const memberId = localStorage.getItem("memberId");
 
   useEffect(() => {
+    if (!token || !memberId) return;
+
     const fetchData = async () => {
       try {
         const data = await getGradingList(token, memberId);
@@ -24,7 +26,7 @@ const GradingHistory = () => {
     };
 
     fetchData();
-  }, []);
+  }, [token, memberId]); // 의존성 추가
 
   const handleClick = (gradingId) => {
     navigate(`/grading/${gradingId}`);
