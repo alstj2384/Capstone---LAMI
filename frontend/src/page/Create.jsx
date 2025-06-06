@@ -66,7 +66,7 @@ const Create = () => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("memberId");
 
-    if (!token || !memberId) {
+    if (!token || !userId) {
       alert("로그인이 필요합니다.");
       return;
     }
