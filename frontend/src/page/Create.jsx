@@ -64,7 +64,7 @@ const Create = () => {
       return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
     const token = localStorage.getItem("token");
-    const uesrId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
     if (!token || !userId) {
       alert("로그인이 필요합니다.");
@@ -100,7 +100,7 @@ const Create = () => {
         ox: trueFalseCount,
         short: shortAnswerCount,
         token,
-        userrId,
+        userId,
       });
 
       // 응답 구조 확인
