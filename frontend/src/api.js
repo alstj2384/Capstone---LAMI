@@ -53,10 +53,9 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 // 비밀번호 변경 인증번호 전송 API 
 // 수정 후 ✅
 // api.js
-
 export const resetPasswordRequestCode = async (userId) => {
     const res = await axiosBasic.post(
-        "http://10.116.64.23/api/public/members/reset-password/request-code",
+        endpoints.resetPasswordRequestCode, 
         { userId },
         {
             headers: {
@@ -143,7 +142,7 @@ export const reissueToken = async (refreshToken) => {
             },
         }
     );
-    return res.data; // { accessToken, refreshToken }
+    return res.data;
 };
 
 // 사용자 이름 조회 
@@ -226,6 +225,21 @@ export const getWorkbookList = async () => {
     return res.data?.data || []; // ⚠️ data가 없을 경우 빈 배열 반환
 };
 
+export const getMyWorkbookList = async (memberId, token) => {
+  const res = await axios.get(endpoints.getWorkbookList, {
+    headers: {
+      Authorization: `${token}`,
+      "X-User-Id": memberId,
+    },
+  });
+
+const allWorkbooks = res.data?.data || [];
+
+  // 내가 만든 문제집만 필터링
+  return allWorkbooks.filter((workbook) => {
+    return Number(workbook.userId) === Number(memberId);
+  });
+};
 
 // 문제 리스트 조회
 export const getProblemList = async (workbookId, token) => {

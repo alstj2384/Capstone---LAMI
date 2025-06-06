@@ -4,6 +4,7 @@ import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
 import { useSelector } from "react-redux";
+import { getMyWorkbookList } from "../api";
 import "./css/MyPage.css";
 
 const MyPage = () => {
@@ -14,7 +15,7 @@ const MyPage = () => {
   );
 
   const [user, setUser] = useState(null);
-  const [reviewList, setReviewList] = useState([]);
+  const [myWorkbooks, setMyWorkbooks] = useState([]);
   const [problemList, setProblemList] = useState([]);
   const [timeSpent, setTimeSpent] = useState(() =>
     parseInt(localStorage.getItem("timeSpent") || "0")
@@ -39,7 +40,10 @@ const MyPage = () => {
       };
 
       try {
-        const userRes = await axios.get(endpoints.getUserInfo(memberId), config);
+        const userRes = await axios.get(
+          endpoints.getUserInfo(memberId),
+          config
+        );
         const userData = userRes?.data?.data || userRes?.data;
         setUser(userData);
 
@@ -47,11 +51,7 @@ const MyPage = () => {
         const reviews = reviewRes.data?.data;
         setReviewList(Array.isArray(reviews) ? reviews : []);
 
-        const workbookRes = await axios.get(endpoints.getWorkbookList, config);
-        const allWorkbooks = workbookRes.data?.data || [];
-        const myWorkbooks = allWorkbooks.filter(
-          (workbook) => workbook.userId === Number(memberId)
-        );
+        const myWorkbooks = await getMyWorkbookList(memberId, token);
         setProblemList(myWorkbooks);
       } catch (error) {
         console.error("사용자 정보를 불러올 수 없습니다.", error);
@@ -130,10 +130,10 @@ const MyPage = () => {
         <div className="mypage-myworkbook-section">
           <h2 className="mypage-section-title">내가 만든 문제집</h2>
           <div className="mypage-problem-list">
-            {problemList.length === 0 ? (
+            {myWorkbooks.length === 0 ? (
               <p className="mypage-section-content">문제집이 없습니다.</p>
             ) : (
-              problemList.map((workbook) => (
+              myWorkbooks.map((workbook) => (
                 <div
                   key={workbook.workbookId}
                   className="mypage-problem-item"
@@ -141,7 +141,8 @@ const MyPage = () => {
                 >
                   <div className="mypage-problem-title">{workbook.title}</div>
                   <div className="mypage-problem-meta">
-                    문제 수: {workbook.questionAmount}개 | 난이도: {workbook.difficulty}
+                    문제 수: {workbook.questionAmount}개 | 난이도:{" "}
+                    {workbook.difficulty}
                   </div>
                 </div>
               ))
