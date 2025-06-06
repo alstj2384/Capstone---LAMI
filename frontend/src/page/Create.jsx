@@ -89,6 +89,7 @@ const Create = () => {
       for (let [key, value] of debugForm.entries()) {
         console.log(`${key}:`, value);
       }
+      console.log("📦 생성된 문제집 응답:", response); // ✅ 응답 확인용 콘솔
 
       const response = await generateAiWorkbook({
         pdf: file,
