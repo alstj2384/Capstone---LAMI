@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { generateAiWorkbook } from "../api"; // AI 문제집 생성 API
+import { generateAiWorkbook, getMyWorkbookList } from "../api"; // AI 문제집 생성 API
 import "./css/Create.css";
 
 const Create = () => {
@@ -64,9 +64,9 @@ const Create = () => {
       return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("memberId");
+    const memberId = localStorage.getItem("memberId");
 
-    if (!token || !userId) {
+    if (!token || !memberId) {
       alert("로그인이 필요합니다.");
       return;
     }
@@ -74,23 +74,7 @@ const Create = () => {
     setIsLoading(true);
 
     try {
-      // ✅ 여기에 디버깅 코드 추가
-      const debugForm = new FormData();
-      debugForm.append("pdf", file);
-      debugForm.append("title", title);
-      debugForm.append("isPublic", "True");
-      debugForm.append("script", `${title} 문제집 설명입니다.`);
-      debugForm.append("difficulty", difficulty);
-      debugForm.append("multipleChoiceAmount", multipleChoiceCount.toString());
-      debugForm.append("trueFalseAmount", trueFalseCount.toString());
-      debugForm.append("shortAnswerAmount", shortAnswerCount.toString());
-
-      console.log("📦 전송할 FormData:");
-      for (let [key, value] of debugForm.entries()) {
-        console.log(`${key}:`, value);
-      }
-      console.log("📦 생성된 문제집 응답:", response); // ✅ 응답 확인용 콘솔
-
+      // 문제집 생성
       const response = await generateAiWorkbook({
         pdf: file,
         title,
@@ -101,20 +85,21 @@ const Create = () => {
         ox: trueFalseCount,
         short: shortAnswerCount,
         token,
-        userId,
+        memberId,
       });
 
-      // 응답 구조 확인
-      console.log("생성된 문제집 응답:", response);
+      console.log("✅ 문제 생성 응답:", response);
 
-      const workbookId =
-        response?.workbookId || response?.id || response?.quizSetId;
+      // 문제집 목록 조회 후 title로 찾기
+      const workbookList = await getMyWorkbookList(memberId, token);
+      const matched = workbookList.find((wb) => wb.title === title);
 
-      if (workbookId) {
-        alert("AI 문제집이 성공적으로 생성되었습니다!");
-        navigate("/share-complete", { state: { workbookId } });
+      if (matched?.workbookId) {
+        navigate("/share-complete", {
+          state: { workbookId: matched.workbookId },
+        });
       } else {
-        alert("문제집은 생성되었지만 ID를 받아오지 못했습니다.");
+        alert("문제집은 생성되었지만 ID를 찾을 수 없습니다.");
       }
     } catch (err) {
       alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
