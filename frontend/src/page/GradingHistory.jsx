@@ -9,14 +9,14 @@ const GradingHistory = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const memberId = localStorage.getItem("memberId");
+  const userId = localStorage.getItem("memberId");
 
   useEffect(() => {
-    if (!token || !memberId) return;
+    if (!token || !userId) return;
 
     const fetchData = async () => {
       try {
-        const data = await getGradingList(token, memberId);
+        const data = await getGradingList(token, userId);
         setGradingList(data);
       } catch (err) {
         alert("채점 기록을 불러오지 못했습니다.");
@@ -26,7 +26,7 @@ const GradingHistory = () => {
     };
 
     fetchData();
-  }, [token, memberId]); // 의존성 추가
+  }, [token, userId]); // 의존성 추가
 
   const handleClick = (gradingId) => {
     navigate(`/grading/${gradingId}`);
