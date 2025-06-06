@@ -31,8 +31,12 @@ const Explore = () => {
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
+    const matchesSearch = item.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty
+      ? item.difficulty === selectedDifficulty
+      : true;
     const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
@@ -67,7 +71,8 @@ const Explore = () => {
   };
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
-  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
+  const handleEditWorkBook = (workbookId) =>
+    navigate(`/editworkbook/${workbookId}`);
 
   return (
     <div className="explore-container">
@@ -85,21 +90,25 @@ const Explore = () => {
             />
             <button onClick={handleSearch} className="explore-search-button">검색하기</button>
           </div>
-          <div className="explore-category-wrapper">
-            <input type="text" placeholder="카테고리" className="explore-input explore-input-small" />
-            <button className="explore-category-button">필터링</button>
-          </div>
         </div>
         <div className="explore-right-group">
           <div className="explore-button-group">
             <span className="explore-filter-label">난이도</span>
-            {["높음", "중간", "낮음"].map((level) => (
+            {[
+              { label: "높음", value: 3 },
+              { label: "중간", value: 2 },
+              { label: "낮음", value: 1 },
+            ].map(({ label, value }) => (
               <button
-                key={level}
-                onClick={() => handleDifficultyChange(level)}
-                className={`explore-filter-button ${selectedDifficulty === level ? "explore-filter-button-active" : ""}`}
+                key={label}
+                onClick={() => handleDifficultyChange(value)}
+                className={`explore-filter-button ${
+                  selectedDifficulty === value
+                    ? "explore-filter-button-active"
+                    : ""
+                }`}
               >
-                {level}
+                {label}
               </button>
             ))}
           </div>
@@ -129,7 +138,9 @@ const Explore = () => {
               <div className="explore-card-button-group">
                 <button
                   onClick={() => handleSolve(item.workbookId)}
-                  className={`explore-card-button ${item.userId !== memberId ? "full-width" : ""}`}
+                  className={`explore-card-button ${
+                    item.userId !== memberId ? "full-width" : ""
+                  }`}
                 >
                   풀어보기
                 </button>
