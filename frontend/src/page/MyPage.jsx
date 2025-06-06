@@ -17,6 +17,7 @@ const MyPage = () => {
   const [user, setUser] = useState(null);
   const [myWorkbooks, setMyWorkbooks] = useState([]);
   const [problemList, setProblemList] = useState([]);
+  const [reviewList, setReviewList] = useState([]);
   const [timeSpent, setTimeSpent] = useState(() =>
     parseInt(localStorage.getItem("timeSpent") || "0")
   );
