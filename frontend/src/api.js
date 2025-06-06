@@ -55,7 +55,7 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 // api.js
 export const resetPasswordRequestCode = async (userId) => {
     const res = await axiosBasic.post(
-        endpoints.resetPasswordRequestCode, 
+        endpoints.resetPasswordRequestCode,
         { userId },
         {
             headers: {
@@ -226,20 +226,19 @@ export const getWorkbookList = async () => {
 };
 
 export const getMyWorkbookList = async (memberId, token) => {
-  const res = await axios.get(endpoints.getWorkbookList, {
-    headers: {
-      Authorization: `${token}`,
-      "X-User-Id": memberId,
-    },
-  });
+    const res = await axios.get(endpoints.getWorkbookList, {
+        headers: {
+            Authorization: `${token}`,
+            "X-User-ID": memberId,
+        },
+    });
 
-const allWorkbooks = res.data?.data || [];
-
-  // 내가 만든 문제집만 필터링
-  return allWorkbooks.filter((workbook) => {
-    return Number(workbook.userId) === Number(memberId);
-  });
+    const allWorkbooks = res.data?.data?.content || []; // <-- 핵심 수정
+    return allWorkbooks.filter(
+        (workbook) => workbook.userId === Number(memberId)
+    );
 };
+
 
 // 문제 리스트 조회
 export const getProblemList = async (workbookId, token) => {
