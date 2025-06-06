@@ -48,6 +48,24 @@ const Create = () => {
       alert("PDF 파일만 업로드 가능하며, 최대 3MB까지 허용됩니다.");
     }
   };
+  const waitForWorkbook = async (
+    title,
+    token,
+    memberId,
+    maxRetries = 10,
+    delay = 2000
+  ) => {
+    for (let i = 0; i < maxRetries; i++) {
+      const workbookList = await getMyWorkbookList(memberId, token);
+      const matched = workbookList.find((wb) => wb.title === title);
+
+      if (matched) return matched;
+
+      await new Promise((resolve) => setTimeout(resolve, delay)); // 기다림
+    }
+
+    return null; // 못 찾은 경우
+  };
 
   const totalQuestions =
     multipleChoiceCount + trueFalseCount + shortAnswerCount;
@@ -74,7 +92,6 @@ const Create = () => {
     setIsLoading(true);
 
     try {
-      // 문제집 생성
       const response = await generateAiWorkbook({
         pdf: file,
         title,
@@ -90,21 +107,20 @@ const Create = () => {
 
       console.log("✅ 문제 생성 응답:", response);
 
-      // 문제집 목록 조회 후 title로 찾기
-      const workbookList = await getMyWorkbookList(memberId, token);
-      const matched = workbookList.find((wb) => wb.title === title);
+      // 📌 반영될 때까지 기다리면서 찾기
+      const matched = await waitForWorkbook(title, token, memberId);
 
       if (matched?.workbookId) {
         navigate("/share-complete", {
           state: { workbookId: matched.workbookId },
         });
       } else {
-        alert("문제집은 생성되었지만 ID를 찾을 수 없습니다.");
+        alert(
+          "문제집은 생성되었지만 서버에 반영되지 않았습니다. 잠시 후 다시 확인해주세요."
+        );
       }
     } catch (err) {
       alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
-    } finally {
-      setIsLoading(false);
     }
   };
 
