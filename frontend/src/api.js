@@ -226,18 +226,25 @@ export const getWorkbookList = async () => {
 };
 
 export const getMyWorkbookList = async (memberId, token) => {
-    const res = await axios.get(endpoints.getWorkbookList, {
-        headers: {
-            Authorization: `${token}`,
-            "X-User-ID": memberId,
-        },
-    });
+  const res = await axios.get(endpoints.getWorkbookList, {
+    headers: {
+      Authorization: `${token}`,
+      "X-User-ID": memberId,
+    },
+  });
 
-    const allWorkbooks = res.data?.data?.content || []; // <-- 핵심 수정
-    return allWorkbooks.filter(
-        (workbook) => workbook.userId === Number(memberId)
-    );
+  console.log("📦 전체 문제집 응답", res.data); // 전체 응답 확인
+  const allWorkbooks = res.data?.data?.content || [];
+
+  console.log("📦 필터링 전 문제집 수:", allWorkbooks.length);
+  const myWorkbooks = allWorkbooks.filter(
+    (workbook) => workbook.userId === Number(memberId)
+  );
+  console.log("📦 내 문제집 수:", myWorkbooks.length);
+
+  return myWorkbooks;
 };
+
 
 
 // 문제 리스트 조회
