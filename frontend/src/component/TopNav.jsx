@@ -76,7 +76,7 @@ const TopNav = () => {
         </Link>
       </div>
       <div className="topnav-text">
-        <Link to="/mypage" className="nav-button">
+        <Link to="/grading-history" className="nav-button">
           채점 기록
         </Link>
       </div>
