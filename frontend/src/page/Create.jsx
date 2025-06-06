@@ -64,9 +64,9 @@ const Create = () => {
       return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
     const token = localStorage.getItem("token");
-    const memberId = localStorage.getItem("memberId");
+    const uesrId = localStorage.getItem("userId");
 
-    if (!token || !memberId) {
+    if (!token || !userId) {
       alert("로그인이 필요합니다.");
       return;
     }
@@ -74,6 +74,22 @@ const Create = () => {
     setIsLoading(true);
 
     try {
+      // ✅ 여기에 디버깅 코드 추가
+      const debugForm = new FormData();
+      debugForm.append("pdf", file);
+      debugForm.append("title", title);
+      debugForm.append("isPublic", "True");
+      debugForm.append("script", `${title} 문제집 설명입니다.`);
+      debugForm.append("difficulty", difficulty);
+      debugForm.append("multipleChoiceAmount", multipleChoiceCount.toString());
+      debugForm.append("trueFalseAmount", trueFalseCount.toString());
+      debugForm.append("shortAnswerAmount", shortAnswerCount.toString());
+
+      console.log("📦 전송할 FormData:");
+      for (let [key, value] of debugForm.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       const response = await generateAiWorkbook({
         pdf: file,
         title,
@@ -84,7 +100,7 @@ const Create = () => {
         ox: trueFalseCount,
         short: shortAnswerCount,
         token,
-        memberId,
+        userrId,
       });
 
       // 응답 구조 확인
