@@ -64,9 +64,9 @@ const Create = () => {
       return alert("정답 정확성 확인 체크박스를 선택해주세요.");
 
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("memberId");
 
-    if (!token || !userId) {
+    if (!token || !memberId) {
       alert("로그인이 필요합니다.");
       return;
     }
