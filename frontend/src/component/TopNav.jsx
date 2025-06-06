@@ -77,6 +77,11 @@ const TopNav = () => {
       </div>
       <div className="topnav-text">
         <Link to="/mypage" className="nav-button">
+          채점 기록
+        </Link>
+      </div>
+      <div className="topnav-text">
+        <Link to="/mypage" className="nav-button">
           마이페이지
         </Link>
       </div>

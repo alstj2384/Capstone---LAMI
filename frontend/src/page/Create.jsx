@@ -107,7 +107,7 @@ const Create = () => {
 
       console.log("✅ 문제 생성 응답:", response);
 
-      // 📌 반영될 때까지 기다리면서 찾기
+      // 📌 반영될 때까지 기다리기
       const matched = await waitForWorkbook(title, token, memberId);
 
       if (matched?.workbookId) {
@@ -121,6 +121,8 @@ const Create = () => {
       }
     } catch (err) {
       alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
+    } finally {
+      setIsLoading(false); // 꼭 필요합니다
     }
   };
 
