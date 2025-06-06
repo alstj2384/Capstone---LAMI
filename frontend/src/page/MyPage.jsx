@@ -53,9 +53,10 @@ const MyPage = () => {
         setReviewList(Array.isArray(reviews) ? reviews : []);
 
         const myWorkbooks = await getMyWorkbookList(memberId, token);
-        setProblemList(myWorkbooks);
+        console.log("📄 MyPage에서 받은 문제집 목록:", myWorkbooks);
+        setMyWorkbooks(myWorkbooks);
       } catch (error) {
-        console.error("사용자 정보를 불러올 수 없습니다.", error);
+        console.error("❌ 사용자 정보를 불러올 수 없습니다.", error);
       }
     };
 
