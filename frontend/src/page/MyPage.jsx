@@ -93,6 +93,19 @@ const MyPage = () => {
     return <p className="mypage-loading">사용자 정보를 불러오는 중입니다...</p>;
   }
 
+  const getDifficultyText = (difficulty) => {
+    switch (difficulty) {
+      case 1:
+        return "쉬움";
+      case 2:
+        return "보통";
+      case 3:
+        return "어려움";
+      default:
+        return "없음";
+    }
+  };
+
   return (
     <div className="mypage-page">
       <div className="mypage-container">
@@ -143,8 +156,8 @@ const MyPage = () => {
                 >
                   <div className="mypage-problem-title">{workbook.title}</div>
                   <div className="mypage-problem-meta">
-                    문제 수: {workbook.questionAmount}개 | 난이도:{" "}
-                    {workbook.difficulty}
+                    문제 수: {workbook.questionAmount || 10}개 | 난이도:{" "}
+                    {getDifficultyText(workbook.difficulty)}
                   </div>
                 </div>
               ))
