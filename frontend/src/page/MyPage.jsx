@@ -4,7 +4,7 @@ import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
 import { useSelector } from "react-redux";
-import { getMyWorkbookList } from "../api";
+import { getWorkbook, getMyWorkbookList } from "../api";
 import "./css/MyPage.css";
 
 const MyPage = () => {
@@ -51,10 +51,29 @@ const MyPage = () => {
         const reviewRes = await axios.get(endpoints.getReview, config);
         const reviews = reviewRes.data?.data;
         setReviewList(Array.isArray(reviews) ? reviews : []);
-
         const myWorkbooks = await getMyWorkbookList(memberId, token);
+
+        const detailedWorkbooks = await Promise.all(
+          myWorkbooks.map(async (wb) => {
+            try {
+              const detail = await getWorkbook(wb.workbookId);
+              return {
+                ...wb,
+                questionAmount: detail?.data?.questionAmount ?? 0,
+              };
+            } catch (err) {
+              console.error(`문제집 ${wb.workbookId} 조회 실패`, err);
+              return {
+                ...wb,
+                questionAmount: 0,
+              };
+            }
+          })
+        );
+
+        setMyWorkbooks(detailedWorkbooks);
+
         console.log("📄 MyPage에서 받은 문제집 목록:", myWorkbooks);
-        setMyWorkbooks(myWorkbooks);
       } catch (error) {
         console.error("❌ 사용자 정보를 불러올 수 없습니다.", error);
       }
@@ -130,14 +149,6 @@ const MyPage = () => {
                 ✏️ 내 정보 수정
               </button>
             </div>
-          </div>
-        </div>
-
-        <div className="mypage-main">
-          {/* 총 푼 문제 수 */}
-          <div className="mypage-review-summary">
-            <h2 className="mypage-section-title">총 푼 문제 수</h2>
-            <p className="mypage-section-content">{user.solvedCount ?? 12}개</p>
           </div>
         </div>
 
