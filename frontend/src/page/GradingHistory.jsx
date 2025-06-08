@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGradingList, getGrading } from "../api";
+import { getGradingList, getGrading, getWorkbook } from "../api"; // ✅ getWorkbook 추가
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/Review.css";
 
@@ -23,18 +23,31 @@ const GradingHistory = () => {
         const res = await getGradingList(token, memberId);
         const gradingIds = res?.data?.gradingList || [];
 
-        // gradingId별 상세 데이터 가져오기
         const results = await Promise.all(
-          gradingIds.map((id) =>
-            getGrading(id, token, memberId).catch((e) => {
-              console.warn("⚠️ 개별 채점 조회 실패:", id, e);
+          gradingIds.map(async (id) => {
+            try {
+              const gradingRes = await getGrading(id, token, memberId);
+              const gradingData = gradingRes?.data;
+
+              const workbookRes = await getWorkbook(gradingData.quizSetId);
+              const workbookTitle = workbookRes?.data?.title || "제목 없음";
+
+              return {
+                gradingId: gradingData.gradingId,
+                quizSetId: gradingData.quizSetId,
+                correctCount: gradingData.correctCount,
+                totalCount: gradingData.totalCount,
+                submissionDate: gradingData.submissionDate,
+                workbookTitle, // ✅ 제목 추가
+              };
+            } catch (e) {
+              console.warn("⚠️ 일부 채점 데이터 불러오기 실패:", id, e);
               return null;
-            })
-          )
+            }
+          })
         );
 
-        const validResults = results.filter(Boolean).map((r) => r.data);
-        setGradingDetails(validResults);
+        setGradingDetails(results.filter(Boolean));
       } catch (error) {
         console.error("❌ 채점 기록 불러오기 실패:", error);
         alert("채점 기록을 불러오지 못했습니다.");
@@ -67,20 +80,17 @@ const GradingHistory = () => {
                   className="review-problem-set-icon"
                 />
                 <h3 className="review-problem-set-title">
-                  문제집 ID: {record.quizSetId}
+                  {record.workbookTitle}
                 </h3>
-
                 <p className="review-problem-set-date">
                   {record.submissionDate ?? "날짜 없음"}
                 </p>
-
                 <p className="review-answer">
                   점수:{" "}
                   <strong>
                     {record.correctCount}/{record.totalCount}
                   </strong>
                 </p>
-
                 <button
                   className="review-problem-set-button"
                   onClick={() => handleClick(record.gradingId)}
