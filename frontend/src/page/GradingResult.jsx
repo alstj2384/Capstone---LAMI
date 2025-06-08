@@ -11,24 +11,30 @@ const GradingResult = () => {
 
   const [grading, setGrading] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   const token = localStorage.getItem("token");
+  const memberId = localStorage.getItem("memberId"); // 추가
 
   useEffect(() => {
     const fetchGrading = async () => {
       try {
-        const res = await getGrading(id, token);
-        setGrading(res.data || res); // 안정적으로 처리
+        console.log("📦 gradingId:", id);
+        const res = await getGrading(id, token, memberId); // ✅ memberId 넘기기
+        setGrading(res.data || res);
       } catch (error) {
+        console.error("❌ 채점 결과 오류:", error);
         alert("채점 결과를 불러오는 데 실패했습니다.");
-        console.error("채점 결과 오류:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGrading();
-  }, [id, token]);
+    if (id && token && memberId) {
+      fetchGrading();
+    } else {
+      setLoading(false);
+    }
+  }, [id, token, memberId]);
 
   if (loading) return <p>로딩 중...</p>;
 
