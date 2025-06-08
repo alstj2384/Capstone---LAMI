@@ -13,15 +13,20 @@ const GradingHistory = () => {
 
   useEffect(() => {
     if (!token || !userId) {
-      setLoading(false); // 이 줄 추가
+      console.warn("❗ 토큰 또는 사용자 ID가 없음");
+      setLoading(false);
       return;
     }
 
     const fetchData = async () => {
       try {
-        const res = await getGradingList(token, userId);
-        setGradingList(res.data || res.data?.data || []);
+        const data = await getGradingList(token, userId);
+        console.log("📥 채점 기록 응답:", data);
+
+        const list = Array.isArray(data) ? data : data?.data || [];
+        setGradingList(list);
       } catch (err) {
+        console.error("❌ 채점 기록 불러오기 실패:", err);
         alert("채점 기록을 불러오지 못했습니다.");
       } finally {
         setLoading(false);
@@ -29,10 +34,10 @@ const GradingHistory = () => {
     };
 
     fetchData();
-  }, [token, userId]); // 의존성 추가
+  }, [token, userId]);
 
   const handleClick = (gradingId) => {
-    navigate(`/grading-result/${gradingId}`); 
+    navigate(`/grading-result/${gradingId}`);
   };
 
   if (loading) return <p>로딩 중...</p>;
@@ -44,9 +49,9 @@ const GradingHistory = () => {
         <p>채점 기록이 없습니다.</p>
       ) : (
         <ul className="grading-list">
-          {gradingList.map((record) => (
+          {gradingList.map((record, idx) => (
             <li
-              key={record.gradingId}
+              key={record.gradingId || idx}
               onClick={() => handleClick(record.gradingId)}
               className="grading-item"
             >
@@ -55,10 +60,12 @@ const GradingHistory = () => {
               </p>
               <p>
                 <strong>채점일:</strong>{" "}
-                {new Date(record.createdAt).toLocaleString()}
+                {record.createdAt
+                  ? new Date(record.createdAt).toLocaleString()
+                  : "N/A"}
               </p>
               <p>
-                <strong>점수:</strong> {record.score}점
+                <strong>점수:</strong> {record.score ?? "N/A"}점
               </p>
             </li>
           ))}
