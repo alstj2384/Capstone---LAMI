@@ -80,11 +80,12 @@
 }
 
 .review-problem-sets {
-    width: 70%; /* w-2/3 */
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2열 그리드 */
-    gap: 0.75rem; /* space-x-3 space-y-3 */
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* ✅ 3열로 변경 */
+  gap: 0.75rem;
 }
+
 
 .review-empty {
     text-align: center;

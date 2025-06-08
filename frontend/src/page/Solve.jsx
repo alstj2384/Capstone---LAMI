@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProblemList, getProblem, requestGrading, getGradingList } from "../api";
+import {
+  getProblemList,
+  getProblem,
+  requestGrading,
+  getGradingList,
+} from "../api";
 import "./css/Solve.css";
 
 const Solve = () => {
@@ -88,6 +93,7 @@ const Solve = () => {
         },
         token
       );
+      console.log("📝 requestGrading 응답:", res); // ✅ 바로 여기!
 
       if (res) {
         const GradingId = res.data.gradingId;
@@ -111,10 +117,8 @@ const Solve = () => {
   const total = problemList.length;
   const progress = (answeredCount / total) * 100;
 
-
   return (
     <div className="solve-page">
-
       {isSubmitting && (
         <div className="loading-overlay">
           <div className="spinner" />
@@ -132,12 +136,13 @@ const Solve = () => {
           {problemList.map((problem, idx) => (
             <div
               key={problem.problemId}
-              className={`solve-problem-item ${currentProblemId === problem.problemId
-                ? "active"
-                : userAnswers[problem.problemId]
+              className={`solve-problem-item ${
+                currentProblemId === problem.problemId
+                  ? "active"
+                  : userAnswers[problem.problemId]
                   ? "completed"
                   : ""
-                }`}
+              }`}
               onClick={() => setCurrentProblemId(problem.problemId)}
             >
               {idx + 1}. {problem.questionType.replace("_", " ")}
@@ -227,7 +232,6 @@ const Solve = () => {
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>
