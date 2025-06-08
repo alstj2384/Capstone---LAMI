@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGradingList } from "../api";
+import "./css/"
 
 const GradingHistory = () => {
   const [gradingList, setGradingList] = useState([]);

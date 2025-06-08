@@ -278,14 +278,16 @@ export const getGradingList = async (token, memberId) => {
 };
 
 // 채점 단건 조회
-export const getGrading = async (gradingId, token) => {
-    const res = await axios.get(endpoints.getGrading(gradingId), {
-        headers: {
-            Authorization: `${token}`,
-        },
-    });
-    return res.data;
+export const getGrading = async (gradingId, token, memberId) => {
+  const res = await axios.get(endpoints.getGrading(gradingId), {
+    headers: {
+      Authorization: `${token}`,
+      "X-User-Id": memberId, 
+    },
+  });
+  return res.data;
 };
+
 
 // 채점 요청
 export const requestGrading = async (payload, token) => {
