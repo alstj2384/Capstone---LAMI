@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getGrading } from "../api";
 
-import "./Result.css"; // Result 스타일 재사용
+import "./css/Result.css"; // Result 스타일 재사용
 
 const GradingResult = () => {
   const { id } = useParams(); // gradingId
