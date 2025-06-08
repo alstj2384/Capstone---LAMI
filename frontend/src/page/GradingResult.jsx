@@ -107,13 +107,7 @@ const GradingResult = () => {
 
         <div className="result-buttons">
           <button onClick={() => navigate(-1)} className="result-retry-button">
-            🔙 이전으로
-          </button>
-          <button
-            onClick={() => navigate("/explore")}
-            className="result-exit-button"
-          >
-            나가기
+            이전으로
           </button>
         </div>
       </div>
