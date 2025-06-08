@@ -20,10 +20,10 @@ const GradingHistory = () => {
 
     const fetchData = async () => {
       try {
-        const data = await getGradingList(token, userId);
-        console.log("📥 채점 기록 응답:", data);
+        const res = await getGradingList(token, userId);
+        console.log("📥 채점 기록 응답:", res);
 
-        const list = Array.isArray(data) ? data : data?.data || [];
+        const list = res?.data?.gradingList || [];
         setGradingList(list);
       } catch (err) {
         console.error("❌ 채점 기록 불러오기 실패:", err);
