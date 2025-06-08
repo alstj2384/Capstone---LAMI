@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGradingList } from "../api";
-import "./css/"
+import SquirrelIcon from "../assets/DALAMI_2.svg"; // 같은 아이콘 재사용
+import "./css/Review.css"; // ✅ Review.css 사용
 
 const GradingHistory = () => {
   const [gradingList, setGradingList] = useState([]);
@@ -41,37 +42,49 @@ const GradingHistory = () => {
     navigate(`/grading-result/${gradingId}`);
   };
 
-  if (loading) return <p>로딩 중...</p>;
-
   return (
-    <div className="grading-history-page">
-      <h2>📊 채점 기록</h2>
-      {gradingList.length === 0 ? (
-        <p>채점 기록이 없습니다.</p>
-      ) : (
-        <ul className="grading-list">
-          {gradingList.map((record, idx) => (
-            <li
-              key={record.gradingId || idx}
-              onClick={() => handleClick(record.gradingId)}
-              className="grading-item"
-            >
-              <p>
-                <strong>문제집:</strong> {record.workbookTitle}
-              </p>
-              <p>
-                <strong>채점일:</strong>{" "}
-                {record.createdAt
-                  ? new Date(record.createdAt).toLocaleString()
-                  : "N/A"}
-              </p>
-              <p>
-                <strong>점수:</strong> {record.score ?? "N/A"}점
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="review-page">
+      <div className="review-container">
+        <h1 className="review-title">📊 채점 기록</h1>
+
+        {loading ? (
+          <p className="review-loading">기록을 불러오는 중입니다...</p>
+        ) : gradingList.length > 0 ? (
+          <div className="review-problem-sets">
+            {gradingList.map((record, idx) => (
+              <div key={record.gradingId || idx} className="review-problem-set">
+                <img
+                  src={SquirrelIcon}
+                  alt="Icon"
+                  className="review-problem-set-icon"
+                />
+                <h3 className="review-problem-set-title">
+                  {record.workbookTitle || "제목 없음"}
+                </h3>
+
+                <p className="review-problem-set-date">
+                  {record.createdAt
+                    ? new Date(record.createdAt).toLocaleDateString()
+                    : "날짜 없음"}
+                </p>
+
+                <p className="review-answer">
+                  점수: <strong>{record.score ?? "N/A"}점</strong>
+                </p>
+
+                <button
+                  className="review-problem-set-button"
+                  onClick={() => handleClick(record.gradingId)}
+                >
+                  결과 보기
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="review-empty">채점 기록이 없습니다.</p>
+        )}
+      </div>
     </div>
   );
 };
