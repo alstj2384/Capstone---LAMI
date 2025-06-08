@@ -24,7 +24,7 @@ import EditMyPage from "./page/EditProfile.jsx";
 import "./App.css";
 import EditWorkBook from "./page/EditWorkBook.jsx";
 import GradingHistory from "./page/GradingHistory.jsx";
-import GradingResult from "./page/GradingResult";
+import GradingResult from "./page/GradingResult.jsx";
 
 //  인증이 필요한 라우트
 const ProtectedRoute = ({ children }) => {
