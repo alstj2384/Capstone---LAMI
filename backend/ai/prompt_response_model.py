@@ -36,7 +36,6 @@ RESPONSE_WORKBOOK_FORMAT = """
 # 피드백 응답 형식 지정
 RESPONSE_FEEDBACK_FORMAT = """ 
     - 핵심 개념만 설명하고, 부가 설명은 1~2문장 이내로 요약
-    - '정답은 O번입니다.'로 끝맺음
 """
 
 
