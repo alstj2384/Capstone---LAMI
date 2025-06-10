@@ -138,9 +138,6 @@ const MyPage = () => {
             <div className="mypage-user-info">
               <h1 className="mypage-user-name">{user.name}</h1>
               <p className="mypage-user-email">{user.email}</p>
-              <p className="mypage-user-stats">
-                채점된 문제집 {gradedCount}개
-              </p>
               <button
                 onClick={() => navigate("/edit-mypage")}
                 className="mypage-edit-button"
@@ -166,7 +163,7 @@ const MyPage = () => {
                 >
                   <div className="mypage-problem-title">{workbook.title}</div>
                   <div className="mypage-problem-meta">
-                   난이도: {getDifficultyText(workbook.difficulty)}
+                    난이도: {getDifficultyText(workbook.difficulty)}
                   </div>
                 </div>
               ))

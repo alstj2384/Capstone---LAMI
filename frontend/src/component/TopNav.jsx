@@ -94,7 +94,7 @@ const TopNav = () => {
             className="profile-pic w-8 h-8 rounded-full"
           />
           <span className="text-sm">
-            {userInfo?.name ? `${userInfo.name}님 반갑습니다` : ""}
+            {userInfo?.name ? `어서 오세요, ${userInfo.name}님 😊` : ""}
           </span>
           <button
             onClick={async () => {
