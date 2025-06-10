@@ -7,6 +7,7 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
+  uploadToImgur,
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -16,7 +17,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const memberId = localStorage.getItem("memberId");
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId") || memberId; // userId 우선, 없으면 memberId
   const fileInputRef = useRef(null);
 
   const [user, setUser] = useState({
@@ -24,6 +25,7 @@ const EditProfile = () => {
     email: "",
     profilePic: SquirrelIcon,
     memberId: "",
+    userId: "",
   });
   const [nickname, setNickname] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -41,16 +43,24 @@ const EditProfile = () => {
     const fetchData = async () => {
       try {
         const userData = await getUserInfo(memberId, token);
-        console.log("사용자 정보:", userData.data);
-        setUser((prev) => ({ ...prev, ...userData.data }));
-        setNickname(userData.data.nickname || "");
+        console.log("사용자 정보 응답:", userData.data);
+        setUser((prev) => ({
+          ...prev,
+          ...userData.data,
+          userId: userData.data.userId || userId || memberId,
+        }));
+        setNickname(userData.data.nickname || userData.data.name || "");
+        const memoRes = await getUserMemorizationMethod(memberId, token);
+        setMemorizationMethod(
+          memoRes.data.memorizationMethod || "AssociationMethod"
+        );
       } catch (error) {
         console.error("사용자 정보 불러오기 실패:", error);
         alert("사용자 정보를 불러오지 못했습니다.");
       }
     };
     fetchData();
-  }, [memberId, token]);
+  }, [memberId, token, userId]);
 
   useEffect(() => {
     let timer;
@@ -125,6 +135,11 @@ const EditProfile = () => {
       return;
     }
 
+    if (!user.userId) {
+      alert("사용자 ID 정보가 없습니다. 사용자 정보를 확인하세요.");
+      return;
+    }
+
     setIsSendingCode(true);
     try {
       await resetPasswordRequestCode(user.userId);
@@ -132,10 +147,9 @@ const EditProfile = () => {
       setIsCodeRequested(true);
       setCooldown(60);
     } catch (err) {
-      console.error("인증번호 요청 실패:", err);
+      console.error("인증번호 요청 실패:", err.response?.data || err.message);
       alert(
-        err.response?.data?.message ||
-          "인증번호 요청에 실패했습니다. 다시 시도해주세요."
+        err.response?.data?.message || "인증번호 요청에 실패했습니다. 다시 시도해주세요."
       );
     } finally {
       setIsSendingCode(false);
@@ -157,10 +171,9 @@ const EditProfile = () => {
       alert("인증번호가 확인되었습니다.");
       setIsCodeVerified(true);
     } catch (err) {
-      console.error("인증번호 확인 실패:", err);
+      console.error("인증번호 확인 실패:", err.response?.data || err.message);
       alert(
-        err.response?.data?.message ||
-          "인증번호가 올바르지 않습니다. 다시 확인해주세요."
+        err.response?.data?.message || "인증번호가 올바르지 않습니다. 다시 확인해주세요."
       );
     } finally {
       setIsSendingCode(false);
@@ -178,6 +191,7 @@ const EditProfile = () => {
     let profileImageUrl = user.profilePic;
     if (selectedFile) {
       try {
+        profileImageUrl = await uploadToImgur(selectedFile);
         console.log("Imgur 업로드 성공:", profileImageUrl);
       } catch (err) {
         console.error("이미지 업로드 실패:", err);
@@ -208,15 +222,15 @@ const EditProfile = () => {
           profilePic: res.data.profileImageUrl || prev.profilePic,
           name: res.data.nickname || res.data.name || prev.name,
         }));
-        setNickname(res.data.nickname || nickname);
+        setNickname(res.data.nickname || res.data.name || nickname);
       }
 
       if (isCodeVerified && password) {
         await updatePassword({
-          memberId: user.memberId,
+          userId: user.userId,
           newPassword: password,
           token,
-          userId,
+          memberId,
         });
       }
 
