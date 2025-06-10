@@ -9,6 +9,7 @@ export const endpoints = {
   validateUserId: (memberId) => `${server}/api/public/members/validate/${memberId}`, //로그인 중복확인 
   getUserInfo: (memberId) => `${server}/api/members/${memberId}`, // 회원정보 조회 
   updateUser: (memberId) => `${server}/api/members/${memberId}`, // 회원정보 수정 
+  uploadImage: (memberId) => `${server}/api/members/${memberId}`, // 회원정보 수정 파일추가 
   deleteUser: (memberId) => `${server}/api/members/${memberId}`, // 회원 탈퇴
   resetPasswordRequestCode: `${server}/api/public/members/reset-password/request-code`, // 비밀번호 변경 인증번호 요청
   verifyResetPasswordCode: `${server}/api/public/members/reset-password/verify-code`, // 비밀번호 변경 인증번호 확인
