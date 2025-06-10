@@ -32,7 +32,6 @@ const EditProfile = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [memorizationMethod, setMemorizationMethod] = useState("");
-  const [feedbackStyle, setFeedbackStyle] = useState("POSITIVE_FEEDBACK");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,16 +93,18 @@ const EditProfile = () => {
       return;
     }
 
-    const formData = new FormData();
-    if (selectedFile) formData.append("profileImage", selectedFile);
-    formData.append("memorizationMethod", memorizationMethod);
-    formData.append("feedbackStyle", feedbackStyle);
+    const data = {
+      profileImage: selectedFile
+        ? URL.createObjectURL(selectedFile)
+        : user.profilePic,
+      memorizationMethod,
+    };
 
+    console.log("Sending data:", data);
     try {
-      console.log("FormData entries:", Array.from(formData.entries())); // 디버깅
       const res = await updateUserInfo({
         id: memberId,
-        data: formData,
+        data,
         token,
         memberId,
       });
