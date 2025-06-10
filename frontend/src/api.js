@@ -54,22 +54,41 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 // 수정 후 ✅
 // api.js
 export const resetPasswordRequestCode = async (userId) => {
-    const res = await axiosBasic.post(
-        endpoints.resetPasswordRequestCode,
-        { userId },
-    );
-    return res.data;
+    console.log("인증 코드 요청 전송:", { userId });
+    try {
+        const res = await axios.post(endpoints.resetPasswordRequestCode, {
+            userId: String(userId), // 문자열로 변환
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 추가
+            },
+        });
+        console.log("인증 코드 요청 응답:", res.data);
+        return res.data;
+    } catch (err) {
+        console.error("인증 코드 요청 에러:", err.response?.data || err.message);
+        throw err;
+    }
 };
 
-// 비밀번호 변경 인증번호 확인 API
 export const verifyResetPasswordCode = async ({ userId, code }) => {
-    const res = await axios.post(endpoints.verifyResetPasswordCode, {
-        userId,
-        code,
-    });
-    return res.data;
+    console.log("인증 코드 확인 전송:", { userId, code });
+    try {
+        const res = await axios.post(endpoints.verifyResetPasswordCode, {
+            userId: String(userId),
+            code,
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        console.log("인증 코드 확인 응답:", res.data);
+        return res.data;
+    } catch (err) {
+        console.error("인증 코드 확인 에러:", err.response?.data || err.message);
+        throw err;
+    }
 };
-
 
 // 비밀번호 변경 API
 export const updatePassword = async ({ userId, newPassword, token, memberId }) => {
