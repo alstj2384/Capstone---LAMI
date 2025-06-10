@@ -128,7 +128,8 @@ const EditProfile = () => {
         code: verificationCode,
       });
       console.log("인증 확인 응답:", response);
-      if (response && response.status === 200) { // 서버 응답 구조 확인
+      if (response && response.status === 200) {
+        // 서버 응답 구조 확인
         alert("인증번호가 확인되었습니다.");
         setIsCodeVerified(true);
       } else {
@@ -249,7 +250,6 @@ const EditProfile = () => {
               type="button"
               className="edit-code-button"
               onClick={isCodeRequested ? handleVerifyCode : handleSendCode}
-              disabled={isSendingCode || cooldown > 0 || (isCodeRequested && !verificationCode.trim())}
             >
               {isSendingCode
                 ? "처리 중..."
