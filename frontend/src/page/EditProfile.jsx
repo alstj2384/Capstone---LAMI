@@ -34,7 +34,7 @@ const EditProfile = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [memorizationMethod, setMemorizationMethod] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); // 초기값 확실히 false
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
@@ -250,13 +250,12 @@ const EditProfile = () => {
               className="edit-code-button"
               onClick={isCodeRequested ? handleVerifyCode : handleSendCode}
             >
-              {isSendingCode
-                ? "처리 중..."
-                : isCodeRequested
-                ? "인증번호 확인"
-                : cooldown > 0
-                ? `재전송 (${cooldown}s)`
-                : "인증번호 요청"}
+              {(() => {
+                if (isSendingCode) return "처리 중...";
+                if (isCodeRequested) return "인증번호 확인";
+                if (cooldown > 0) return `재전송 (${cooldown}s)`;
+                return "인증번호 요청"; // 기본값 반드시 있어야 함
+              })()}
             </button>
           </div>
           {isCodeRequested && !isCodeVerified && (
@@ -304,9 +303,13 @@ const EditProfile = () => {
             </label>
           ))}
         </div>
-        <button type="submit" className="edit-submit">
-          {isUploading ? "업로드 중..." : "제출하기"}
-        </button>
+        {isUploading === true ? (
+          <>
+            <span className="spinner" /> 업로드 중...
+          </>
+        ) : (
+          "제출하기"
+        )}
       </form>
     </div>
   );
