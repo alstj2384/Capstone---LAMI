@@ -141,10 +141,10 @@
   padding: 0.5rem 2rem;
   font-weight: 400;
   border-radius: 0.375rem;
-  cursor: pointer;
-  opacity: 1; /* 항상 보이도록 */
-  visibility: visible; /* 항상 보이도록 */
-  display: inline-block; /* 항상 렌더링 */
+  cursor: pointer !important;
+  opacity: 1 !important; /* 항상 보이도록 */
+  visibility: visible !important; /* 항상 보이도록 */
+  display: inline-block !important; /* 항상 렌더링 */
   transition: background-color 0.2s, transform 0.2s;
   white-space: nowrap;
 }
