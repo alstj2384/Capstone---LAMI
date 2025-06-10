@@ -23,7 +23,7 @@ const EditProfile = () => {
     name: "",
     email: "",
     profilePic: SquirrelIcon,
-    memberId: "",
+    memberId: memberId || "",
     userId: storedUserId, // 초기값으로 storedUserId 설정
   });
   const [nickname, setNickname] = useState("");
@@ -46,8 +46,8 @@ const EditProfile = () => {
         setUser((prev) => ({
           ...prev,
           ...userData.data,
-          userId: userData.data.userId || storedUserId || memberId, // userId 우선, 없으면 storedUserId
-          memberId: userData.data.memberId || memberId, // memberId 업데이트
+          memberId: userData.data.memberId || memberId || prev.memberId,
+          userId: storedUserId, // userId는 storedUserId로 고정
         }));
         setNickname(userData.data.nickname || userData.data.name || "");
         const memoRes = await getUserMemorizationMethod(memberId, token);
@@ -149,7 +149,8 @@ const EditProfile = () => {
     } catch (err) {
       console.error("인증번호 요청 실패:", err.response?.data || err.message);
       alert(
-        err.response?.data?.message || "인증번호 요청에 실패했습니다. 다시 시도해주세요."
+        err.response?.data?.message ||
+          "인증번호 요청에 실패했습니다. 다시 시도해주세요."
       );
     } finally {
       setIsSendingCode(false);
@@ -173,7 +174,8 @@ const EditProfile = () => {
     } catch (err) {
       console.error("인증번호 확인 실패:", err.response?.data || err.message);
       alert(
-        err.response?.data?.message || "인증번호가 올바르지 않습니다. 다시 확인해주세요."
+        err.response?.data?.message ||
+          "인증번호가 올바르지 않습니다. 다시 확인해주세요."
       );
     } finally {
       setIsSendingCode(false);
@@ -191,6 +193,7 @@ const EditProfile = () => {
     let profileImageUrl = user.profilePic;
     if (selectedFile) {
       try {
+        profileImageUrl = await selectedFile;
         console.log("Imgur 업로드 성공:", profileImageUrl);
       } catch (err) {
         console.error("이미지 업로드 실패:", err);
