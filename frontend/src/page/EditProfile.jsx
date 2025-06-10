@@ -7,6 +7,7 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
+  uploadToImgur,
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -14,9 +15,9 @@ import axios from "../axiosInstance";
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const memberId = localStorage.getItem("memberId");
+  const memberId = localStorage.getItem("memberId"); // "13"
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId") || memberId; // userId 우선, 없으면 memberId
+  const storedUserId = localStorage.getItem("userId") || "kmj9444"; // "kmj9444" 우선
   const fileInputRef = useRef(null);
 
   const [user, setUser] = useState({
@@ -24,7 +25,7 @@ const EditProfile = () => {
     email: "",
     profilePic: SquirrelIcon,
     memberId: "",
-    userId: "",
+    userId: storedUserId, // 초기값으로 storedUserId 설정
   });
   const [nickname, setNickname] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -46,7 +47,8 @@ const EditProfile = () => {
         setUser((prev) => ({
           ...prev,
           ...userData.data,
-          userId: userData.data.userId || userId || memberId,
+          userId: userData.data.userId || storedUserId || memberId, // userId 우선, 없으면 storedUserId
+          memberId: userData.data.memberId || memberId, // memberId 업데이트
         }));
         setNickname(userData.data.nickname || userData.data.name || "");
         const memoRes = await getUserMemorizationMethod(memberId, token);
@@ -59,7 +61,7 @@ const EditProfile = () => {
       }
     };
     fetchData();
-  }, [memberId, token, userId]);
+  }, [memberId, token, storedUserId]);
 
   useEffect(() => {
     let timer;
@@ -190,6 +192,7 @@ const EditProfile = () => {
     let profileImageUrl = user.profilePic;
     if (selectedFile) {
       try {
+        profileImageUrl = await uploadToImgur(selectedFile);
         console.log("Imgur 업로드 성공:", profileImageUrl);
       } catch (err) {
         console.error("이미지 업로드 실패:", err);
@@ -228,7 +231,7 @@ const EditProfile = () => {
           userId: user.userId,
           newPassword: password,
           token,
-          memberId,
+          memberId: user.memberId,
         });
       }
 
