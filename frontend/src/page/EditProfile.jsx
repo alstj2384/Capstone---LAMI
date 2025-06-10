@@ -25,14 +25,13 @@ const EditProfile = () => {
     userId: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState(null); // 새로 추가: 선택한 파일 상태
+  const [selectedFile, setSelectedFile] = useState(null); // 선택한 파일 상태
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeRequested, setIsCodeRequested] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [memorizationMethod, setMemorizationMethod] =
-    useState("AssociationMethod");
+  const [memorizationMethod, setMemorizationMethod] = useState("");
   const [feedbackStyle, setFeedbackStyle] = useState("POSITIVE_FEEDBACK");
 
   useEffect(() => {
@@ -42,7 +41,9 @@ const EditProfile = () => {
         setUser((prev) => ({ ...prev, ...userData.data }));
 
         const memoRes = await getUserMemorizationMethod(memberId, token);
-        setMemorizationMethod(memoRes.data || "AssociationMethod");
+        setMemorizationMethod(
+          memoRes.data.memorizationMethod || "AssociationMethod"
+        ); // 객체에서 값 추출
       } catch (error) {
         console.error("사용자 정보 불러오기 실패", error);
       }
@@ -57,8 +58,7 @@ const EditProfile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file); // 파일 상태에 저장, 즉시 업로드 X
-      // 미리보기용 임시 URL 생성 (UI에만 표시)
+      setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
       setUser((prev) => ({ ...prev, profilePic: imageUrl }));
     }
@@ -95,14 +95,14 @@ const EditProfile = () => {
     }
 
     const formData = new FormData();
-    formData.append("profileImage", selectedFile || ""); // 이미지 파일 추가
+    if (selectedFile) formData.append("profileImage", selectedFile); // 이미지 추가
     formData.append("memorizationMethod", memorizationMethod);
     formData.append("feedbackStyle", feedbackStyle);
 
     try {
       const res = await updateUserInfo({
         id: memberId,
-        data: formData, // FormData로 변경
+        data: formData,
         token,
         memberId,
       });
@@ -194,7 +194,7 @@ const EditProfile = () => {
                   type="radio"
                   name="memorizationMethod"
                   value={method}
-                  checked={memorizationMethod === method}
+                  checked={memorizationMethod === method} // 조회된 값에 따라 체크
                   onChange={() => setMemorizationMethod(method)}
                 />
                 {method === "AssociationMethod"
