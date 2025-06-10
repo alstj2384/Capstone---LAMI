@@ -79,53 +79,11 @@ const EditProfile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      const img = new Image();
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          const maxWidth = 800;
-          const maxHeight = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-          } else {
-            if (height > maxHeight) {
-              width = Math.round((width * maxHeight) / height);
-              height = maxHeight;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-
-          canvas.toBlob(
-            (blob) => {
-              const compressedFile = new File([blob], file.name, {
-                type: "image/jpeg",
-                lastModified: Date.now(),
-              });
-              setSelectedFile(compressedFile);
-              setUser((prev) => ({
-                ...prev,
-                profilePic: URL.createObjectURL(compressedFile),
-              }));
-            },
-            "image/jpeg",
-            0.7
-          );
-        };
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file); // 파일 객체만 저장, 업로드 로직 제거
+      setUser((prev) => ({
+        ...prev,
+        profilePic: URL.createObjectURL(file),
+      }));
     }
   };
 
@@ -165,12 +123,17 @@ const EditProfile = () => {
 
     setIsSendingCode(true);
     try {
-      await verifyResetPasswordCode({
+      const response = await verifyResetPasswordCode({
         userId: user.userId,
         code: verificationCode,
       });
-      alert("인증번호가 확인되었습니다.");
-      setIsCodeVerified(true);
+      console.log("인증 확인 응답:", response);
+      if (response.status === 200) {
+        alert("인증번호가 확인되었습니다.");
+        setIsCodeVerified(true);
+      } else {
+        alert(response.message || "인증번호 확인 실패");
+      }
     } catch (err) {
       console.error("인증번호 확인 실패:", err.response?.data || err.message);
       alert(
@@ -191,17 +154,6 @@ const EditProfile = () => {
 
     setIsUploading(true);
     let profileImageUrl = user.profilePic;
-    if (selectedFile) {
-      try {
-        console.log("Imgur 업로드 성공:", profileImageUrl);
-      } catch (err) {
-        console.error("이미지 업로드 실패:", err);
-        alert("이미지 업로드에 실패했습니다.");
-        setIsUploading(false);
-        return;
-      }
-    }
-
     const data = {
       nickname: nickname || user.name,
       memorizationMethod,
@@ -291,13 +243,17 @@ const EditProfile = () => {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               className="edit-input"
-              disabled={!isCodeRequested || isCodeVerified}
+              disabled={!isCodeRequested}
             />
             <button
               type="button"
               className="edit-code-button"
               onClick={isCodeRequested ? handleVerifyCode : handleSendCode}
-              disabled={isSendingCode || cooldown > 0 || isCodeVerified}
+              disabled={
+                isSendingCode ||
+                cooldown > 0 ||
+                (isCodeRequested && !verificationCode)
+              }
             >
               {isSendingCode
                 ? "처리 중..."
