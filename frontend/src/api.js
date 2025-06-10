@@ -115,21 +115,22 @@ export const getUserInfo = async (id, token) => {
 
 
 
-// ✅ 수정 방법 (함수 파라미터에 memberId 포함시켜야 함)
+// 회원정보 수정
 export const updateUserInfo = async ({ id, data, token, memberId }) => {
     const response = await axios.patch(
-        endpoints.updateUser(id),
+        endpoints.updateUser(id), // 예: `/api/users/{id}`
         data,
         {
             headers: {
                 Authorization: `${token}`,
                 "Content-Type": "application/json",
-                "X-User-Id": memberId,
+                "X-User-Id": memberId, 
             },
         }
     );
     return response.data;
 };
+
 
 // 토큰 재발급 
 export const reissueToken = async (refreshToken) => {
@@ -226,23 +227,23 @@ export const getWorkbookList = async () => {
 };
 
 export const getMyWorkbookList = async (memberId, token) => {
-  const res = await axios.get(endpoints.getWorkbookList, {
-    headers: {
-      Authorization: `${token}`,
-      "X-User-ID": memberId,
-    },
-  });
+    const res = await axios.get(endpoints.getWorkbookList, {
+        headers: {
+            Authorization: `${token}`,
+            "X-User-ID": memberId,
+        },
+    });
 
-  console.log("📦 전체 문제집 응답", res.data); // 전체 응답 확인
-  const allWorkbooks = res.data?.data?.content || [];
+    console.log("📦 전체 문제집 응답", res.data); // 전체 응답 확인
+    const allWorkbooks = res.data?.data?.content || [];
 
-  console.log("📦 필터링 전 문제집 수:", allWorkbooks.length);
-  const myWorkbooks = allWorkbooks.filter(
-    (workbook) => workbook.userId === Number(memberId)
-  );
-  console.log("📦 내 문제집 수:", myWorkbooks.length);
+    console.log("📦 필터링 전 문제집 수:", allWorkbooks.length);
+    const myWorkbooks = allWorkbooks.filter(
+        (workbook) => workbook.userId === Number(memberId)
+    );
+    console.log("📦 내 문제집 수:", myWorkbooks.length);
 
-  return myWorkbooks;
+    return myWorkbooks;
 };
 
 
@@ -279,13 +280,13 @@ export const getGradingList = async (token, memberId) => {
 
 // 채점 단건 조회
 export const getGrading = async (gradingId, token, memberId) => {
-  const res = await axios.get(endpoints.getGrading(gradingId), {
-    headers: {
-      Authorization: `${token}`,
-      "X-User-Id": memberId, 
-    },
-  });
-  return res.data;
+    const res = await axios.get(endpoints.getGrading(gradingId), {
+        headers: {
+            Authorization: `${token}`,
+            "X-User-Id": memberId,
+        },
+    });
+    return res.data;
 };
 
 

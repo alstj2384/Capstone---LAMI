@@ -53,14 +53,30 @@ const EditProfile = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setUser((prev) => ({ ...prev, profilePic: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await axios.post(
+          `/api/members/${memberId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const imageUrl = response.data.profileImage; // 서버에서 반환한 이미지 URL
+        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
+      } catch (err) {
+        console.error("이미지 업로드 실패", err);
+        alert("이미지 업로드에 실패했습니다.");
+      }
     }
   };
 
@@ -95,7 +111,7 @@ const EditProfile = () => {
     }
 
     try {
-      await updateUserInfo({
+      const res = await updateUserInfo({
         id: memberId,
         data: {
           profilePic: user.profilePic,
@@ -103,7 +119,9 @@ const EditProfile = () => {
           feedbackStyle,
         },
         token,
+        memberId, // 🔥 반드시 포함!
       });
+      console.log("🟢 응답 데이터:", res);
 
       if (isCodeVerified && password) {
         await updatePassword({
@@ -117,7 +135,7 @@ const EditProfile = () => {
       alert("프로필이 수정되었습니다.");
       navigate("/mypage");
     } catch (err) {
-      console.error(err);
+      console.error("🔴 에러 응답:", err.response?.data || err.message);
       alert("프로필 수정 중 오류가 발생했습니다.");
     }
   };
@@ -125,8 +143,6 @@ const EditProfile = () => {
   return (
     <div className="edit-profile-page">
       <h1 className="edit-title">{user.name}님의 마이페이지</h1>
-      <p className="edit-subtext">가입일자: 2025년 4월 10일</p>
-      <p className="edit-subtext underline">마지막 접속: 2025년 4월 19일</p>
 
       <div className="edit-profile-pic-section">
         <img src={user.profilePic} alt="Profile" className="edit-profile-img" />

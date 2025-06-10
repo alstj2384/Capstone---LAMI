@@ -176,7 +176,7 @@
 .solve-answer-options {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
     /* space-y-2 */
 }
 

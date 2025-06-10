@@ -70,6 +70,9 @@
   background-color: #f0f9ff;
   font-size: 0.875rem;
   position: relative;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .edit-file-input {
@@ -146,6 +149,12 @@
 .edit-code-button:hover {
   background-color: #16a34a;
   transform: scale(1.05);
+}
+
+.edit-upload-box {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* 반응형 개선 (선택 사항) */
