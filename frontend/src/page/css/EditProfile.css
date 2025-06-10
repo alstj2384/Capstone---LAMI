@@ -134,6 +134,9 @@
 }
 
 .edit-code-button {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important; 
   background-color: #22c55e;
   color: white;
   font-size: 0.875rem;
