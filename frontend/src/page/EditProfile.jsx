@@ -14,7 +14,7 @@ import axios from "../axiosInstance";
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
+  const memberId = localStorage.getItem("memberId");
   const token = localStorage.getItem("token");
   const fileInputRef = useRef(null);
 
@@ -22,7 +22,7 @@ const EditProfile = () => {
     name: "",
     email: "",
     profilePic: SquirrelIcon,
-    userId: "",
+    memberId: "",
   });
   const [nickname, setNickname] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -39,7 +39,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await getUserInfo(userId, token);
+        const userData = await getUserInfo(memberId, token);
         console.log("사용자 정보:", userData.data);
         setUser((prev) => ({ ...prev, ...userData.data }));
         setNickname(userData.data.name || userData.data.nickname || "");
@@ -49,7 +49,7 @@ const EditProfile = () => {
       }
     };
     fetchData();
-  }, [userId, token]);
+  }, [memberId, token]);
 
   useEffect(() => {
     let timer;
@@ -194,10 +194,10 @@ const EditProfile = () => {
 
     try {
       const res = await updateUserInfo({
-        id: userId,
+        id: memberId,
         data,
         token,
-        userId,
+        memberId,
       });
       console.log("🟢 응답 데이터:", res.data);
 
@@ -212,7 +212,7 @@ const EditProfile = () => {
 
       if (isCodeVerified && password) {
         await updatePassword({
-          userId: user.userId,
+          memberId: user.memberId,
           newPassword: password,
           token,
           userId,
