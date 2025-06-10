@@ -17,11 +17,24 @@ const ShareComplete = () => {
   // URL 복사 기능
   const handleCopy = async () => {
     try {
+      // Clipboard API 시도
       await navigator.clipboard.writeText(shareUrl);
       alert("✅ URL이 복사되었습니다!");
     } catch (err) {
-      console.error("❌ 클립보드 복사 실패:", err);
-      alert("⚠️ 복사에 실패했습니다. 브라우저 설정을 확인해주세요.");
+      console.warn("❌ Clipboard API 실패, fallback으로 복사 시도:", err);
+
+      // fallback: execCommand 사용
+      const textarea = document.createElement("textarea");
+      textarea.value = shareUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        const success = document.execCommand("copy");
+        alert(success ? "✅ URL이 복사되었습니다!" : "⚠️ 복사 실패");
+      } catch (e) {
+        alert("❌ 복사에 실패했습니다. 수동으로 복사해주세요.");
+      }
+      document.body.removeChild(textarea);
     }
   };
 
