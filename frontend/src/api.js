@@ -123,7 +123,7 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
         {
             headers: {
                 Authorization: `${token}`,
-                "Content-Type": "multipart/form-data",
+                "Content-Type": "application/json",
                 "X-User-Id": memberId,
             },
         }
@@ -133,13 +133,13 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
 
 // 회원정보 수정 파일 업로드 
 // api.js
-import { endpoints } from "./url";
 
 export const uploadImage = async (file, token, memberId) => {
     const formData = new FormData();
-    formData.append("file", file); // 서버가 기대하는 필드 이름(예: "profileImage")으로 변경 가능
+    formData.append("file", file); 
     const response = await axios.patch(endpoints.updateUser(memberId), formData, {
         headers: {
+            Authorization: `${token}`,
             "Content-Type": "application/json",
         },
     });
