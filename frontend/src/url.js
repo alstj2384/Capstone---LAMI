@@ -18,7 +18,7 @@ export const endpoints = {
   signupVerifyRegistCode: `${server}/api/public/members/verify-regist-code`, // 회원가입시 인증번호 검증
   reissueToken: `${server}/api/public/members/reissue-token`,
   getUserName: (id) => `${server}/api/members/name/${id}`,
-  getUserMemorizationMethod: (id) => `${server}/api/members/memorization/${id}`,
+  getUserMemorizationMethod: (id) => `${server}/api/members/memorization/${id}`, // 암기법 조회 
   createWorkbook: `${server}/api/workbook`, // 문제집 생성
   updateWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 수정 
   deleteWorkbook: (workbookId) => `${server}/api/workbook/${workbookId}`, // 문제집 삭제 
