@@ -236,7 +236,7 @@ docker compose up --build -d
     </td>
     <td align="center">
       <b>채철영</b><br />
-      <i>Backend</i>
+      <i>Backend, Frontend</i>
     </td>
     <td align="center">
       <b>송민서</b><br />
