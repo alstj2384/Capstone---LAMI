@@ -9,16 +9,20 @@ const ShareComplete = () => {
   // 전달받은 workbookId 추출
   const workbookId = location.state?.workbookId;
 
-  // 공유 URL 생성
+  // 공유 URL 생성 http://10.116.64.23/solve/17
   const shareUrl = workbookId
-    ? `https://lami.co/solve/${workbookId}`
+    ? `http://10.116.64.23/solve/${workbookId}`
     : "문제집 ID 없음";
 
   // URL 복사 기능
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert("URL이 복사되었습니다!");
-    });
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert("✅ URL이 복사되었습니다!");
+    } catch (err) {
+      console.error("❌ 클립보드 복사 실패:", err);
+      alert("⚠️ 복사에 실패했습니다. 브라우저 설정을 확인해주세요.");
+    }
   };
 
   // "탭에서 열기" 클릭 시 Solve 페이지로 이동
