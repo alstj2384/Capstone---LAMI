@@ -113,21 +113,16 @@ export const getUserInfo = async (id, token) => {
 };
 
 
-
-
 // 회원정보 수정
+// api.js
 export const updateUserInfo = async ({ id, data, token, memberId }) => {
-    const response = await axios.patch(
-        endpoints.updateUser(id), // 예: `/api/users/{id}`
-        data,
-        {
-            headers: {
-                Authorization: `${token}`,
-                "Content-Type": "application/json",
-                "X-User-Id": memberId,
-            },
-        }
-    );
+    const response = await axios.patch(endpoints.updateUser(id), data, {
+        headers: {
+            Authorization: `${token}`,
+            "X-User-Id": memberId,
+            ...(data instanceof FormData ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" }),
+        },
+    });
     return response.data;
 };
 
