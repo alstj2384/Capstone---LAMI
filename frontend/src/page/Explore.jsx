@@ -43,7 +43,10 @@ const Explore = () => {
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = filteredItems.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
@@ -61,7 +64,9 @@ const Explore = () => {
   const handleSearch = () => setCurrentPage(1);
 
   const handleDifficultyChange = (difficulty) => {
-    setSelectedDifficulty(difficulty === selectedDifficulty ? null : difficulty);
+    setSelectedDifficulty(
+      difficulty === selectedDifficulty ? null : difficulty
+    );
     setCurrentPage(1);
   };
 
@@ -88,7 +93,9 @@ const Explore = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="explore-input"
             />
-            <button onClick={handleSearch} className="explore-search-button">검색하기</button>
+            <button onClick={handleSearch} className="explore-search-button">
+              검색하기
+            </button>
           </div>
         </div>
         <div className="explore-right-group">
@@ -131,9 +138,15 @@ const Explore = () => {
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
             <div key={item.workbookId} className="explore-card">
-              <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
+              <img
+                src={SquirrelIcon}
+                alt="Squirrel Icon"
+                className="explore-card-icon"
+              />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">작성자: {item.userId}</p>
+              <p className="explore-card-date">
+                작성자: {item.nickname || item.name}
+              </p>
 
               <div className="explore-card-button-group">
                 <button
@@ -157,7 +170,9 @@ const Explore = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 col-span-full">검색 결과가 없습니다.</p>
+          <p className="text-center text-gray-500 col-span-full">
+            검색 결과가 없습니다.
+          </p>
         )}
       </div>
 
@@ -170,12 +185,16 @@ const Explore = () => {
           >
             Previous
           </button>
-          {startPage > 1 && <span className="explore-pagination-ellipsis">...</span>}
+          {startPage > 1 && (
+            <span className="explore-pagination-ellipsis">...</span>
+          )}
           {pageNumbers.map((page) => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`explore-pagination-button ${currentPage === page ? "explore-pagination-button-active" : ""}`}
+              className={`explore-pagination-button ${
+                currentPage === page ? "explore-pagination-button-active" : ""
+              }`}
             >
               {page}
             </button>
@@ -183,7 +202,10 @@ const Explore = () => {
           {endPage < totalPages && (
             <>
               <span className="explore-pagination-ellipsis">...</span>
-              <button onClick={() => handlePageChange(totalPages)} className="explore-pagination-button">
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                className="explore-pagination-button"
+              >
                 {totalPages}
               </button>
             </>

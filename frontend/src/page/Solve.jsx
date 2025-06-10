@@ -116,6 +116,18 @@ const Solve = () => {
   const answeredCount = Object.keys(userAnswers).length;
   const total = problemList.length;
   const progress = (answeredCount / total) * 100;
+  const getQuestionTypeLabel = (type) => {
+    switch (type) {
+      case "SHORT_ANSWER":
+        return "단답식";
+      case "TRUE_FALSE":
+        return "O/X 문제";
+      case "MULTIPLE_CHOICE":
+        return "객관식";
+      default:
+        return type;
+    }
+  };
 
   return (
     <div className="solve-page">
@@ -145,14 +157,14 @@ const Solve = () => {
               }`}
               onClick={() => setCurrentProblemId(problem.problemId)}
             >
-              {idx + 1}. {problem.questionType.replace("_", " ")}
+              {idx + 1}. {getQuestionTypeLabel(problem.questionType)}
             </div>
           ))}
           <button onClick={handleSubmit} className="solve-submit-button">
             제출하기
           </button>
         </div>
-
+        
         <div className="solve-content">
           <div className="solve-progress-bar">
             <div
