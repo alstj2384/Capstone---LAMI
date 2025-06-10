@@ -132,17 +132,19 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
 };
 
 // 회원정보 수정 파일 업로드 
-export const uploadImage = async (file, token) => {
+// api.js
+import { endpoints } from "./url";
+
+export const uploadImage = async (file, token, memberId) => {
     const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post("/api/upload-image", formData, {
+    formData.append("file", file); // 서버가 기대하는 필드 이름(예: "profileImage")으로 변경 가능
+    const response = await axios.patch(endpoints.updateUser(memberId), formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
         },
     });
-    return response.data.url; // 서버가 반환하는 이미지 URL
+    return response.data.profileImage; // 서버가 반환하는 이미지 URL
 };
-
 
 // 토큰 재발급 
 export const reissueToken = async (refreshToken) => {
