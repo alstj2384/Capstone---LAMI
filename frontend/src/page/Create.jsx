@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { generateAiWorkbook, getMyWorkbookList } from "../api"; // AI 문제집 생성 API
+import { generateAiWorkbook, getMyWorkbookList } from "../api";
 import "./css/Create.css";
 
 const Create = () => {
@@ -48,24 +48,6 @@ const Create = () => {
       alert("PDF 파일만 업로드 가능하며, 최대 3MB까지 허용됩니다.");
     }
   };
-  const waitForWorkbook = async (
-    title,
-    token,
-    memberId,
-    maxRetries = 10,
-    delay = 2000
-  ) => {
-    for (let i = 0; i < maxRetries; i++) {
-      const workbookList = await getMyWorkbookList(memberId, token);
-      const matched = workbookList.find((wb) => wb.title === title);
-
-      if (matched) return matched;
-
-      await new Promise((resolve) => setTimeout(resolve, delay)); // 기다림
-    }
-
-    return null; // 못 찾은 경우
-  };
 
   const totalQuestions =
     multipleChoiceCount + trueFalseCount + shortAnswerCount;
@@ -92,8 +74,7 @@ const Create = () => {
     setIsLoading(true);
 
     try {
-      // 사용자에게 안내
-      console.log("문제집 생성 중... 잠시만 기다려주세요 :)");
+      console.log("문제집 생성 요청 중...");
       await generateAiWorkbook({
         pdf: file,
         title,
@@ -106,8 +87,11 @@ const Create = () => {
         token,
         memberId,
       });
+    } catch (err) {
+      console.warn("문제집 생성 API 오류 (무시함):", err);
+    }
 
-      // 무제한 대기 (재시도 제한 없앰)
+    try {
       const waitUntilWorkbookExists = async () => {
         while (true) {
           const workbookList = await getMyWorkbookList(memberId, token);
@@ -119,12 +103,16 @@ const Create = () => {
 
       const matched = await waitUntilWorkbookExists();
 
-      navigate("/share-complete", {
-        state: { workbookId: matched.workbookId },
-      });
+      if (matched?.workbookId) {
+        navigate("/share-complete", {
+          state: { workbookId: matched.workbookId },
+        });
+      } else {
+        alert("문제집 생성은 되었으나 목록에서 찾을 수 없습니다.");
+      }
     } catch (err) {
-      console.error("문제집 생성 중 오류 (하지만 무시):", err);
-      // 에러 alert 제거
+      console.error("문제집 확인 중 오류:", err);
+      alert("문제집 생성 여부를 확인하는 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +123,6 @@ const Create = () => {
       <div className="create-container">
         <h1 className="create-title">문제 생성하기</h1>
         <form onSubmit={handleSubmit}>
-          {/* 제목 입력 */}
           <div className="create-field">
             <label className="create-label">문제집 이름</label>
             <input
@@ -147,7 +134,6 @@ const Create = () => {
             />
           </div>
 
-          {/* PDF 업로드 */}
           <div className="create-field">
             <label className="create-label">PDF 업로드</label>
             <div
@@ -169,7 +155,6 @@ const Create = () => {
             </div>
           </div>
 
-          {/* 난이도 선택 */}
           <div className="create-field">
             <label className="create-label">난이도</label>
             <select
@@ -184,7 +169,6 @@ const Create = () => {
             </select>
           </div>
 
-          {/* 문제 개수 설정 */}
           <div className="create-field">
             <label className="create-label">문제 유형별 개수</label>
             <div className="create-question-counts">
@@ -240,7 +224,6 @@ const Create = () => {
             )}
           </div>
 
-          {/* 정확성 확인 */}
           <div className="create-field">
             <label className="create-checkbox-label">
               <input
@@ -252,6 +235,7 @@ const Create = () => {
               <span>생성된 문제의 정답은 정확하지 않을 수 있습니다.</span>
             </label>
           </div>
+
           {isLoading && (
             <p className="create-wait-message">
               문제집을 생성하고 있습니다. 1~2분 정도 소요될 수 있습니다.
@@ -259,7 +243,6 @@ const Create = () => {
             </p>
           )}
 
-          {/* 제출 버튼 */}
           <button
             type="submit"
             className="create-submit-button"
