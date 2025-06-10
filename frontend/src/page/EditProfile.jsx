@@ -7,7 +7,6 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
-  uploadImage, // 새 함수 임포트
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -26,6 +25,7 @@ const EditProfile = () => {
     userId: "",
   });
 
+  const [selectedFile, setSelectedFile] = useState(null); // 새로 추가: 선택한 파일 상태
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeRequested, setIsCodeRequested] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -54,16 +54,13 @@ const EditProfile = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      try {
-        const imageUrl = await uploadImage(file, token); // 파일 업로드 API 호출
-        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
-      } catch (err) {
-        console.error("이미지 업로드 실패", err.response?.data || err.message);
-        alert("이미지 업로드에 실패했습니다.");
-      }
+      setSelectedFile(file); // 파일 상태에 저장, 즉시 업로드 X
+      // 미리보기용 임시 URL 생성 (UI에만 표시)
+      const imageUrl = URL.createObjectURL(file);
+      setUser((prev) => ({ ...prev, profilePic: imageUrl }));
     }
   };
 
@@ -97,14 +94,15 @@ const EditProfile = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("profileImage", selectedFile || ""); // 이미지 파일 추가
+    formData.append("memorizationMethod", memorizationMethod);
+    formData.append("feedbackStyle", feedbackStyle);
+
     try {
       const res = await updateUserInfo({
         id: memberId,
-        data: {
-          profilePic: user.profilePic,
-          memorizationMethod,
-          feedbackStyle,
-        },
+        data: formData, // FormData로 변경
         token,
         memberId,
       });
