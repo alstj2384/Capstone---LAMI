@@ -136,7 +136,7 @@ const MyPage = () => {
               className="mypage-profile-pic"
             />
             <div className="mypage-user-info">
-              <h1 className="mypage-user-name">{user.name}</h1>
+              <h1 className="mypage-user-name">{user.nickname}</h1>
               <p className="mypage-user-email">{user.email}</p>
               <button
                 onClick={() => navigate("/edit-mypage")}

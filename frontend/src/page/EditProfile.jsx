@@ -16,6 +16,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const memberId = localStorage.getItem("memberId");
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const fileInputRef = useRef(null);
 
   const [user, setUser] = useState({
@@ -42,7 +43,7 @@ const EditProfile = () => {
         const userData = await getUserInfo(memberId, token);
         console.log("사용자 정보:", userData.data);
         setUser((prev) => ({ ...prev, ...userData.data }));
-        setNickname(userData.data.name || userData.data.nickname || "");
+        setNickname(userData.data.nickname || "");
       } catch (error) {
         console.error("사용자 정보 불러오기 실패:", error);
         alert("사용자 정보를 불러오지 못했습니다.");
@@ -207,7 +208,7 @@ const EditProfile = () => {
           profilePic: res.data.profileImageUrl || prev.profilePic,
           name: res.data.nickname || res.data.name || prev.name,
         }));
-        setNickname(res.data.nickname || res.data.name || nickname);
+        setNickname(res.data.nickname || nickname);
       }
 
       if (isCodeVerified && password) {
