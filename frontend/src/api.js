@@ -117,6 +117,7 @@ export const getUserInfo = async (id, token) => {
 // 회원정보 수정
 // api.js
 export const updateUserInfo = async ({ id, data, token, memberId }) => {
+    console.log("Sending data to updateUserInfo:", JSON.stringify(data, null, 2)); // 디버깅
     const response = await axios.patch(endpoints.updateUser(id), data, {
         headers: {
             Authorization: `${token}`,
@@ -124,9 +125,9 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
             ...(data instanceof FormData ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" }),
         },
     });
+    console.log("Response from updateUserInfo:", response.data); // 응답 확인
     return response.data;
 };
-
 
 // 토큰 재발급 
 export const reissueToken = async (refreshToken) => {

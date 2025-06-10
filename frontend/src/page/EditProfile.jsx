@@ -101,7 +101,7 @@ const EditProfile = () => {
       memorizationMethod,
     };
 
-    console.log("Sending data:", data);
+    console.log("Sending data:", JSON.stringify(data, null, 2)); // 상세 로그
     try {
       const res = await updateUserInfo({
         id: memberId,
@@ -132,6 +132,7 @@ const EditProfile = () => {
       navigate("/mypage");
     } catch (err) {
       console.error("🔴 에러 응답:", err.response?.data || err.message);
+      if (err.response?.data) console.log("Detailed error:", err.response.data); // 세부 오류
       alert("프로필 수정 중 오류가 발생했습니다.");
     }
   };
