@@ -122,7 +122,7 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
         data,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
                 "Content-Type": "multipart/form-data",
                 "X-User-Id": memberId,
             },
