@@ -113,6 +113,7 @@ export const getUserInfo = async (id, token) => {
 };
 
 
+
 // 회원정보 수정
 // api.js
 export const updateUserInfo = async ({ id, data, token, memberId }) => {
