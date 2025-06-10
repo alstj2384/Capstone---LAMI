@@ -15,7 +15,8 @@
 4. [**주요 기능**](#4)
 5. [**기술 스택**](#5)
 6. [**산출물**](#6)
-7. [**팀원 소개**](#7)
+7. [**설치 매뉴얼**](#7)
+7. [**팀원 소개**](#8)
    <br><br><br>
 
 <div id="1"></div>
@@ -150,6 +151,79 @@
 
 <div id="7"></div>
 
+### ⚙️ 설치 매뉴얼
+---
+1. 프로젝트 클론 및 이동
+```sh
+git clone https://git.chosun.ac.kr/iap1-2025/class-06/team-08.git
+cd team-08
+deploy_dir=$(pwd)
+```
+
+
+2. .env 파일 설정
+```sh
+cd ${deploy_dir}
+vim .env
+```
+아래 내용을 복사하여 붙여넣어주세요
+```
+# MariaDB 정보
+MYSQL_HOST=db
+MYSQL_PORT=3306
+MYSQL_DATABASE=lami
+MYSQL_USERNAME=lami
+MYSQL_PASSWORD=lami
+MYSQL_ROOT_PASSWORD=root1234
+
+# Redis
+REDIS_PORT=6379
+
+# JWT 정보
+JWT_SECRET={JWT 키 값을 입력하세요}
+SPRING_JWT_ACCESS_TOKEN_EXPIRY=3600000
+SPRING_JWT_REFRESH_TOKEN_RXPIRY=1209600
+
+# 메일 관련 설정
+MAIL_FROM=capstonelami@naver.com
+MAIL_USERNAME=capstonelami
+MAIL_PASSWORD=lamilami!
+MAIL_PORT=465
+
+# GPT API 키
+GPT_API_KEY={GPT API 키를 입력하세요}
+```
+⚠️ JWT_SECRET, GPT_API_KEY는 반드시 입력해주세요.
+
+3. 도커 및 도커 컴포즈 설치(미설치 시)
+``` sh
+sudo apt update
+sudo apt install -y docker.io docker-compose
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+4. 아래 스크립트를 복사해서 터미널에 붙여넣으세요
+```sh
+cd ${deploy_dir}
+
+# 프론트엔드 Docker 이미지 빌드
+docker build -t frontend:latest -f frontend/Dockerfile frontend
+
+# 백엔드 서비스 이미지 빌드
+for service in ai grading member review workbook
+do
+  docker build -t ${service}:latest -f backend/${service}/Dockerfile backend/${service}
+done
+
+# 서버 실행
+docker compose up --build -d
+```
+
+
+
+
+<div id="8"></div>
+
 ### 팀원 소개
 
 ---
@@ -157,27 +231,22 @@
 <table>
   <tr>
     <td align="center">
-      <img src="" width="100px" height="100px" style="border-radius:50%;" alt="김민주"/><br />
       <b>김민주</b><br />
       <i>Frontend</i>
     </td>
     <td align="center">
-      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채철영"/><br />
       <b>채철영</b><br />
       <i>Backend</i>
     </td>
     <td align="center">
-      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="송민서"/><br />
       <b>송민서</b><br />
       <i>Backend, Infra</i>
     </td>
     <td align="center">
-      <img src="./g" width="100px" height="100px" style="border-radius:50%;" alt="박준걸"/><br />
       <b>박준걸</b><br />
       <i>Backend, Infra</i>
     </td>
     <td align="center">
-      <img src="./" width="100px" height="100px" style="border-radius:50%;" alt="채승오"/><br />
       <b>채승오</b><br />
       <i>Backend</i>
     </td>
