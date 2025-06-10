@@ -7,6 +7,7 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
+  uploadImage, // 새 함수 임포트
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -57,16 +58,7 @@ const EditProfile = () => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await axios.patch(
-          `/api/members/${memberId}`, // baseURL은 axiosInstance에서 설정됨
-          formData
-          // headers 제거: axiosInstance가 자동 처리
-        );
-
-        const imageUrl = response.data.profileImage; // 서버에서 반환한 이미지 URL
+        const imageUrl = await uploadImage(file, token); // 파일 업로드 API 호출
         setUser((prev) => ({ ...prev, profilePic: imageUrl }));
       } catch (err) {
         console.error("이미지 업로드 실패", err.response?.data || err.message);
