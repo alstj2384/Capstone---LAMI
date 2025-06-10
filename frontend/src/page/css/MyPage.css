@@ -63,6 +63,7 @@
     border-radius: 50%; /* rounded-full */
     object-fit: cover;
     border: 2px solid #22c55e; /* border-2 border-green-500 */
+    margin-left: 24px; 
 }
 
 .mypage-user-info {
@@ -73,6 +74,7 @@
     font-size: 1.875rem; /* text-3xl */
     font-weight: 700; /* font-bold */
     color: #1f2937; /* text-gray-900 */
+    margin-left: 1rem;
     margin-bottom: 0.25rem; /* mb-1 */
 }
 
@@ -80,11 +82,13 @@
     font-size: 1rem; /* text-base */
     color: #6b7280; /* text-gray-500 */
     margin-bottom: 0.25rem; /* mb-1 */
+    margin-left: 1rem;
 }
 
 .mypage-user-stats {
     font-size: 0.875rem; /* text-sm */
     color: #374151; /* text-gray-700 */
+    margin-left: 1rem;
 }
 
 /* 암기법 섹션 */

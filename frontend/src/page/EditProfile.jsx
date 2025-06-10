@@ -206,28 +206,6 @@ const EditProfile = () => {
           )}
         </div>
 
-        <div className="edit-group">
-          <p className="edit-label">선호 피드백</p>
-          {["POSITIVE_FEEDBACK", "GENTLE_FEEDBACK", "DETAILED_FEEDBACK"].map(
-            (style) => (
-              <label key={style} className="edit-radio">
-                <input
-                  type="radio"
-                  name="feedbackStyle"
-                  value={style}
-                  checked={feedbackStyle === style}
-                  onChange={() => setFeedbackStyle(style)}
-                />
-                {style === "POSITIVE_FEEDBACK"
-                  ? "긍정적인 피드백"
-                  : style === "GENTLE_FEEDBACK"
-                  ? "부드러운 피드백"
-                  : "자세한 설명과 도움을 주는 피드백"}
-              </label>
-            )
-          )}
-        </div>
-
         <button type="submit" className="edit-submit">
           제출하기
         </button>
