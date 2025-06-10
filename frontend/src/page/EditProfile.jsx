@@ -25,7 +25,7 @@ const EditProfile = () => {
     userId: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState(null); // 선택한 파일 상태
+  const [selectedFile, setSelectedFile] = useState(null);
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeRequested, setIsCodeRequested] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -43,7 +43,7 @@ const EditProfile = () => {
         const memoRes = await getUserMemorizationMethod(memberId, token);
         setMemorizationMethod(
           memoRes.data.memorizationMethod || "AssociationMethod"
-        ); // 객체에서 값 추출
+        );
       } catch (error) {
         console.error("사용자 정보 불러오기 실패", error);
       }
@@ -95,11 +95,12 @@ const EditProfile = () => {
     }
 
     const formData = new FormData();
-    if (selectedFile) formData.append("profileImage", selectedFile); // 이미지 추가
+    if (selectedFile) formData.append("profileImage", selectedFile);
     formData.append("memorizationMethod", memorizationMethod);
     formData.append("feedbackStyle", feedbackStyle);
 
     try {
+      console.log("FormData entries:", Array.from(formData.entries())); // 디버깅
       const res = await updateUserInfo({
         id: memberId,
         data: formData,
@@ -187,14 +188,19 @@ const EditProfile = () => {
 
         <div className="edit-group">
           <p className="edit-label">선호 암기법</p>
-          {["AssociationMethod", "StorytellingMethod", "VocabularyLinking"].map(
+          {[
+            "AssociationMethod",
+            "StorytellingMethod",
+            "VocabConnectMethod",
+          ].map(
+            // 수정: VocabularyLinking -> VocabConnectMethod
             (method) => (
               <label key={method} className="edit-radio">
                 <input
                   type="radio"
                   name="memorizationMethod"
                   value={method}
-                  checked={memorizationMethod === method} // 조회된 값에 따라 체크
+                  checked={memorizationMethod === method}
                   onChange={() => setMemorizationMethod(method)}
                 />
                 {method === "AssociationMethod"
