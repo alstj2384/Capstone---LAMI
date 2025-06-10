@@ -95,9 +95,9 @@ const Explore = () => {
           <div className="explore-button-group">
             <span className="explore-filter-label">난이도</span>
             {[
-              { label: "높음", value: 3 },
+              { label: "낮음", value: 3 },
               { label: "중간", value: 2 },
-              { label: "낮음", value: 1 },
+              { label: "높음", value: 1 },
             ].map(({ label, value }) => (
               <button
                 key={label}

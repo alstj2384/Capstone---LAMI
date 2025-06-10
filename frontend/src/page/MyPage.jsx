@@ -114,11 +114,11 @@ const MyPage = () => {
   const getDifficultyText = (difficulty) => {
     switch (difficulty) {
       case 1:
-        return "쉬움";
+        return "높음";
       case 2:
-        return "보통";
+        return "중간";
       case 3:
-        return "어려움";
+        return "낮음";
       default:
         return "없음";
     }
