@@ -131,20 +131,6 @@ export const updateUserInfo = async ({ id, data, token, memberId }) => {
     return response.data;
 };
 
-// 회원정보 수정 파일 업로드 
-// api.js
-
-export const uploadImage = async (file, token, memberId) => {
-    const formData = new FormData();
-    formData.append("file", file); 
-    const response = await axios.patch(endpoints.updateUser(memberId), formData, {
-        headers: {
-            Authorization: `${token}`,
-            "Content-Type": "application/json",
-        },
-    });
-    return response.data.profileImage; // 서버가 반환하는 이미지 URL
-};
 
 // 토큰 재발급 
 export const reissueToken = async (refreshToken) => {
