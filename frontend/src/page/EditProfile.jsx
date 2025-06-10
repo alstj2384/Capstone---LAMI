@@ -10,7 +10,7 @@ import {
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
-import axios from "axios";
+import axios from "../axiosInstance";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -61,14 +61,9 @@ const EditProfile = () => {
         formData.append("file", file);
 
         const response = await axios.patch(
-          `/api/members/${memberId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `/api/members/${memberId}`, // baseURL은 axiosInstance에서 설정됨
+          formData
+          // headers 제거: axiosInstance가 자동 처리
         );
 
         const imageUrl = response.data.profileImage; // 서버에서 반환한 이미지 URL
