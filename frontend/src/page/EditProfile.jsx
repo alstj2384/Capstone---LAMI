@@ -11,6 +11,7 @@ import {
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
+import axios from "axios";
 
 const EditProfile = () => {
   const navigate = useNavigate();
