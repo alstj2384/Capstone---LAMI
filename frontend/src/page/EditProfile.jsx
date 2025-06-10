@@ -24,7 +24,7 @@ const EditProfile = () => {
     profilePic: SquirrelIcon,
     userId: "",
   });
-
+  const [nickname, setNickname] = useState(""); // 닉네임 상태 추가
   const [selectedFile, setSelectedFile] = useState(null); // Base64 문자열 또는 null
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeRequested, setIsCodeRequested] = useState(false);
@@ -38,6 +38,7 @@ const EditProfile = () => {
       try {
         const userData = await getUserInfo(memberId, token);
         setUser((prev) => ({ ...prev, ...userData.data }));
+        setNickname(userData.data.name || ""); // 초기 닉네임 설정
 
         const memoRes = await getUserMemorizationMethod(memberId, token);
         setMemorizationMethod(
@@ -45,6 +46,7 @@ const EditProfile = () => {
         );
       } catch (error) {
         console.error("사용자 정보 불러오기 실패", error);
+        alert("사용자 정보를 불러오지 못했습니다.");
       }
     };
     fetchData();
@@ -57,10 +59,41 @@ const EditProfile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
+      const img = new Image();
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedFile(reader.result); // Base64 데이터 (예: "data:image/jpeg;base64,...")
-        setUser((prev) => ({ ...prev, profilePic: reader.result })); // 미리보기
+
+      reader.onload = (event) => {
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const maxWidth = 800; // 최대 너비
+          const maxHeight = 800; // 최대 높이
+          let width = img.width;
+          let height = img.height;
+
+          // 비율 유지하며 크기 조정
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // JPEG로 변환 (품질 0.7)
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setSelectedFile(compressedBase64);
+          setUser((prev) => ({ ...prev, profilePic: compressedBase64 }));
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -72,7 +105,7 @@ const EditProfile = () => {
       alert("인증번호가 이메일로 전송되었습니다.");
       setIsCodeRequested(true);
     } catch (err) {
-      alert("인증번호 요청 실패");
+      alert("인증번호 요청에 실패했습니다.");
     }
   };
 
@@ -96,16 +129,25 @@ const EditProfile = () => {
       return;
     }
 
-    const data = {
-      profileImage: selectedFile || user.profilePic, // Base64 데이터
-      memorizationMethod,
-    };
+    const formData = new FormData();
+    formData.append("nickname", nickname || user.name); // 닉네임 추가
+    formData.append("memorizationMethod", memorizationMethod);
+    if (selectedFile) {
+      const byteString = atob(selectedFile.split(",")[1]);
+      const mimeString = selectedFile.split(",")[0].split(":")[1].split(";")[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+      formData.append("profileImage", blob, "profile.jpg");
+    }
 
-    console.log("Sending data:", JSON.stringify(data, null, 2)); // 상세 로그
     try {
       const res = await updateUserInfo({
         id: memberId,
-        data,
+        data: formData,
         token,
         memberId,
       });
@@ -117,6 +159,7 @@ const EditProfile = () => {
           profilePic: res.data.profileImage || prev.profilePic,
           name: res.data.nickname || prev.name,
         }));
+        setNickname(res.data.nickname || nickname); // 닉네임 상태 업데이트
       }
 
       if (isCodeVerified && password) {
@@ -132,8 +175,11 @@ const EditProfile = () => {
       navigate("/mypage");
     } catch (err) {
       console.error("🔴 에러 응답:", err.response?.data || err.message);
-      if (err.response?.data) console.log("Detailed error:", err.response.data); // 세부 오류
-      alert("프로필 수정 중 오류가 발생했습니다.");
+      if (err.response?.data?.message) {
+        alert(`프로필 수정 실패: ${err.response.data.message}`);
+      } else {
+        alert("프로필 수정 중 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -146,6 +192,17 @@ const EditProfile = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="edit-form">
+        <div className="edit-group">
+          <label className="edit-label">닉네임</label>
+          <input
+            type="text"
+            placeholder="닉네임을 입력하세요"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            className="edit-input"
+          />
+        </div>
+
         <label className="edit-label">프로필 사진 변경하기</label>
         <div className="edit-upload-box" onClick={handleFileClick}>
           <p>Link or drag and drop</p>
