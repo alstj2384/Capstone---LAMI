@@ -92,7 +92,9 @@ const Create = () => {
     setIsLoading(true);
 
     try {
-      const response = await generateAiWorkbook({
+      // 사용자에게 안내
+      console.log("문제집 생성 중... 잠시만 기다려주세요 :)");
+      await generateAiWorkbook({
         pdf: file,
         title,
         isPublic: "True",
@@ -105,24 +107,26 @@ const Create = () => {
         memberId,
       });
 
-      console.log("✅ 문제 생성 응답:", response);
+      // 무제한 대기 (재시도 제한 없앰)
+      const waitUntilWorkbookExists = async () => {
+        while (true) {
+          const workbookList = await getMyWorkbookList(memberId, token);
+          const matched = workbookList.find((wb) => wb.title === title);
+          if (matched) return matched;
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      };
 
-      // 📌 반영될 때까지 기다리기
-      const matched = await waitForWorkbook(title, token, memberId);
+      const matched = await waitUntilWorkbookExists();
 
-      if (matched?.workbookId) {
-        navigate("/share-complete", {
-          state: { workbookId: matched.workbookId },
-        });
-      } else {
-        alert(
-          "문제집은 생성되었지만 서버에 반영되지 않았습니다. 잠시 후 다시 확인해주세요."
-        );
-      }
+      navigate("/share-complete", {
+        state: { workbookId: matched.workbookId },
+      });
     } catch (err) {
-      alert(err.response?.data?.message || "문제집 생성 중 오류 발생");
+      console.error("문제집 생성 중 오류 (하지만 무시):", err);
+      // 에러 alert 제거
     } finally {
-      setIsLoading(false); // 꼭 필요합니다
+      setIsLoading(false);
     }
   };
 
@@ -248,6 +252,12 @@ const Create = () => {
               <span>생성된 문제의 정답은 정확하지 않을 수 있습니다.</span>
             </label>
           </div>
+          {isLoading && (
+            <p className="create-wait-message">
+              문제집을 생성하고 있습니다. 1~2분 정도 소요될 수 있습니다.
+              페이지가 자동으로 이동될 때까지 기다려주세요.
+            </p>
+          )}
 
           {/* 제출 버튼 */}
           <button
