@@ -54,15 +54,6 @@ const EditProfile = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file);
-      const imageUrl = URL.createObjectURL(file);
-      setUser((prev) => ({ ...prev, profilePic: imageUrl }));
-    }
-  };
-
   const handleSendCode = async () => {
     try {
       await resetPasswordRequestCode(user.userId);
@@ -86,6 +77,19 @@ const EditProfile = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFile(reader.result); // Base64 문자열
+        const imageUrl = reader.result; // 미리보기용
+        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password && password !== confirmPassword) {
@@ -93,21 +97,21 @@ const EditProfile = () => {
       return;
     }
 
-    const formData = new FormData();
-    if (selectedFile) formData.append("profileImage", selectedFile);
-    formData.append("memorizationMethod", memorizationMethod);
+    const data = {
+      profileImage: selectedFile || user.profilePic, // Base64 또는 기존 URL
+      memorizationMethod,
+    };
 
+    console.log("Sending data:", data);
     try {
-      console.log("FormData entries:", Array.from(formData.entries()));
       const res = await updateUserInfo({
         id: memberId,
-        data: formData,
+        data,
         token,
         memberId,
       });
       console.log("🟢 응답 데이터:", res);
 
-      // 응답 데이터를 UI에 적용
       if (res.data) {
         setUser((prev) => ({
           ...prev,
