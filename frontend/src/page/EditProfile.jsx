@@ -244,7 +244,6 @@ const EditProfile = () => {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               className="edit-input"
-              disabled={!isCodeRequested}
             />
             <button
               type="button"
@@ -305,7 +304,7 @@ const EditProfile = () => {
             </label>
           ))}
         </div>
-        <button type="submit" className="edit-submit" disabled={isUploading}>
+        <button type="submit" className="edit-submit">
           {isUploading ? "업로드 중..." : "제출하기"}
         </button>
       </form>

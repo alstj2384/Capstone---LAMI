@@ -196,12 +196,8 @@
   transform: scale(1.05);
 }
 
-.edit-code-button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.6;
-  transform: none;
-}
+
+
 
 /* 정보 텍스트 */
 .edit-info {
