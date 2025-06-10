@@ -14,7 +14,7 @@ import axios from "../axiosInstance";
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const memberId = localStorage.getItem("memberId");
+  const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
   const fileInputRef = useRef(null);
 
@@ -39,7 +39,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await getUserInfo(memberId, token);
+        const userData = await getUserInfo(userId, token);
         console.log("사용자 정보:", userData.data);
         setUser((prev) => ({ ...prev, ...userData.data }));
         setNickname(userData.data.name || userData.data.nickname || "");
@@ -49,7 +49,7 @@ const EditProfile = () => {
       }
     };
     fetchData();
-  }, [memberId, token]);
+  }, [userId, token]);
 
   useEffect(() => {
     let timer;
@@ -194,10 +194,10 @@ const EditProfile = () => {
 
     try {
       const res = await updateUserInfo({
-        id: memberId,
+        id: userId,
         data,
         token,
-        memberId,
+        userId,
       });
       console.log("🟢 응답 데이터:", res.data);
 
@@ -215,7 +215,7 @@ const EditProfile = () => {
           userId: user.userId,
           newPassword: password,
           token,
-          memberId,
+          userId,
         });
       }
 
