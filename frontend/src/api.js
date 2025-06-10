@@ -53,35 +53,42 @@ export const signupVerifyRegistCode = async ({ email, code }) => {
 // 비밀번호 변경 인증번호 전송 API 
 // 수정 후 ✅
 // api.js
-export const resetPasswordRequestCode = async (userId) => {
+export const resetPasswordRequestCode = async (userId, retryCount = 2) => {
     console.log("인증 코드 요청 전송:", { userId });
-    try {
-        const res = await axios.post(endpoints.resetPasswordRequestCode, {
-            userId: String(userId), // 문자열로 변환
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 추가
-            },
-        });
-        console.log("인증 코드 요청 응답:", res.data);
-        return res.data;
-    } catch (err) {
-        console.error("인증 코드 요청 에러:", err.response?.data || err.message);
-        throw err;
+    for (let attempt = 1; attempt <= retryCount; attempt++) {
+        try {
+            const res = await axios.post(
+                endpoints.resetPasswordRequestCode,
+                { userId: String(userId) },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+            console.log("인증 코드 요청 응답:", res.data);
+            return res.data;
+        } catch (err) {
+            console.error(`인증 코드 요청 에러 (시도 ${attempt}/${retryCount}):`, err.response?.data || err.message);
+            if (attempt === retryCount) throw err;
+            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt)); // 지연 재시도
+        }
     }
 };
 
 export const verifyResetPasswordCode = async ({ userId, code }) => {
     console.log("인증 코드 확인 전송:", { userId, code });
     try {
-        const res = await axios.post(endpoints.verifyResetPasswordCode, {
-            userId: String(userId),
-            code,
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        });
+        const res = await axios.post(
+            endpoints.verifyResetPasswordCode,
+            { userId: String(userId), code },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                timeout: 5000,
+            }
+        );
         console.log("인증 코드 확인 응답:", res.data);
         return res.data;
     } catch (err) {
