@@ -139,13 +139,18 @@ const Solve = () => {
               className={`solve-problem-item ${
                 currentProblemId === problem.problemId
                   ? "active"
-                  : userAnswers[problem.problemId]
+                  : completedProblemIds.includes(problem.problemId)
                   ? "completed"
                   : ""
               }`}
               onClick={() => setCurrentProblemId(problem.problemId)}
             >
-              {idx + 1}. {problem.questionType.replace("_", " ")}
+              {idx + 1}.{" "}
+              {{
+                MULTIPLE_CHOICE: "객관식 문제",
+                TRUE_FALSE: "OX 문제",
+                SHORT_ANSWER: "단답식 문제",
+              }[problem.questionType] || "알 수 없음"}
             </div>
           ))}
           <button onClick={handleSubmit} className="solve-submit-button">
