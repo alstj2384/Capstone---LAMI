@@ -4,7 +4,7 @@ import axios from "../axiosInstance";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import { endpoints } from "../url";
 import { useSelector } from "react-redux";
-import { getWorkbook, getMyWorkbookList } from "../api";
+import { getWorkbook, getMyWorkbookList, getGradingList } from "../api";
 import "./css/MyPage.css";
 
 const MyPage = () => {
@@ -21,9 +21,7 @@ const MyPage = () => {
   const [timeSpent, setTimeSpent] = useState(() =>
     parseInt(localStorage.getItem("timeSpent") || "0")
   );
-  const [challengeDays, setChallengeDays] = useState(() =>
-    parseInt(localStorage.getItem("challengeDays") || "0")
-  );
+  const [gradedCount, setGradedCount] = useState(0);
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -48,9 +46,6 @@ const MyPage = () => {
         const userData = userRes?.data?.data || userRes?.data;
         setUser(userData);
 
-        const reviewRes = await axios.get(endpoints.getReview, config);
-        const reviews = reviewRes.data?.data;
-        setReviewList(Array.isArray(reviews) ? reviews : []);
         const myWorkbooks = await getMyWorkbookList(memberId, token);
 
         const detailedWorkbooks = await Promise.all(
@@ -72,6 +67,10 @@ const MyPage = () => {
         );
 
         setMyWorkbooks(detailedWorkbooks);
+
+        const gradingRes = await getGradingList(token, memberId);
+        const gradingList = gradingRes?.data?.gradingList || [];
+        setGradedCount(gradingList.length);
 
         console.log("📄 MyPage에서 받은 문제집 목록:", myWorkbooks);
       } catch (error) {
@@ -140,7 +139,7 @@ const MyPage = () => {
               <h1 className="mypage-user-name">{user.name}</h1>
               <p className="mypage-user-email">{user.email}</p>
               <p className="mypage-user-stats">
-                문제집 {problemList.length}개 | 챌린지 {challengeDays}일
+                채점된 문제집 {gradedCount}개
               </p>
               <button
                 onClick={() => navigate("/edit-mypage")}
@@ -167,8 +166,7 @@ const MyPage = () => {
                 >
                   <div className="mypage-problem-title">{workbook.title}</div>
                   <div className="mypage-problem-meta">
-                    문제 수: {workbook.questionAmount || 10}개 | 난이도:{" "}
-                    {getDifficultyText(workbook.difficulty)}
+                   난이도: {getDifficultyText(workbook.difficulty)}
                   </div>
                 </div>
               ))
@@ -183,8 +181,8 @@ const MyPage = () => {
             <p className="mypage-section-content">{formatTime(timeSpent)}</p>
           </div>
           <div className="mypage-section">
-            <h2 className="mypage-section-title">챌린지</h2>
-            <p className="mypage-section-content">{challengeDays}일</p>
+            <h2 className="mypage-section-title">채점 완료한 문제집</h2>
+            <p className="mypage-section-content">{gradedCount}개</p>
           </div>
         </div>
       </div>
