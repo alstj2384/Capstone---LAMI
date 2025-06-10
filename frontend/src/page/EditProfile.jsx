@@ -93,22 +93,28 @@ const EditProfile = () => {
       return;
     }
 
-    const data = {
-      profileImage: selectedFile
-        ? URL.createObjectURL(selectedFile)
-        : user.profilePic,
-      memorizationMethod,
-    };
+    const formData = new FormData();
+    if (selectedFile) formData.append("profileImage", selectedFile);
+    formData.append("memorizationMethod", memorizationMethod);
 
-    console.log("Sending data:", data);
     try {
+      console.log("FormData entries:", Array.from(formData.entries()));
       const res = await updateUserInfo({
         id: memberId,
-        data,
+        data: formData,
         token,
         memberId,
       });
       console.log("🟢 응답 데이터:", res);
+
+      // 응답 데이터를 UI에 적용
+      if (res.data) {
+        setUser((prev) => ({
+          ...prev,
+          profilePic: res.data.profileImage || prev.profilePic,
+          name: res.data.nickname || prev.name,
+        }));
+      }
 
       if (isCodeVerified && password) {
         await updatePassword({
@@ -193,25 +199,22 @@ const EditProfile = () => {
             "AssociationMethod",
             "StorytellingMethod",
             "VocabConnectMethod",
-          ].map(
-            // 수정: VocabularyLinking -> VocabConnectMethod
-            (method) => (
-              <label key={method} className="edit-radio">
-                <input
-                  type="radio"
-                  name="memorizationMethod"
-                  value={method}
-                  checked={memorizationMethod === method}
-                  onChange={() => setMemorizationMethod(method)}
-                />
-                {method === "AssociationMethod"
-                  ? "연상 암기법"
-                  : method === "StorytellingMethod"
-                  ? "이야기 기반 암기법"
-                  : "어휘 연결 암기법"}
-              </label>
-            )
-          )}
+          ].map((method) => (
+            <label key={method} className="edit-radio">
+              <input
+                type="radio"
+                name="memorizationMethod"
+                value={method}
+                checked={memorizationMethod === method}
+                onChange={() => setMemorizationMethod(method)}
+              />
+              {method === "AssociationMethod"
+                ? "연상 암기법"
+                : method === "StorytellingMethod"
+                ? "이야기 기반 암기법"
+                : "어휘 연결 암기법"}
+            </label>
+          ))}
         </div>
 
         <button type="submit" className="edit-submit">
