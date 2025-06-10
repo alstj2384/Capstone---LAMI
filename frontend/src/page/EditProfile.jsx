@@ -1,4 +1,3 @@
-// EditProfile.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -61,7 +60,7 @@ const EditProfile = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await axios.post(
+        const response = await axios.patch(
           `/api/members/${memberId}`,
           formData,
           {
@@ -75,7 +74,7 @@ const EditProfile = () => {
         const imageUrl = response.data.profileImage; // 서버에서 반환한 이미지 URL
         setUser((prev) => ({ ...prev, profilePic: imageUrl }));
       } catch (err) {
-        console.error("이미지 업로드 실패", err);
+        console.error("이미지 업로드 실패", err.response?.data || err.message);
         alert("이미지 업로드에 실패했습니다.");
       }
     }
@@ -120,7 +119,7 @@ const EditProfile = () => {
           feedbackStyle,
         },
         token,
-        memberId, // 🔥 반드시 포함!
+        memberId,
       });
       console.log("🟢 응답 데이터:", res);
 
