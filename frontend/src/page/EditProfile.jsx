@@ -10,7 +10,7 @@ import {
   uploadToImgur,
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
-import "./EditProfile.css";
+import "./css/EditProfile.css";
 import axios from "../axiosInstance";
 
 const EditProfile = () => {
