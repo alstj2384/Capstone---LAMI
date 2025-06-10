@@ -7,7 +7,6 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
-  uploadToImgur,
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -178,7 +177,6 @@ const EditProfile = () => {
     let profileImageUrl = user.profilePic;
     if (selectedFile) {
       try {
-        profileImageUrl = await uploadToImgur(selectedFile);
         console.log("Imgur 업로드 성공:", profileImageUrl);
       } catch (err) {
         console.error("이미지 업로드 실패:", err);
