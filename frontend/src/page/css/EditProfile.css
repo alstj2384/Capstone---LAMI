@@ -9,6 +9,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative; /* 상위 요소 기준 설정 */
 }
 
 /* 타이틀 및 서브텍스트 */
@@ -50,6 +51,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow: visible; /* 버튼 가리짐 방지 */
 }
 
 /* 라벨 및 입력 */
@@ -74,6 +76,8 @@
   display: block; /* 항상 렌더링 */
   pointer-events: auto; /* 클릭 가능 */
   transition: background-color 0.3s ease, transform 0.2s ease; /* 호버 애니메이션 */
+  position: relative; /* z-index 기준 */
+  z-index: 1; /* 상위 요소 가리짐 방지 */
 }
 
 .edit-upload-box:hover {
@@ -97,6 +101,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow: visible; /* 하위 요소 가리짐 방지 */
 }
 
 /* 라디오 버튼 그룹 */
@@ -118,7 +123,7 @@
   cursor: pointer;
   display: block; /* 항상 보이도록 */
   position: relative;
-  z-index: 1;
+  z-index: 1; /* 상위 요소 가리짐 방지 */
   opacity: 1; /* 항상 보이도록 */
   visibility: visible; /* 항상 보이도록 */
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
@@ -144,6 +149,9 @@
   gap: 0.5rem;
   align-items: center;
   flex-wrap: wrap;
+  overflow: visible; /* 버튼 가리짐 방지 */
+  position: relative;
+  z-index: 1; /* 상위 요소 가리짐 방지 */
 }
 
 /* 인증번호 요청/확인 버튼 */
@@ -161,6 +169,8 @@
   display: inline-block; /* 항상 렌더링 */
   transition: background-color 0.2s, transform 0.2s;
   white-space: nowrap;
+  position: relative; /* z-index 기준 */
+  z-index: 1; /* 상위 요소 가리짐 방지 */
 }
 
 .edit-code-button:hover {

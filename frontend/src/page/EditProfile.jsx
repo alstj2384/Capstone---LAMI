@@ -79,7 +79,7 @@ const EditProfile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file); // 파일 객체만 저장, 업로드 로직 제거
+      setSelectedFile(file); // 파일 객체 저장
       setUser((prev) => ({
         ...prev,
         profilePic: URL.createObjectURL(file),
@@ -128,7 +128,7 @@ const EditProfile = () => {
         code: verificationCode,
       });
       console.log("인증 확인 응답:", response);
-      if (response.status === 200) {
+      if (response && response.status === 200) { // 서버 응답 구조 확인
         alert("인증번호가 확인되었습니다.");
         setIsCodeVerified(true);
       } else {
@@ -249,11 +249,7 @@ const EditProfile = () => {
               type="button"
               className="edit-code-button"
               onClick={isCodeRequested ? handleVerifyCode : handleSendCode}
-              disabled={
-                isSendingCode ||
-                cooldown > 0 ||
-                (isCodeRequested && !verificationCode)
-              }
+              disabled={isSendingCode || cooldown > 0 || (isCodeRequested && !verificationCode.trim())}
             >
               {isSendingCode
                 ? "처리 중..."
