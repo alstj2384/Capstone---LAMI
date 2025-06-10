@@ -57,11 +57,6 @@ export const resetPasswordRequestCode = async (userId) => {
     const res = await axiosBasic.post(
         endpoints.resetPasswordRequestCode,
         { userId },
-        {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
     );
     return res.data;
 };

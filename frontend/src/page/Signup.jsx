@@ -42,6 +42,12 @@ const Signup = () => {
     "직접 입력하기",
   ];
 
+  const memorizationMethods = [
+    { value: "AssociationMethod", label: "연상 암기법" },
+    { value: "StorytellingMethod", label: "이야기 기반 암기법" },
+    { value: "VocabConnectMethod", label: "어휘 연결 암기법" },
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -121,6 +127,12 @@ const Signup = () => {
       return;
     }
 
+    if (!isUserIdAvailable) {
+      setError("아이디 중복 확인을 완료해주세요.");
+      setSuccess("");
+      return;
+    }
+
     try {
       const response = await axios.post(`${server}/api/public/members/join`, {
         userId,
@@ -131,8 +143,10 @@ const Signup = () => {
         memorizationMethod,
       });
 
+      console.log("회원가입 응답:", response.data);
+
       if (response.status === 200 && response.data?.status === 200) {
-        setSuccess(response.data.message);
+        setSuccess(response.data.message || "회원가입이 완료되었습니다.");
         setError("");
         localStorage.setItem("userId", response.data.data.userId);
         setTimeout(() => {
@@ -143,6 +157,7 @@ const Signup = () => {
         setSuccess("");
       }
     } catch (err) {
+      console.error("회원가입 에러:", err.response?.data || err.message);
       setError(err.response?.data?.message || "서버 오류가 발생했습니다.");
       setSuccess("");
     }
@@ -180,14 +195,28 @@ const Signup = () => {
     const email =
       formData.emailDomain === "직접 입력하기"
         ? `${formData.emailLocal}@${formData.customDomain}`
-        : `${formData.emailLocal}@${formData.emailDomain}`;
+        : `${formData.emailLocal}@${emailDomain}`;
+
+    if (!emailLocal || (emailDomain === "직접 입력하기" && !customDomain)) {
+      setEmailMessage("이메일을 완성해주세요.");
+      return;
+    }
+
+    const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailMessage("유효한 이메일 형식을 입력해주세요.");
+      return;
+    }
 
     try {
       const res = await signupRequestRegistCode(email);
       setEmailMessage("인증 코드가 전송되었습니다.");
       setEmailCodeSent(true);
     } catch (err) {
-      setEmailMessage("이메일 전송에 실패했습니다.");
+      console.error("이메일 전송 에러:", err);
+      setEmailMessage(
+        err.response?.data?.message || "이메일 전송에 실패했습니다."
+      );
     }
   };
 
@@ -198,12 +227,14 @@ const Signup = () => {
         : `${formData.emailLocal}@${formData.emailDomain}`;
     const code = formData.emailCode;
 
+    if (!code.trim()) {
+      setEmailMessage("인증 코드를 입력해주세요.");
+      return;
+    }
+
     try {
-      console.log("보내는 이메일:", email, "코드:", code);
-
       const result = await signupVerifyRegistCode({ email, code });
-
-      console.log("서버 응답:", result); // result는 data임
+      console.log("인증 응답:", result);
 
       if (result.status === 200) {
         setEmailMessage("이메일 인증이 완료되었습니다.");
@@ -212,8 +243,10 @@ const Signup = () => {
         setEmailMessage(result.message || "인증 코드가 일치하지 않습니다.");
       }
     } catch (err) {
-      console.error("에러:", err);
-      setEmailMessage("인증 중 오류가 발생했습니다.");
+      console.error("인증 에러:", err);
+      setEmailMessage(
+        err.response?.data?.message || "인증 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -358,7 +391,13 @@ const Signup = () => {
               </div>
             )}
             {emailMessage && (
-              <p className="signup-message signup-message-info">
+              <p
+                className={`signup-message ${
+                  emailCodeVerified
+                    ? "signup-message-success"
+                    : "signup-message-info"
+                }`}
+              >
                 {emailMessage}
               </p>
             )}
@@ -384,8 +423,11 @@ const Signup = () => {
               onChange={handleChange}
               className="signup-input"
             >
-              <option value="AssociationMethod">연상법</option>
-              <option value="OtherMethod">기타</option>
+              {memorizationMethods.map((method) => (
+                <option key={method.value} value={method.value}>
+                  {method.label}
+                </option>
+              ))}
             </select>
           </div>
 

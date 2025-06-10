@@ -7,6 +7,7 @@ import {
   getUserMemorizationMethod,
   resetPasswordRequestCode,
   verifyResetPasswordCode,
+  uploadToImgur,
 } from "../api";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
 import "./css/EditProfile.css";
@@ -40,14 +41,11 @@ const EditProfile = () => {
     const fetchData = async () => {
       try {
         const userData = await getUserInfo(memberId, token);
+        console.log("사용자 정보:", userData.data);
         setUser((prev) => ({ ...prev, ...userData.data }));
-        setNickname(userData.data.name || "");
-        const memoRes = await getUserMemorizationMethod(memberId, token);
-        setMemorizationMethod(
-          memoRes.data.memorizationMethod || "AssociationMethod"
-        );
+        setNickname(userData.data.name || userData.data.nickname || "");
       } catch (error) {
-        console.error("사용자 정보 불러오기 실패", error);
+        console.error("사용자 정보 불러오기 실패:", error);
         alert("사용자 정보를 불러오지 못했습니다.");
       }
     };
@@ -180,6 +178,7 @@ const EditProfile = () => {
     let profileImageUrl = user.profilePic;
     if (selectedFile) {
       try {
+        profileImageUrl = await uploadToImgur(selectedFile);
         console.log("Imgur 업로드 성공:", profileImageUrl);
       } catch (err) {
         console.error("이미지 업로드 실패:", err);
@@ -202,15 +201,15 @@ const EditProfile = () => {
         token,
         memberId,
       });
-      console.log("🟢 응답 데이터:", res);
+      console.log("🟢 응답 데이터:", res.data);
 
       if (res.data) {
         setUser((prev) => ({
           ...prev,
           profilePic: res.data.profileImageUrl || prev.profilePic,
-          name: res.data.nickname || prev.name,
+          name: res.data.nickname || res.data.name || prev.name,
         }));
-        setNickname(res.data.nickname || nickname);
+        setNickname(res.data.nickname || res.data.name || nickname);
       }
 
       if (isCodeVerified && password) {
