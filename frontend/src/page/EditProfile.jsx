@@ -25,7 +25,7 @@ const EditProfile = () => {
     userId: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // Base64 문자열 또는 null
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeRequested, setIsCodeRequested] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -54,6 +54,18 @@ const EditProfile = () => {
     fileInputRef.current.click();
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFile(reader.result); // Base64 데이터 (예: "data:image/jpeg;base64,...")
+        setUser((prev) => ({ ...prev, profilePic: reader.result })); // 미리보기
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSendCode = async () => {
     try {
       await resetPasswordRequestCode(user.userId);
@@ -77,19 +89,6 @@ const EditProfile = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedFile(reader.result); // Base64 문자열
-        const imageUrl = reader.result; // 미리보기용
-        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password && password !== confirmPassword) {
@@ -98,7 +97,7 @@ const EditProfile = () => {
     }
 
     const data = {
-      profileImage: selectedFile || user.profilePic, // Base64 또는 기존 URL
+      profileImage: selectedFile || user.profilePic, // Base64 데이터
       memorizationMethod,
     };
 
