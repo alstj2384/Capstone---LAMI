@@ -28,9 +28,19 @@ const Create = () => {
     validateAndSetFile(droppedFile);
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    validateAndSetFile(selectedFile);
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      try {
+        // 임시 URL 생성 (실제 업로드 대신)
+        const imageUrl = URL.createObjectURL(file); // 브라우저에서만 동작, 서버에 전송 X
+        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
+        // 실제 업로드가 필요하면 서버 API 필요
+      } catch (err) {
+        console.error("이미지 업로드 실패", err.response?.data || err.message);
+        alert("이미지 업로드에 실패했습니다.");
+      }
+    }
   };
 
   const handleFileClick = () => {
