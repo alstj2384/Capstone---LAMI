@@ -97,18 +97,16 @@ const TopNav = () => {
             {userInfo?.name ? `${userInfo.name}님 반갑습니다` : ""}
           </span>
           <button
-
             onClick={async () => {
               try {
                 const token = localStorage.getItem("token");
                 const memberId = localStorage.getItem("memberId");
-                await logoutUser(token, memberId);
+                await logoutUserAPI(token, memberId);
                 handleLogout();
               } catch (err) {
                 console.error("로그아웃 실패", err); //
               }
             }}
-
             className="nav-button bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
           >
             로그아웃
