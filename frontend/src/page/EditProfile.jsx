@@ -303,12 +303,14 @@ const EditProfile = () => {
             </label>
           ))}
         </div>
-        {isUploading === true ? (
-          <>
+        {isUploading ? (
+          <button type="button" className="edit-submit" disabled>
             <span className="spinner" /> 업로드 중...
-          </>
+          </button>
         ) : (
-          "제출하기"
+          <button type="submit" className="edit-submit">
+            제출하기
+          </button>
         )}
       </form>
     </div>
