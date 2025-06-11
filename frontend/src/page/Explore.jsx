@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
-import { getWorkbookList } from "../api";
+import { getWorkbookList, getUserName, getUserInfo } from "../api";
 import "./css/Explore.css";
 
 const Explore = () => {
   const navigate = useNavigate();
-
   const [quizList, setQuizList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
@@ -14,12 +13,49 @@ const Explore = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
+  // 사용자 정보 캐시
+  const userCache = {};
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const quizRes = await getWorkbookList();
-        //console.log(quizRes)
-        setQuizList(quizRes.content);
+        const workbooks = quizRes.content || quizRes.data || [];
+        const token = localStorage.getItem("token");
+        const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
+
+        // 사용자 정보 가져오기
+        const workbooksWithUserDetails = await Promise.all(
+          workbooks.map(async (workbook) => {
+            if (!userCache[workbook.userId]) {
+              try {
+                // 1. getUserName으로 닉네임 시도
+                const userNameRes = await getUserName(workbook.userId, token);
+                userCache[workbook.userId] = { nickname: userNameRes.data };
+
+                // 2. getUserInfo로 추가 정보 시도 (선택적)
+                try {
+                  const userInfo = await getUserInfo(workbook.userId, token);
+                  userCache[workbook.userId] = {
+                    nickname: userNameRes.data,
+                    name: userInfo.name || userNameRes.data, // name이 없으면 닉네임 재사용
+                  };
+                } catch (infoError) {
+                  console.warn(`getUserInfo 실패 (userId: ${workbook.userId}):`, infoError);
+                }
+              } catch (nameError) {
+                console.error(`getUserName 실패 (userId: ${workbook.userId}):`, nameError);
+                userCache[workbook.userId] = { nickname: null, name: `사용자 ${workbook.userId}` };
+              }
+            }
+            return {
+              ...workbook,
+              nickname: userCache[workbook.userId].nickname,
+              name: userCache[workbook.userId].name,
+            };
+          })
+        );
+        setQuizList(workbooksWithUserDetails);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
       }
@@ -68,6 +104,11 @@ const Explore = () => {
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
   const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
+
+  // 작성자 이름 표시 함수
+  const getDisplayName = (item) => {
+    return item.nickname || item.name || `사용자 ${item.userId}`;
+  };
 
   return (
     <div className="explore-container">
@@ -124,7 +165,7 @@ const Explore = () => {
             <div key={item.workbookId} className="explore-card">
               <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">작성자: {item.userId}</p>
+              <p className="explore-card-date">작성자: {getDisplayName(item)}</p>
 
               <div className="explore-card-button-group">
                 <button
