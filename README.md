@@ -144,21 +144,25 @@
 ---
 
 **홈 화면 및 로그인**
-<br><img src="/uploads/6e687ba5e79010c09826230022a51b20/화면_기록_2025-06-11_오후_12.16.30.gif" width="800"><br>
+<br><img src="images/login.gif"><br>
 
 **문제 생성**
-<br><img src="/uploads/24116dfaaf643ec66ec2916a89f8fe7c/화면_기록_2025-06-11_오후_12.30.57.gif" width="800"><br>
+<br><img src="images/문제생성.gif"><br>
 
-**복습 문제 추가**
-<br><img src="/uploads/1d321a8755d8a9ac2ab107bdefb4b058/화면_기록_2025-06-11_오후_12.27.19.gif" width="800"><br>
+**문제집 조회**
+<br><img src="images/문제집조회.gif"><br>
 
-**복습 문제 조회 및 풀어보기**
-<br><img src="/uploads/c47e3489d0c7f60be1a0465b71d6c04c/화면_기록_2025-06-11_오후_12.36.21.gif" width="800"><br>
+**문제 풀기 및 채점**
+<br><img src="images/문제 풀기 및 채점.gif"><br>
 
-**마이페이지**
-<br><img src="/uploads/6efbceb16d055b93e6710ddf11f37a37/화면_기록_2025-06-11_오후_12.36.42.gif" width="800">
+**채점결과 및 피드백**
+<br><img src="images/피드백 .gif"><br>
 
-<br><br>
+**복습할 문제 추가**
+<br><img src="images/복습 문제에 추가.gif"><br>
+
+**복습 문제 조회**
+<br><img src="images/복습 문제 조회.gif">
 
 <div id="7"></div>
 
