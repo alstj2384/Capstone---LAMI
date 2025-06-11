@@ -14,7 +14,23 @@ const Explore = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [userNames, setUserNames] = useState({});
   const itemsPerPage = 8;
+  const filteredItems = quizList.filter((item) => {
+    const matchesSearch = item.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty
+      ? item.difficulty === selectedDifficulty
+      : true;
+    const matchesUser = showMyQuizzes ? item.userId === memberId : true;
+    return matchesSearch && matchesDifficulty && matchesUser;
+  });
 
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredItems.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,24 +73,6 @@ const Explore = () => {
   }, [filteredItems]);
 
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
-
-  const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty
-      ? item.difficulty === selectedDifficulty
-      : true;
-    const matchesUser = showMyQuizzes ? item.userId === memberId : true;
-    return matchesSearch && matchesDifficulty && matchesUser;
-  });
-
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
@@ -173,7 +171,7 @@ const Explore = () => {
               />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">
-                작성자: {userNames[item.userId] || "불러오는 중..."}
+                작성자: <span className="text-sm font-mono">{item.userId}</span>
               </p>
 
               <div className="explore-card-button-group">
