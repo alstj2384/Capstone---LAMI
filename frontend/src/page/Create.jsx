@@ -28,19 +28,9 @@ const Create = () => {
     validateAndSetFile(droppedFile);
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      try {
-        // 임시 URL 생성 (실제 업로드 대신)
-        const imageUrl = URL.createObjectURL(file); // 브라우저에서만 동작, 서버에 전송 X
-        setUser((prev) => ({ ...prev, profilePic: imageUrl }));
-        // 실제 업로드가 필요하면 서버 API 필요
-      } catch (err) {
-        console.error("이미지 업로드 실패", err.response?.data || err.message);
-        alert("이미지 업로드에 실패했습니다.");
-      }
-    }
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    validateAndSetFile(selectedFile);
   };
 
   const handleFileClick = () => {
@@ -173,18 +163,9 @@ const Create = () => {
               className="create-select"
             >
               <option value="">선택하세요</option>
-              <option value="1">
-                상 : 개념에 대한 깊은 이해와 응용 능력이 요구되는 고급
-                문제입니다.
-              </option>
-              <option value="2">
-                중 : 기초 개념을 이해하고, 간단한 문제 해결 능력이 필요한
-                수준입니다.
-              </option>
-              <option value="3">
-                하 : 해당 분야의 기초 개념만 알고 있어도 쉽게 풀 수 있는
-                문제입니다.
-              </option>
+              <option value="1">상</option>
+              <option value="2">중</option>
+              <option value="3">하</option>
             </select>
           </div>
 
