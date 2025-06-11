@@ -12,10 +12,24 @@ const Explore = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [userNames, setUserNames] = useState({});
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const quizRes = await getWorkbookList();
+        //console.log(quizRes)
+        setQuizList(quizRes.content);
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
-  const itemsPerPage = 8;
   const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title
       .toLowerCase()
@@ -33,46 +47,6 @@ const Explore = () => {
     startIndex,
     startIndex + itemsPerPage
   );
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const quizRes = await getWorkbookList();
-        //console.log(quizRes)
-        setQuizList(quizRes.content);
-      } catch (error) {
-        console.error("데이터를 불러오는 중 오류 발생", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserNames = async () => {
-      const token = localStorage.getItem("token");
-      const newNames = { ...userNames };
-
-      const uniqueUserIds = [
-        ...new Set(filteredItems.map((item) => item.userId)),
-      ].filter((id) => !newNames[id]);
-
-      await Promise.all(
-        uniqueUserIds.map(async (id) => {
-          try {
-            const res = await getUserName(id, token);
-            newNames[id] = res.nickname || res.name || "알 수 없음";
-          } catch (err) {
-            console.error(`사용자 ${id} 정보 조회 실패`, err);
-            newNames[id] = "알 수 없음";
-          }
-        })
-      );
-
-      setUserNames(newNames);
-    };
-
-    if (filteredItems.length > 0) fetchUserNames();
-  }, [filteredItems]);
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
@@ -171,10 +145,7 @@ const Explore = () => {
               />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">
-                작성자:{" "}
-                <span className="text-sm font-mono">
-                  {userNames[item.userId] || "알 수 없음"}
-                </span>
+                작성자: {item.nickname || item.name}
               </p>
 
               <div className="explore-card-button-group">
