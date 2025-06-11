@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SquirrelIcon from "../assets/DALAMI_2.svg";
-import { getWorkbookList, getUserName, getUserInfo } from "../api";
+import { getWorkbookList } from "../api";
 import "./css/Explore.css";
 
 const Explore = () => {
   const navigate = useNavigate();
+
   const [quizList, setQuizList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
@@ -13,52 +14,12 @@ const Explore = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // 사용자 정보 캐시
-  const userCache = {};
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const quizRes = await getWorkbookList();
-        const workbooks = quizRes.content || quizRes.data || [];
-        const token = localStorage.getItem("token");
-        const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
-
-        // 사용자 정보 가져오기
-        const workbooksWithUserDetails = await Promise.all(
-          workbooks.map(async (workbook) => {
-            if (!userCache[workbook.userId]) {
-              try {
-                // 1. getUserName으로 닉네임 시도
-                const userNameRes = await getUserName(workbook.userId, token, memberId);
-                userCache[workbook.userId] = { nickname: userNameRes.data };
-
-                // 2. getUserInfo로 추가 정보 시도 (선택적)
-                try {
-                  const userInfo = await getUserInfo(workbook.userId, token);
-                  userCache[workbook.userId] = {
-                    nickname: userNameRes.data,
-                    name: userInfo.name || userNameRes.data, // name이 없으면 닉네임 재사용
-                  };
-                } catch (infoError) {
-                  console.warn(`getUserInfo 실패 (userId: ${workbook.userId}):`, infoError);
-                }
-              } catch (nameError) {
-                console.error(`getUserName 실패 (userId: ${workbook.userId}):`, nameError);
-                userCache[workbook.userId] = {
-                  nickname: null,
-                  name: `사용자 ${workbook.userId}`,
-                };
-              }
-            }
-            return {
-              ...workbook,
-              nickname: userCache[workbook.userId].nickname,
-              name: userCache[workbook.userId].name,
-            };
-          })
-        );
-        setQuizList(workbooksWithUserDetails);
+        //console.log(quizRes)
+        setQuizList(quizRes.content);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
       }
@@ -70,8 +31,12 @@ const Explore = () => {
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
+    const matchesSearch = item.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty
+      ? item.difficulty === selectedDifficulty
+      : true;
     const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
@@ -106,12 +71,8 @@ const Explore = () => {
   };
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
-  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
-
-  // 작성자 이름 표시 함수
-  const getDisplayName = (item) => {
-    return item.nickname || item.name || `사용자 ${item.userId}`;
-  };
+  const handleEditWorkBook = (workbookId) =>
+    navigate(`/editworkbook/${workbookId}`);
 
   return (
     <div className="explore-container">
@@ -127,31 +88,27 @@ const Explore = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="explore-input"
             />
-            <button onClick={handleSearch} className="explore-search-button">
-              검색하기
-            </button>
-          </div>
-          <div className="explore-category-wrapper">
-            <input
-              type="text"
-              placeholder="카테고리"
-              className="explore-input explore-input-small"
-            />
-            <button className="explore-category-button">필터링</button>
+            <button onClick={handleSearch} className="explore-search-button">검색하기</button>
           </div>
         </div>
         <div className="explore-right-group">
           <div className="explore-button-group">
             <span className="explore-filter-label">난이도</span>
-            {["높음", "중간", "낮음"].map((level) => (
+            {[
+              { label: "낮음", value: 3 },
+              { label: "중간", value: 2 },
+              { label: "높음", value: 1 },
+            ].map(({ label, value }) => (
               <button
-                key={level}
-                onClick={() => handleDifficultyChange(level)}
+                key={label}
+                onClick={() => handleDifficultyChange(value)}
                 className={`explore-filter-button ${
-                  selectedDifficulty === level ? "explore-filter-button-active" : ""
+                  selectedDifficulty === value
+                    ? "explore-filter-button-active"
+                    : ""
                 }`}
               >
-                {level}
+                {label}
               </button>
             ))}
           </div>
@@ -176,8 +133,6 @@ const Explore = () => {
             <div key={item.workbookId} className="explore-card">
               <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">작성자: {getDisplayName(item)}</p>
-
               <div className="explore-card-button-group">
                 <button
                   onClick={() => handleSolve(item.workbookId)}
@@ -218,9 +173,7 @@ const Explore = () => {
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`explore-pagination-button ${
-                currentPage === page ? "explore-pagination-button-active" : ""
-              }`}
+              className={`explore-pagination-button ${currentPage === page ? "explore-pagination-button-active" : ""}`}
             >
               {page}
             </button>
@@ -228,10 +181,7 @@ const Explore = () => {
           {endPage < totalPages && (
             <>
               <span className="explore-pagination-ellipsis">...</span>
-              <button
-                onClick={() => handlePageChange(totalPages)}
-                className="explore-pagination-button"
-              >
+              <button onClick={() => handlePageChange(totalPages)} className="explore-pagination-button">
                 {totalPages}
               </button>
             </>
