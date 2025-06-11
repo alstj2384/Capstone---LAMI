@@ -12,6 +12,7 @@ const Explore = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userNames, setUserNames] = useState({});
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -27,6 +28,33 @@ const Explore = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchUserNames = async () => {
+      const token = localStorage.getItem("token");
+      const newNames = { ...userNames };
+
+      const uniqueUserIds = [
+        ...new Set(filteredItems.map((item) => item.userId)),
+      ].filter((id) => !newNames[id]); // 아직 불러오지 않은 ID만
+
+      await Promise.all(
+        uniqueUserIds.map(async (id) => {
+          try {
+            const res = await getUserName(id, token);
+            newNames[id] = res.nickname || res.name || "알 수 없음";
+          } catch (err) {
+            console.error(`사용자 ${id} 정보 조회 실패`, err);
+            newNames[id] = "알 수 없음";
+          }
+        })
+      );
+
+      setUserNames(newNames);
+    };
+
+    if (filteredItems.length > 0) fetchUserNames();
+  }, [filteredItems]);
 
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
@@ -145,7 +173,7 @@ const Explore = () => {
               />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">
-                작성자: {item.nickname || item.name}
+                작성자: {userNames[item.userId] || "불러오는 중..."}
               </p>
 
               <div className="explore-card-button-group">

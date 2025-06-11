@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getGrading, createReview, getProblem } from "../api"; // ✅ 수정: API 함수 import
+import { getGrading, createReview, getProblemList } from "../api";
 import "./css/Result.css";
 
 const Result = () => {
@@ -11,7 +11,7 @@ const Result = () => {
   const [gradingResult, setGradingResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviewedQuizIds, setReviewedQuizIds] = useState(new Set());
-  const [problems, setProblems] = useState({});
+  const [problemMap, setProblemMap] = useState(new Map());
 
   useEffect(() => {
     const fetchGradingResult = async () => {
@@ -24,7 +24,6 @@ const Result = () => {
 
       try {
         const result = await getGrading(gradingId, token);
-        console.log("채점 결과:", result);
         setGradingResult(result.data);
       } catch (error) {
         console.error("채점 결과 조회 실패:", error);
@@ -37,28 +36,29 @@ const Result = () => {
   }, [gradingId]);
 
   useEffect(() => {
-    if (!gradingResult) return;
+    if (!gradingResult?.quizSetId) return;
 
     const fetchProblems = async () => {
-      const newProblems = {};
-      for (const item of gradingResult.submissions) {
-        const { problemId } = item;
-        if (!problemId) continue;
-        try {
-          const problemData = await getProblem(problemId);
-          newProblems[problemId] = problemData;
-        } catch (err) {
-          console.error(`문제 ${problemId} 불러오기 실패:`, err);
-        }
+      try {
+        const token = localStorage.getItem("token");
+        const listRes = await getProblemList(gradingResult.quizSetId, token);
+        const problems = listRes.data || [];
+
+        const map = new Map();
+        problems.forEach((p) => {
+          map.set(p.problemId, p);
+        });
+        setProblemMap(map);
+      } catch (err) {
+        console.error("문제 리스트 불러오기 실패:", err);
       }
-      setProblems(newProblems);
     };
 
     fetchProblems();
   }, [gradingResult]);
 
   const handleRetry = () => {
-    navigate("/solve");
+    navigate(`/solve/${gradingResult.quizSetId}`);
   };
 
   const handleExit = () => {
@@ -70,8 +70,8 @@ const Result = () => {
     const memberId = localStorage.getItem("memberId");
 
     const data = {
-      gradingId: gradingId,
-      quizId: quizId,
+      gradingId,
+      quizId,
     };
 
     try {
@@ -97,9 +97,8 @@ const Result = () => {
       <div className="result-container">
         <h1 className="result-title">채점 결과</h1>
 
-        {/* ✅ 이 map은 return 내부로 들어가야 합니다 */}
         {gradingResult.submissions.map((item, index) => {
-          const problem = problems[item.problemId];
+          const problem = problemMap.get(item.quizId);
 
           return (
             <div key={item.quizId} className="result-problem">
