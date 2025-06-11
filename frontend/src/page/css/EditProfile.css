@@ -112,14 +112,17 @@
 
 .edit-submit,
 .edit-code-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   opacity: 1 !important;
   visibility: visible !important;
   display: block !important;
   pointer-events: auto !important;
   z-index: 10;
   padding: 0.75rem 1.5rem;
-  background-color: #22c55e;
-  color: #ffffff;
+  background-color: #22c55e !important;
+  color: #ffffff !important;
   font-weight: 600;
   font-size: 1rem;
   border: none;
@@ -130,14 +133,13 @@
   transition: background-color 0.3s ease, box-shadow 0.2s ease, transform 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-
+/* 부모 요소 간섭 방지 */
 .edit-form,
-.edit-group
-{
-position: relative;
-z-index: 1;
-overflow: visible;
+.edit-group,
+.edit-verification-wrapper {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
 }
 
 /* 인증번호 버튼 및 입력 그룹 */
