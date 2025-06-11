@@ -13,6 +13,8 @@ const Explore = () => {
   const [showMyQuizzes, setShowMyQuizzes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [userNames, setUserNames] = useState({});
+  const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
+
   const itemsPerPage = 8;
   const filteredItems = quizList.filter((item) => {
     const matchesSearch = item.title
@@ -71,8 +73,6 @@ const Explore = () => {
 
     if (filteredItems.length > 0) fetchUserNames();
   }, [filteredItems]);
-
-  const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
