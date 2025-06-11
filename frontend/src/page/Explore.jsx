@@ -31,22 +31,15 @@ const Explore = () => {
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty
-      ? item.difficulty === selectedDifficulty
-      : true;
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
     const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
@@ -64,9 +57,7 @@ const Explore = () => {
   const handleSearch = () => setCurrentPage(1);
 
   const handleDifficultyChange = (difficulty) => {
-    setSelectedDifficulty(
-      difficulty === selectedDifficulty ? null : difficulty
-    );
+    setSelectedDifficulty(difficulty === selectedDifficulty ? null : difficulty);
     setCurrentPage(1);
   };
 
@@ -76,8 +67,7 @@ const Explore = () => {
   };
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
-  const handleEditWorkBook = (workbookId) =>
-    navigate(`/editworkbook/${workbookId}`);
+  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
 
   return (
     <div className="explore-container">
@@ -93,29 +83,23 @@ const Explore = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="explore-input"
             />
-            <button onClick={handleSearch} className="explore-search-button">
-              검색하기
-            </button>
+            <button onClick={handleSearch} className="explore-search-button">검색하기</button>
+          </div>
+          <div className="explore-category-wrapper">
+            <input type="text" placeholder="카테고리" className="explore-input explore-input-small" />
+            <button className="explore-category-button">필터링</button>
           </div>
         </div>
         <div className="explore-right-group">
           <div className="explore-button-group">
             <span className="explore-filter-label">난이도</span>
-            {[
-              { label: "낮음", value: 3 },
-              { label: "중간", value: 2 },
-              { label: "높음", value: 1 },
-            ].map(({ label, value }) => (
+            {["높음", "중간", "낮음"].map((level) => (
               <button
-                key={label}
-                onClick={() => handleDifficultyChange(value)}
-                className={`explore-filter-button ${
-                  selectedDifficulty === value
-                    ? "explore-filter-button-active"
-                    : ""
-                }`}
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={`explore-filter-button ${selectedDifficulty === level ? "explore-filter-button-active" : ""}`}
               >
-                {label}
+                {level}
               </button>
             ))}
           </div>
@@ -138,22 +122,14 @@ const Explore = () => {
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
             <div key={item.workbookId} className="explore-card">
-              <img
-                src={SquirrelIcon}
-                alt="Squirrel Icon"
-                className="explore-card-icon"
-              />
+              <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
               <h3 className="explore-card-title">{item.title}</h3>
-              <p className="explore-card-date">
-                작성자: {item.nickname || item.name}
-              </p>
+              <p className="explore-card-date">작성자: {item.userId}</p>
 
               <div className="explore-card-button-group">
                 <button
                   onClick={() => handleSolve(item.workbookId)}
-                  className={`explore-card-button ${
-                    item.userId !== memberId ? "full-width" : ""
-                  }`}
+                  className={`explore-card-button ${item.userId !== memberId ? "full-width" : ""}`}
                 >
                   풀어보기
                 </button>
@@ -170,9 +146,7 @@ const Explore = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 col-span-full">
-            검색 결과가 없습니다.
-          </p>
+          <p className="text-center text-gray-500 col-span-full">검색 결과가 없습니다.</p>
         )}
       </div>
 
@@ -185,16 +159,12 @@ const Explore = () => {
           >
             Previous
           </button>
-          {startPage > 1 && (
-            <span className="explore-pagination-ellipsis">...</span>
-          )}
+          {startPage > 1 && <span className="explore-pagination-ellipsis">...</span>}
           {pageNumbers.map((page) => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`explore-pagination-button ${
-                currentPage === page ? "explore-pagination-button-active" : ""
-              }`}
+              className={`explore-pagination-button ${currentPage === page ? "explore-pagination-button-active" : ""}`}
             >
               {page}
             </button>
@@ -202,10 +172,7 @@ const Explore = () => {
           {endPage < totalPages && (
             <>
               <span className="explore-pagination-ellipsis">...</span>
-              <button
-                onClick={() => handlePageChange(totalPages)}
-                className="explore-pagination-button"
-              >
+              <button onClick={() => handlePageChange(totalPages)} className="explore-pagination-button">
                 {totalPages}
               </button>
             </>
