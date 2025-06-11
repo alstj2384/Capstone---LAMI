@@ -30,7 +30,7 @@ const Explore = () => {
             if (!userCache[workbook.userId]) {
               try {
                 // 1. getUserName으로 닉네임 시도
-                const userNameRes = await getUserName(workbook.userId, token);
+                const userNameRes = await getUserName(workbook.userId, token, memberId);
                 userCache[workbook.userId] = { nickname: userNameRes.data };
 
                 // 2. getUserInfo로 추가 정보 시도 (선택적)
@@ -41,16 +41,10 @@ const Explore = () => {
                     name: userInfo.name || userNameRes.data, // name이 없으면 닉네임 재사용
                   };
                 } catch (infoError) {
-                  console.warn(
-                    `getUserInfo 실패 (userId: ${workbook.userId}):`,
-                    infoError
-                  );
+                  console.warn(`getUserInfo 실패 (userId: ${workbook.userId}):`, infoError);
                 }
               } catch (nameError) {
-                console.error(
-                  `getUserName 실패 (userId: ${workbook.userId}):`,
-                  nameError
-                );
+                console.error(`getUserName 실패 (userId: ${workbook.userId}):`, nameError);
                 userCache[workbook.userId] = {
                   nickname: null,
                   name: `사용자 ${workbook.userId}`,
@@ -76,22 +70,15 @@ const Explore = () => {
   const memberId = parseInt(localStorage.getItem("memberId") || "", 10);
 
   const filteredItems = quizList.filter((item) => {
-    const matchesSearch = item.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty
-      ? item.difficulty === selectedDifficulty
-      : true;
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDifficulty = selectedDifficulty ? item.difficulty === selectedDifficulty : true;
     const matchesUser = showMyQuizzes ? item.userId === memberId : true;
     return matchesSearch && matchesDifficulty && matchesUser;
   });
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   const pageNumbers = [];
   const maxPagesToShow = 5;
@@ -109,9 +96,7 @@ const Explore = () => {
   const handleSearch = () => setCurrentPage(1);
 
   const handleDifficultyChange = (difficulty) => {
-    setSelectedDifficulty(
-      difficulty === selectedDifficulty ? null : difficulty
-    );
+    setSelectedDifficulty(difficulty === selectedDifficulty ? null : difficulty);
     setCurrentPage(1);
   };
 
@@ -121,8 +106,7 @@ const Explore = () => {
   };
 
   const handleSolve = (quizId) => navigate(`/solve/${quizId}`);
-  const handleEditWorkBook = (workbookId) =>
-    navigate(`/editworkbook/${workbookId}`);
+  const handleEditWorkBook = (workbookId) => navigate(`/editworkbook/${workbookId}`);
 
   // 작성자 이름 표시 함수
   const getDisplayName = (item) => {
@@ -164,9 +148,7 @@ const Explore = () => {
                 key={level}
                 onClick={() => handleDifficultyChange(level)}
                 className={`explore-filter-button ${
-                  selectedDifficulty === level
-                    ? "explore-filter-button-active"
-                    : ""
+                  selectedDifficulty === level ? "explore-filter-button-active" : ""
                 }`}
               >
                 {level}
@@ -192,12 +174,9 @@ const Explore = () => {
         {currentItems.length > 0 ? (
           currentItems.map((item) => (
             <div key={item.workbookId} className="explore-card">
-              <img
-                src={SquirrelIcon}
-                alt="Squirrel Icon"
-                className="explore-card-icon"
-              />
+              <img src={SquirrelIcon} alt="Squirrel Icon" className="explore-card-icon" />
               <h3 className="explore-card-title">{item.title}</h3>
+              <p className="explore-card-date">작성자: {getDisplayName(item)}</p>
 
               <div className="explore-card-button-group">
                 <button
@@ -221,9 +200,7 @@ const Explore = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 col-span-full">
-            검색 결과가 없습니다.
-          </p>
+          <p className="text-center text-gray-500 col-span-full">검색 결과가 없습니다.</p>
         )}
       </div>
 
@@ -236,9 +213,7 @@ const Explore = () => {
           >
             Previous
           </button>
-          {startPage > 1 && (
-            <span className="explore-pagination-ellipsis">...</span>
-          )}
+          {startPage > 1 && <span className="explore-pagination-ellipsis">...</span>}
           {pageNumbers.map((page) => (
             <button
               key={page}
