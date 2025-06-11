@@ -171,7 +171,8 @@ const Explore = () => {
               />
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">
-                작성자: <span className="text-sm font-mono">{item.userId}</span>
+                작성자:{" "}
+                <span className="text-sm font-mono">{item.memberId}</span>
               </p>
 
               <div className="explore-card-button-group">
