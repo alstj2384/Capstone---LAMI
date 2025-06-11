@@ -384,11 +384,8 @@ const Signup = () => {
               onChange={handleChange}
               className="signup-input"
             >
-              {memorizationMethods.map((method) => (
-                <option key={method.value} value={method.value}>
-                  {method.label}
-                </option>
-              ))}
+              <option value="AssociationMethod">연상법</option>
+              <option value="OtherMethod">기타</option>
             </select>
           </div>
 
