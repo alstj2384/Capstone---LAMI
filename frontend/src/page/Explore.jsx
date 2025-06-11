@@ -52,7 +52,7 @@ const Explore = () => {
 
       const uniqueUserIds = [
         ...new Set(filteredItems.map((item) => item.userId)),
-      ].filter((id) => !newNames[id]); // 아직 불러오지 않은 ID만
+      ].filter((id) => !newNames[id]);
 
       await Promise.all(
         uniqueUserIds.map(async (id) => {
@@ -172,7 +172,9 @@ const Explore = () => {
               <h3 className="explore-card-title">{item.title}</h3>
               <p className="explore-card-date">
                 작성자:{" "}
-                <span className="text-sm font-mono">{item.memberId}</span>
+                <span className="text-sm font-mono">
+                  {userNames[item.userId] || "알 수 없음"}
+                </span>
               </p>
 
               <div className="explore-card-button-group">
